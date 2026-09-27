@@ -15,7 +15,8 @@ This file defines HOW every number in the ranking is produced. The Kotlin code i
 - `country == DE`
 - `owners ≤ 3`
 - `accidents == 0` (major accidents). **Minor pre-existing damage is NOT filtered** (see Minor damage column).
-- **Fuel:** petrol, hybrid, or plug-in hybrid (petrol+electric) only → **diesel and pure-electric excluded.** Applied server-side via an OR-group on `fuelType ∈ {1039 petrol, 1041 hybrid, 1046 phev}`.
+- **Fuel:** petrol, hybrid, or plug-in hybrid (petrol+electric) only → **diesel and pure-electric excluded.** Applied server-side via an OR-group on `fuelType ∈ {1039 petrol, 1041 hybrid, 1046 phev-or-hybrid}`. ⚠️ Autohero's `fuelType 1046` covers BOTH plug-in hybrids and plain hybrids — disambiguate at ingestion with `isPluginSystem` (`true` → `phev`, `false` → `hybrid`); getting this wrong also wrongly applies the Engine column's PHEV battery-risk penalty to plain hybrids.
+- **Sale in progress:** listings already reserved/mid-sale are excluded. Autohero: `retailAdState == "reserved"`.
 - **Doors:** ≥4 → excludes 2-door coupés/cabrios/roadsters and 3-door hatches; sedans, hatchbacks, SUVs, estates, MPVs pass. Applied **server-side at fetch** via Autohero's `doorCount >= 4` filter (confirmed working; the value is not returned in the list object, so it can't be displayed — only filtered). For manually-pasted listings, set `doors` on the Listing and the offline gate `isMultiDoor` enforces the same rule.
 
 ## Columns
@@ -37,11 +38,14 @@ Scored (0–100 each, independent, **toggle-able**, summed into Total):
 | 10 | Minor damage | no/fewer recorded minor damages |
 | 11 | Commercial | private ownership (not ex-fleet/commercial) |
 
-## Total & sorting
-- **Display order:** identity (index · name · reg · fuel · price · km · own) → **ROI (Independent score, 0–10)** → **Total** → the 9 total-columns → **City (last)**.
+**Display order:** Engine, Mileage, Value, Transmission, Consumption, TrunkSize come first and are **ON by default**. **Owners, TireSeason, MinorDamage, Commercial are placed last and are OFF by default** — situational/source-dependent signals that can skew cross-source comparisons; tick them back on in the page when wanted. `DEFAULT_ACTIVE_COLUMNS` = the first six; this is also what the *stored* Total in `site/data.json` is computed from (the page recomputes live as columns are toggled).
+
+## Total, Avg & sorting
+- **Column order:** identity (index · name · reg · fuel · price · km) → **Avg** → **ROI (Independent score, 0–10)** → **Total** → Engine/Mileage/Value/Transmission/Consumption/TrunkSize (on by default) → Owners/TireSeason/MinorDamage/Commercial (off by default) → **City (last)**.
 - **ROI is INDEPENDENT:** it is a 0–10 reliability score (same 0–10 scale as the Notion pages), shown in its own column, sortable, and **NOT included in the Total**. It doesn't influence ranking unless you sort by it.
 - **Independent scores are plugins.** ROI is the first; any number of advisory scores (e.g. a `carwow`-style rating) can be added, each with its own algorithm and scale, each its own column, none feeding the Total. See [`plugins/README.md`](../plugins/README.md).
-- `Total = Σ score(col) over the 9 non-ROI scored columns that are (a) globally ACTIVE and (b) not `X` for this row.`
+- `Total = Σ score(col) over the currently-ACTIVE total-columns that are not `X` for this row.` Default-active = Engine, Mileage, Value, Transmission, Consumption, TrunkSize; the other four start OFF (see above) and can be ticked on.
+- **Avg (0–10, the default sort key):** the single best-overall figure — `mean(Total normalized to 0–10 across the active total-columns, every AVAILABLE independent plugin score normalized to 0–10)`. With just ROI registered: `Avg = mean(Total/(activeCols×100)×10, ROI)`. Recomputes live with the column toggles, same as Total. This is the one place Total and the independent plugins are combined — table sorts by Avg descending by default ("best of both, top to bottom").
 - A column can be toggled **inactive** (excluded from every row's Total; shown faded) — used when a field isn't comparable across sources (e.g. tire season present on Autohero but not AutoScout).
 - A single cell can be `X` (not available) → that cell contributes 0 and is skipped for that row only.
 - The table sorts by any numeric column; default = Total descending. `index` = position after that sort.

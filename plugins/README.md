@@ -18,7 +18,10 @@ An **independent score** is an advisory rating produced by a self-contained plug
 2. For a **local** plugin, implement its scoring function and reference data.
 3. Register it once:
    - Kotlin: add an entry to `INDEPENDENT_PLUGINS` in `src/main/kotlin/ranker/BuildSite.kt`.
-   - Output: it appears in `site/data.json → independentColumns` and the page renders a new advisory column automatically.
+   - Output: it appears in `site/data.json → independentColumns` and the page renders a new advisory column automatically — and is automatically folded into the **Avg** column (see below).
+
+## Avg — where plugins and Total meet
+Independent scores never feed Total, but the page also shows an **Avg** column (placed right before ROI, and the default sort key): `mean(Total normalized to 0–10, every AVAILABLE independent plugin score normalized to 0–10)`. A row's plugin that is `X` for that car is simply excluded from its own average. This is the one deliberate place a plugin's score and the Total are combined — so adding a new plugin automatically factors into Avg with no extra wiring.
 
 ## Current plugins
 | Name | Scale | Type | Source | File |

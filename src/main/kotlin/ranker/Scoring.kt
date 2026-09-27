@@ -118,6 +118,7 @@ fun passesBaseFilter(l: Listing, ref: Reference): Boolean {
     if (l.country != "DE") return false
     if (l.owners > 3) return false
     if (l.accidents != 0) return false
+    if (l.saleInProgress) return false      // exclude reserved / sale-already-in-progress listings
     if (l.fuel.lowercase() !in setOf("petrol", "hybrid", "phev")) return false // exclude diesel & pure-electric
     if (!isMultiDoor(l)) return false
     // must have a known ROI (reliability) or it can't be scored
@@ -282,7 +283,7 @@ fun totalOf(car: ScoredCar, activeColumns: Set<String>): Double =
 
 /** Score, gate, sum, sort desc, cap at 50, assign index. */
 fun buildTable(listings: List<Listing>, ref: Reference,
-               activeColumns: Set<String> = TOTAL_COLUMNS.toSet(), maxRows: Int = 50): List<ScoredCar> {
+               activeColumns: Set<String> = DEFAULT_ACTIVE_COLUMNS.toSet(), maxRows: Int = 50): List<ScoredCar> {
     val eligible = listings.filter { passesBaseFilter(it, ref) }
     val stats = buildPriceModel(eligible)
     val scored = eligible.map { l ->

@@ -10,13 +10,14 @@ private fun L(
     year: Int = 2019, km: Int = 50000, price: Int = 15000, fuel: String = "petrol",
     gear: String = "1139", kw: Int = 100, ccm: Int = 1998, owners: Int = 1, accidents: Int = 0,
     damages: Int = 0, damageList: List<String> = emptyList(), svc: Boolean = false,
-    commercial: Boolean = false, cons: Double? = 6.0, tire: String? = null, doors: Int? = 5, body: String? = null
+    commercial: Boolean = false, saleInProgress: Boolean = false,
+    cons: Double? = 6.0, tire: String? = null, doors: Int? = 5, body: String? = null
 ) = Listing(
     source = "test", id = id, url = "http://x", make = make, model = model, subType = subType,
     firstRegistrationYear = year, mileageKm = km, priceEur = price, fuel = fuel, gearRaw = gear,
     kw = kw, ccm = ccm, owners = owners, accidents = accidents, numberOfDamages = damages,
-    damageList = damageList, hasFilledServiceBook = svc, commercial = commercial, consumptionCombined = cons,
-    tireSeason = tire, doors = doors, body = body
+    damageList = damageList, hasFilledServiceBook = svc, commercial = commercial, saleInProgress = saleInProgress,
+    consumptionCombined = cons, tireSeason = tire, doors = doors, body = body
 )
 
 class BaseFilterTest {
@@ -29,6 +30,7 @@ class BaseFilterTest {
     @Test fun rejects_diesel()       = assertFalse(passesBaseFilter(L(fuel = "diesel"), REF))
     @Test fun rejects_electric()     = assertFalse(passesBaseFilter(L(fuel = "electric"), REF))
     @Test fun rejects_two_door()     = assertFalse(passesBaseFilter(L(doors = 2), REF))
+    @Test fun rejects_sale_in_progress() = assertFalse(passesBaseFilter(L(saleInProgress = true), REF))
     @Test fun rejects_unknown_roi()  = assertFalse(passesBaseFilter(L(model = "9er", subType = "999i"), REF))
     @Test fun accepts_valid()        = assertTrue(passesBaseFilter(L(), REF))
     @Test fun accepts_phev()         = assertTrue(passesBaseFilter(L(fuel = "phev", model = "2er", subType = "225xe"), REF))
@@ -102,6 +104,17 @@ class TotalAndToggleTest {
         val car = scoreCar(L(cons = null), REF, emptyMap())   // Consumption + Tire + (maybe Trunk) unavailable
         val expected = TOTAL_COLUMNS.filter { car.scores[it]!!.available }.sumOf { car.scores[it]!!.value }
         assertEquals(expected, totalOf(car, TOTAL_COLUMNS.toSet()), 0.001)
+    }
+    @Test fun disabled_by_default_columns_excluded_from_default_active() {
+        for (c in listOf("Owners", "TireSeason", "MinorDamage", "Commercial")) assertFalse(c in DEFAULT_ACTIVE_COLUMNS)
+    }
+    @Test fun default_build_total_matches_default_active_only() {
+        val car = scoreCar(L(), REF, emptyMap())
+        assertEquals(totalOf(car, DEFAULT_ACTIVE_COLUMNS.toSet()), totalOf(car, DEFAULT_ACTIVE_COLUMNS.toSet()))
+        // sanity: default-active total differs from full total when disabled columns have nonzero score
+        val full = totalOf(car, TOTAL_COLUMNS.toSet())
+        val def = totalOf(car, DEFAULT_ACTIVE_COLUMNS.toSet())
+        assertTrue(def <= full)
     }
     @Test fun toggling_column_off_lowers_total() {
         val car = scoreCar(L(), REF, emptyMap())

@@ -51,7 +51,7 @@
   <p class="sub" id="sub">Loading…</p>
   <div class="controls">
     <input id="q" placeholder="Filter by name / fuel / city…"/>
-    <span class="note">Click a header to sort. Tick/untick a scored column to include/exclude it from Total (it fades and Total re-sums &amp; re-sorts). Cells marked <span class="x">X</span> are N/A and never counted.</span>
+    <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted.</span>
   </div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
@@ -64,10 +64,9 @@ const IDENT = [
   {k:"fuel", label:"Fuel", cls:"left"},
   {k:"priceEur", label:"Price €"},
   {k:"mileageKm", label:"km"},
-  {k:"owners", label:"Own"},
 ];
-let DATA=null, active=new Set(), sortKey="total", sortDir=-1, colW={};
-const DEFAULT_W={index:44,name:230,firstRegistration:56,fuel:74,priceEur:86,mileageKm:82,owners:50,city:150,total:76,ROI:168};
+let DATA=null, active=new Set(), sortKey="avg", sortDir=-1, colW={};
+const DEFAULT_W={index:44,name:230,firstRegistration:56,fuel:74,priceEur:86,mileageKm:82,city:150,total:76,ROI:168,avg:64};
 function widthOf(k){ return colW[k] || DEFAULT_W[k] || 66; }
 
 function scoreClass(v){ return v>=75?"s-good":v>=55?"s-mid":"s-bad"; }
@@ -82,8 +81,24 @@ function rowTotal(r){
   }
   return Math.round(t*100)/100;
 }
+function activeTotalColCount(){ return (DATA.totalColumns||[]).filter(c=>active.has(c)).length; }
+// Avg = mean of (Total normalized to a 0-10 scale) and every AVAILABLE independent plugin score
+// (also normalized to 0-10). Independent plugins never feed Total; this is the one place they're
+// combined with it, purely for an at-a-glance "best overall" sort. Recomputes live with the toggles.
+function avgOf(r){
+  const parts=[];
+  const n=activeTotalColCount();
+  if(n>0) parts.push(rowTotal(r)/(n*100)*10);
+  for(const p of (DATA.independentColumns||[])){
+    const s=r.scores[p.name];
+    if(s && s.available) parts.push(s.value/(p.scale||10)*10);
+  }
+  if(parts.length===0) return 0;
+  return Math.round((parts.reduce((a,b)=>a+b,0)/parts.length)*100)/100;
+}
 function cellVal(r,key){
   if(key==="total") return rowTotal(r);
+  if(key==="avg") return avgOf(r);
   if(r.scores && r.scores[key]!==undefined){ const s=r.scores[key]; return (s&&s.available)?s.value:-1; }
   return r[key];
 }
@@ -100,6 +115,7 @@ function render(){
   const totalCols = DATA.totalColumns || DATA.scoredColumns.filter(c=>c!=="ROI");
   const cols=[
     ...IDENT,
+    {k:"avg", label:"Avg", cls:"total"},
     ...indep.map(p=>({k:p.name, label:p.label, indep:true, scale:p.scale||10})),
     {k:"total", label:"TOTAL", cls:"total"},
     ...totalCols.map(c=>({k:c,label:c,scored:true})),
@@ -119,6 +135,9 @@ function render(){
     if(c.k==="index") return `<td class="left rank">${r._pos}</td>`;
     if(c.k==="name") return `<td class="left" title="${r.name}"><a href="${r.url}" target="_blank" rel="noopener noreferrer">${r.name}</a></td>`;
     if(c.k==="total") return `<td class="total">${rowTotal(r).toFixed(1)}</td>`;
+    if(c.k==="avg"){ const v=avgOf(r);
+      return `<td class="total" title="mean(normalized Total, available independent plugins)"><span class="score ${roiClass(v)}">${v.toFixed(1)}</span></td>`;
+    }
     if(c.indep){ const s=r.scores[c.k];
       if(!s||!s.available) return `<td><span class="x">X</span></td>`;
       const pct=s.value/(c.scale||10)*100, cls=pct>=80?"s-good":pct>=55?"s-mid":"s-bad", dec=(c.scale||10)<=10?1:0;
@@ -157,7 +176,7 @@ function render(){
 fetch("data.json").then(r=>r.json()).then(d=>{
   DATA=d; active=new Set(d.activeColumns);
   document.getElementById("sub").textContent=
-    `${d.rowCount} candidates · generated ${d.generatedAt?.slice(0,16).replace("T"," ")} · Total = sum of active columns`;
+    `${d.rowCount} candidates · generated ${d.generatedAt?.slice(0,16).replace("T"," ")} · Total = sum of active columns · Avg = mean(normalized Total, independent plugins) · excludes reserved/sale-in-progress listings`;
   document.getElementById("q").oninput=render;
   render();
 }).catch(e=>{ document.getElementById("sub").textContent="Could not load data.json: "+e; });

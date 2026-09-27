@@ -25,6 +25,7 @@ data class Listing(
     val damageList: List<String> = emptyList(),
     val hasFilledServiceBook: Boolean = false,
     val commercial: Boolean = false,         // prior commercial/fleet use (Gewerbliche Nutzung); Autohero: vatType==1054 (VAT-deductible)
+    val saleInProgress: Boolean = false,     // reserved / sale already in progress; Autohero: retailAdState=="reserved" — excluded upstream
     val consumptionCombined: Double? = null, // L/100km (null → Tire/Consumption cell becomes X)
     val tireSeason: String? = null,          // "all-season" | "summer" | "winter" | null
     val doors: Int? = null,                  // null → derive from body/model
@@ -57,11 +58,19 @@ data class ScoredCar(
     var index: Int = 0
 )
 
-/** All eleven scored columns, in display order. ROI is independent (0-10) and NOT summed into Total. */
+/**
+ * All eleven scored columns, in display order. ROI is independent (0-10) and NOT summed into Total.
+ * Owners, TireSeason, MinorDamage, Commercial are placed last and are OFF by default (see DEFAULT_ACTIVE_COLUMNS) —
+ * they can skew comparisons across data sources that don't all report them, or are situational rather than
+ * core to the ranking; the user can tick them back on in the page.
+ */
 val SCORED_COLUMNS = listOf(
-    "ROI", "Engine", "Mileage", "Value", "Transmission",
-    "Owners", "Consumption", "TrunkSize", "TireSeason", "MinorDamage", "Commercial"
+    "ROI", "Engine", "Mileage", "Value", "Transmission", "Consumption", "TrunkSize",
+    "Owners", "TireSeason", "MinorDamage", "Commercial"
 )
 
 /** The ten columns that feed the Total (everything except the independent ROI). */
 val TOTAL_COLUMNS = SCORED_COLUMNS.filter { it != "ROI" }
+
+/** Which total-columns are active by default (i.e. summed into Total on first load). */
+val DEFAULT_ACTIVE_COLUMNS = listOf("Engine", "Mileage", "Value", "Transmission", "Consumption", "TrunkSize")

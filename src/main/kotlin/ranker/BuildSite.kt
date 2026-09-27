@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
         json.decodeFromString(kotlinx.serialization.builtins.ListSerializer(Listing.serializer()),
             File(listingsPath).readText())
 
-    val active = TOTAL_COLUMNS.toSet()
+    val active = DEFAULT_ACTIVE_COLUMNS.toSet()
     val table = buildTable(listings, ref, active)
 
     val out = SiteData(
@@ -48,7 +48,7 @@ fun main(args: Array<String>) {
         independentColumns = INDEPENDENT_PLUGINS,
         totalColumns = TOTAL_COLUMNS,
         scoredColumns = SCORED_COLUMNS,
-        activeColumns = TOTAL_COLUMNS,
+        activeColumns = DEFAULT_ACTIVE_COLUMNS,
         rowCount = table.size,
         rows = table
     )
