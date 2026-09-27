@@ -1,5 +1,5 @@
 {
-    "generatedAt": "2026-09-27T10:58:53.585106Z",
+    "generatedAt": "2026-09-27T16:00:43.584892Z",
     "independentColumns": [
         {
             "name": "ROI",
@@ -588,9 +588,9 @@
                     "note": "1412 km/yr"
                 },
                 "Value": {
-                    "value": 72.83038710000501,
+                    "value": 69.66583908405502,
                     "available": true,
-                    "note": "exp €19969"
+                    "note": "exp €19182"
                 },
                 "Transmission": {
                     "value": 70.0,
@@ -628,7 +628,7 @@
                     "note": "private (margin scheme)"
                 }
             },
-            "total": 758.330387100005,
+            "total": 755.165839084055,
             "index": 8
         },
         {
@@ -705,79 +705,6 @@
             "index": 9
         },
         {
-            "id": "0887567f-f6ab-4ebb-8e43-67dc69efac4e",
-            "name": "Mercedes-Benz B-Klasse B 200 Progressive",
-            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/0887567f-f6ab-4ebb-8e43-67dc69efac4e",
-            "source": "autohero",
-            "firstRegistration": 2020,
-            "fuel": "petrol",
-            "priceEur": 19860,
-            "mileageKm": 18309,
-            "owners": 1,
-            "city": "Ketzin",
-            "platform": "M282",
-            "generation": "W247",
-            "scores": {
-                "ROI": {
-                    "value": 7.819999999999999,
-                    "available": true,
-                    "note": "Yes. Flags: no full service history"
-                },
-                "Engine": {
-                    "value": 75.0,
-                    "available": true,
-                    "note": "M282"
-                },
-                "Mileage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "3051 km/yr"
-                },
-                "Value": {
-                    "value": 56.402872951090075,
-                    "available": true,
-                    "note": "exp €21218"
-                },
-                "Transmission": {
-                    "value": 70.0,
-                    "available": true,
-                    "note": "manual"
-                },
-                "Owners": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "1 owner(s)"
-                },
-                "Consumption": {
-                    "value": 71.99999999999999,
-                    "available": true,
-                    "note": "5.4 L/100km"
-                },
-                "TrunkSize": {
-                    "value": 77.5,
-                    "available": true,
-                    "note": "455 L"
-                },
-                "TireSeason": {
-                    "value": 0.0,
-                    "available": false,
-                    "note": "n/a"
-                },
-                "MinorDamage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "none"
-                },
-                "Commercial": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "private (margin scheme)"
-                }
-            },
-            "total": 750.9028729510901,
-            "index": 10
-        },
-        {
             "id": "42802258-8d87-402c-b172-f03ed89e6577",
             "name": "BMW X1 sDrive 18i Advantage",
             "url": "https://www.autohero.com/de/bmw-x-1/id/42802258-8d87-402c-b172-f03ed89e6577",
@@ -848,7 +775,7 @@
                 }
             },
             "total": 748.1397853045838,
-            "index": 11
+            "index": 10
         },
         {
             "id": "61a8b5c9-23c2-4d44-b2b9-b78f324ef458",
@@ -921,7 +848,7 @@
                 }
             },
             "total": 747.7617386678686,
-            "index": 12
+            "index": 11
         },
         {
             "id": "9054f9be-50e0-48be-894c-ac2a6458bd26",
@@ -994,7 +921,7 @@
                 }
             },
             "total": 747.5853912923405,
-            "index": 13
+            "index": 12
         },
         {
             "id": "5b1e824c-1009-4904-9508-8586d0fda4cc",
@@ -1067,41 +994,41 @@
                 }
             },
             "total": 747.3362500000001,
-            "index": 14
+            "index": 13
         },
         {
-            "id": "9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
-            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
-            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
+            "id": "0887567f-f6ab-4ebb-8e43-67dc69efac4e",
+            "name": "Mercedes-Benz B-Klasse B 200 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/0887567f-f6ab-4ebb-8e43-67dc69efac4e",
             "source": "autohero",
             "firstRegistration": 2020,
             "fuel": "petrol",
-            "priceEur": 19620,
-            "mileageKm": 18673,
+            "priceEur": 19860,
+            "mileageKm": 18309,
             "owners": 1,
             "city": "Ketzin",
             "platform": "M282",
             "generation": "W247",
             "scores": {
                 "ROI": {
-                    "value": 8.12,
+                    "value": 7.819999999999999,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. Flags: no full service history"
                 },
                 "Engine": {
-                    "value": 70.0,
+                    "value": 75.0,
                     "available": true,
                     "note": "M282"
                 },
                 "Mileage": {
                     "value": 100.0,
                     "available": true,
-                    "note": "3112 km/yr"
+                    "note": "3051 km/yr"
                 },
                 "Value": {
-                    "value": 57.45457632874852,
+                    "value": 52.799411216977305,
                     "available": true,
-                    "note": "exp €21200"
+                    "note": "exp €20431"
                 },
                 "Transmission": {
                     "value": 70.0,
@@ -1139,8 +1066,8 @@
                     "note": "private (margin scheme)"
                 }
             },
-            "total": 746.9545763287485,
-            "index": 15
+            "total": 747.2994112169773,
+            "index": 14
         },
         {
             "id": "1ca08ae6-0a89-4d1a-bda7-3a038573c5af",
@@ -1213,7 +1140,7 @@
                 }
             },
             "total": 746.4501732846572,
-            "index": 16
+            "index": 15
         },
         {
             "id": "716ab8db-f84a-4ef5-9483-0ddaa4ae2507",
@@ -1286,7 +1213,7 @@
                 }
             },
             "total": 745.6546808613284,
-            "index": 17
+            "index": 16
         },
         {
             "id": "f86d3bd2-e2e1-45e3-9b5a-a7f988d66426",
@@ -1359,7 +1286,7 @@
                 }
             },
             "total": 745.2971789943103,
-            "index": 18
+            "index": 17
         },
         {
             "id": "2a1c1116-e6f7-44c4-9a27-b88b5ebf58bf",
@@ -1432,7 +1359,7 @@
                 }
             },
             "total": 743.8374581931537,
-            "index": 19
+            "index": 18
         },
         {
             "id": "9639efd8-6a3b-4b5e-b68c-6f338c785bbc",
@@ -1505,6 +1432,79 @@
                 }
             },
             "total": 743.5940424261139,
+            "index": 19
+        },
+        {
+            "id": "9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
+            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "petrol",
+            "priceEur": 19620,
+            "mileageKm": 18673,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 8.12,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3112 km/yr"
+                },
+                "Value": {
+                    "value": 53.88842827943387,
+                    "available": true,
+                    "note": "exp €20413"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 743.3884282794338,
             "index": 20
         },
         {
@@ -2457,79 +2457,6 @@
             "index": 33
         },
         {
-            "id": "2587bb81-8196-410b-8498-1fd0febb221f",
-            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
-            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/2587bb81-8196-410b-8498-1fd0febb221f",
-            "source": "autohero",
-            "firstRegistration": 2019,
-            "fuel": "petrol",
-            "priceEur": 18710,
-            "mileageKm": 35762,
-            "owners": 1,
-            "city": "Ketzin",
-            "platform": "M282",
-            "generation": "W247",
-            "scores": {
-                "ROI": {
-                    "value": 8.12,
-                    "available": true,
-                    "note": "Yes. no red flags"
-                },
-                "Engine": {
-                    "value": 70.0,
-                    "available": true,
-                    "note": "M282"
-                },
-                "Mileage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "5108 km/yr"
-                },
-                "Value": {
-                    "value": 54.27684507532251,
-                    "available": true,
-                    "note": "exp €19545"
-                },
-                "Transmission": {
-                    "value": 60.0,
-                    "available": true,
-                    "note": "automatic"
-                },
-                "Owners": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "1 owner(s)"
-                },
-                "Consumption": {
-                    "value": 71.99999999999999,
-                    "available": true,
-                    "note": "5.4 L/100km"
-                },
-                "TrunkSize": {
-                    "value": 77.5,
-                    "available": true,
-                    "note": "455 L"
-                },
-                "TireSeason": {
-                    "value": 0.0,
-                    "available": false,
-                    "note": "n/a"
-                },
-                "MinorDamage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "none"
-                },
-                "Commercial": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "private (margin scheme)"
-                }
-            },
-            "total": 733.7768450753225,
-            "index": 34
-        },
-        {
             "id": "8a528219-4e1c-4db1-9c5d-447d468783da",
             "name": "BMW X2 sDrive 18i Advantage",
             "url": "https://www.autohero.com/de/bmw-x-2/id/8a528219-4e1c-4db1-9c5d-447d468783da",
@@ -2600,7 +2527,7 @@
                 }
             },
             "total": 733.5720474931545,
-            "index": 35
+            "index": 34
         },
         {
             "id": "1823b4fd-a19b-46e7-b777-07d5afbf51bc",
@@ -2673,7 +2600,7 @@
                 }
             },
             "total": 733.5590694018014,
-            "index": 36
+            "index": 35
         },
         {
             "id": "2a8b5eb3-dc1e-4827-bbc2-c4ea6d132668",
@@ -2746,7 +2673,7 @@
                 }
             },
             "total": 733.5361645557921,
-            "index": 37
+            "index": 36
         },
         {
             "id": "96fc806a-8b48-4083-b50a-035d0044b491",
@@ -2819,7 +2746,7 @@
                 }
             },
             "total": 733.4311422095707,
-            "index": 38
+            "index": 37
         },
         {
             "id": "c6ed8424-cb93-4ee2-98ec-f83ceac85374",
@@ -2892,80 +2819,7 @@
                 }
             },
             "total": 733.3410281766267,
-            "index": 39
-        },
-        {
-            "id": "e1ac650b-8788-42ec-8e90-f9f6b9b88bbb",
-            "name": "Mercedes-Benz B-Klasse B 160 Progressive",
-            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/e1ac650b-8788-42ec-8e90-f9f6b9b88bbb",
-            "source": "autohero",
-            "firstRegistration": 2019,
-            "fuel": "petrol",
-            "priceEur": 16150,
-            "mileageKm": 31326,
-            "owners": 2,
-            "city": "Atting",
-            "platform": "M282",
-            "generation": "W247",
-            "scores": {
-                "ROI": {
-                    "value": 7.919999999999999,
-                    "available": true,
-                    "note": "Yes. no red flags"
-                },
-                "Engine": {
-                    "value": 70.0,
-                    "available": true,
-                    "note": "M282"
-                },
-                "Mileage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "4475 km/yr"
-                },
-                "Value": {
-                    "value": 68.3012735389713,
-                    "available": true,
-                    "note": "exp €19767"
-                },
-                "Transmission": {
-                    "value": 70.0,
-                    "available": true,
-                    "note": "manual"
-                },
-                "Owners": {
-                    "value": 80.0,
-                    "available": true,
-                    "note": "2 owner(s)"
-                },
-                "Consumption": {
-                    "value": 66.0,
-                    "available": true,
-                    "note": "5.7 L/100km"
-                },
-                "TrunkSize": {
-                    "value": 77.5,
-                    "available": true,
-                    "note": "455 L"
-                },
-                "TireSeason": {
-                    "value": 0.0,
-                    "available": false,
-                    "note": "n/a"
-                },
-                "MinorDamage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "none"
-                },
-                "Commercial": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "private (margin scheme)"
-                }
-            },
-            "total": 731.8012735389714,
-            "index": 40
+            "index": 38
         },
         {
             "id": "ffe53752-3073-4377-8912-cccbf12fba12",
@@ -3038,7 +2892,7 @@
                 }
             },
             "total": 731.448165442759,
-            "index": 41
+            "index": 39
         },
         {
             "id": "21831eb7-5f0c-486e-b44c-6ce3cdc1c1c6",
@@ -3111,7 +2965,7 @@
                 }
             },
             "total": 731.4048629736521,
-            "index": 42
+            "index": 40
         },
         {
             "id": "e3cd43d7-b6c8-4cd2-a43e-7c861292aafb",
@@ -3184,7 +3038,7 @@
                 }
             },
             "total": 731.2444427366116,
-            "index": 43
+            "index": 41
         },
         {
             "id": "18490c95-b136-496e-9422-824d77d2b8d4",
@@ -3257,7 +3111,80 @@
                 }
             },
             "total": 731.1319994273518,
-            "index": 44
+            "index": 42
+        },
+        {
+            "id": "2587bb81-8196-410b-8498-1fd0febb221f",
+            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/2587bb81-8196-410b-8498-1fd0febb221f",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18710,
+            "mileageKm": 35762,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 8.12,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "5108 km/yr"
+                },
+                "Value": {
+                    "value": 50.26293589987913,
+                    "available": true,
+                    "note": "exp €18759"
+                },
+                "Transmission": {
+                    "value": 60.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 729.7629358998792,
+            "index": 43
         },
         {
             "id": "86c424f3-f709-4206-8338-98ee517a5acb",
@@ -3330,7 +3257,7 @@
                 }
             },
             "total": 728.535,
-            "index": 45
+            "index": 44
         },
         {
             "id": "bca38d0c-523f-405b-9dc5-aedcd06e923c",
@@ -3403,6 +3330,79 @@
                 }
             },
             "total": 728.4935083569408,
+            "index": 45
+        },
+        {
+            "id": "e1ac650b-8788-42ec-8e90-f9f6b9b88bbb",
+            "name": "Mercedes-Benz B-Klasse B 160 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/e1ac650b-8788-42ec-8e90-f9f6b9b88bbb",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 16150,
+            "mileageKm": 31326,
+            "owners": 2,
+            "city": "Atting",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 7.919999999999999,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "4475 km/yr"
+                },
+                "Value": {
+                    "value": 64.9154752418521,
+                    "available": true,
+                    "note": "exp €18981"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "2 owner(s)"
+                },
+                "Consumption": {
+                    "value": 66.0,
+                    "available": true,
+                    "note": "5.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 728.4154752418522,
             "index": 46
         },
         {
@@ -3479,79 +3479,6 @@
             "index": 47
         },
         {
-            "id": "7eddd62f-9045-4d29-835f-006c5bd50ff9",
-            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
-            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/7eddd62f-9045-4d29-835f-006c5bd50ff9",
-            "source": "autohero",
-            "firstRegistration": 2019,
-            "fuel": "petrol",
-            "priceEur": 19620,
-            "mileageKm": 36084,
-            "owners": 1,
-            "city": "Hemau",
-            "platform": "M282",
-            "generation": "W247",
-            "scores": {
-                "ROI": {
-                    "value": 7.819999999999999,
-                    "available": true,
-                    "note": "Yes. Flags: no full service history"
-                },
-                "Engine": {
-                    "value": 70.0,
-                    "available": true,
-                    "note": "M282"
-                },
-                "Mileage": {
-                    "value": 99.22571428571428,
-                    "available": true,
-                    "note": "5154 km/yr"
-                },
-                "Value": {
-                    "value": 49.53839891243403,
-                    "available": true,
-                    "note": "exp €19529"
-                },
-                "Transmission": {
-                    "value": 60.0,
-                    "available": true,
-                    "note": "automatic"
-                },
-                "Owners": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "1 owner(s)"
-                },
-                "Consumption": {
-                    "value": 71.99999999999999,
-                    "available": true,
-                    "note": "5.4 L/100km"
-                },
-                "TrunkSize": {
-                    "value": 77.5,
-                    "available": true,
-                    "note": "455 L"
-                },
-                "TireSeason": {
-                    "value": 0.0,
-                    "available": false,
-                    "note": "n/a"
-                },
-                "MinorDamage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "none"
-                },
-                "Commercial": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "private (margin scheme)"
-                }
-            },
-            "total": 728.2641131981484,
-            "index": 48
-        },
-        {
             "id": "2acdd063-8bbc-45e4-a990-8924020ded86",
             "name": "Hyundai Bayon 1.0 TGDI Trend 2WD",
             "url": "https://www.autohero.com/de/hyundai-bayon/id/2acdd063-8bbc-45e4-a990-8924020ded86",
@@ -3622,7 +3549,7 @@
                 }
             },
             "total": 727.8784331919751,
-            "index": 49
+            "index": 48
         },
         {
             "id": "901359c8-a7be-49da-ac45-4f29be11961b",
@@ -3695,6 +3622,79 @@
                 }
             },
             "total": 727.6226417599363,
+            "index": 49
+        },
+        {
+            "id": "701bbc61-51be-4c0a-af59-f4e0434df044",
+            "name": "BMW 2er 220i Active Tourer Sport Line",
+            "url": "https://www.autohero.com/de/bmw-2-er/id/701bbc61-51be-4c0a-af59-f4e0434df044",
+            "source": "autohero",
+            "firstRegistration": 2022,
+            "fuel": "petrol",
+            "priceEur": 19050,
+            "mileageKm": 58926,
+            "owners": 1,
+            "city": "Please call us to get further information about the location // Bitte rufen Sie uns an, um nähere Informationen zum Standort zu erhalten",
+            "platform": "B48",
+            "generation": "F4x",
+            "scores": {
+                "ROI": {
+                    "value": 7.84,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 56.3425,
+                    "available": true,
+                    "note": "14731 km/yr"
+                },
+                "Value": {
+                    "value": 46.24507947055035,
+                    "available": true,
+                    "note": "exp €18360"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "5.5 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 727.5875794705503,
             "index": 50
         }
     ]
