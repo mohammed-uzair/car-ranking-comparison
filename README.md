@@ -45,8 +45,9 @@ cd site && python3 -m http.server 8080   # then open http://localhost:8080
 ## Status
 - **Phase 1 (done):** algorithm (`docs/` + Kotlin) + page (`site/`) + independent-score plugins (`plugins/`).
 - **Phase 2 (done):** JUnit suite — **41 tests, 0 failures** (`src/test/kotlin`): base-filter gate (incl. sale-in-progress), determinism, ROI independence, mileage-threshold penalty, column scores, X/toggle exclusion, default-active columns, sort, eviction, edge cases. The real Kotlin run (`gradlew run`) generates `site/data.json` and was **cross-checked cell-for-cell against a Python oracle (0 mismatches)**.
-- **Data:** all 7 brands researched (Honda & Hyundai ROI added). Fresh fetch: 474 listings → 420 eligible (after excluding 35 reserved/sale-in-progress) → top 50 (`data/listings.json` → `site/data.json`).
+- **Data:** all 7 brands researched (Honda & Hyundai ROI added). Fresh fetch: 474 listings → 437 eligible (after excluding 35 reserved/sale-in-progress) → top 50 (`data/listings.json` → `site/data.json`).
 - **Pending data:** tire-season & trunk-size ingestion from listing detail pages (currently `X` / model-lookup).
+- **Fixed model-name matching bugs:** body-style suffixes baked into Autohero's `model` field (e.g. "Auris Touring Sports") and a Mercedes-Benz `generation()` substring collision (GLA/CLA-Klasse silently misclassifying as A-Klasse) were both silently dropping cars from the table. See `docs/algorithm.md` for the fix and the regression tests in `ScoringTest.kt`.
 
 ## References
 - Notion — [Reliability Knowledge Base](https://app.notion.com/p/3e76f8b68bea81ea9cf0ec6e7f3d809e) · [Car Evaluation framework](https://app.notion.com/p/3e76f8b68bea8150a0a7c121d078504a) · [Final Candidate](https://app.notion.com/p/3e76f8b68bea8153b125eeb95032475c) · [Autohero AI Search (fetch recipe)](https://app.notion.com/p/3e76f8b68bea819fb075dd9506db194c)

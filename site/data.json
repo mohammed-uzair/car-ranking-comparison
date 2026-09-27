@@ -1,5 +1,5 @@
 {
-    "generatedAt": "2026-09-27T16:25:15.726878Z",
+    "generatedAt": "2026-09-27T16:55:27.348678Z",
     "independentColumns": [
         {
             "name": "ROI",
@@ -47,6 +47,84 @@
     "rowCount": 50,
     "rows": [
         {
+            "id": "dce22603-d8db-4091-a32c-ea5ce7cbf1a8",
+            "name": "Toyota Auris Touring Sports 1.8 Hybrid Free Style",
+            "url": "https://www.autohero.com/de/toyota-auris-touring-sports/id/dce22603-d8db-4091-a32c-ea5ce7cbf1a8",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "hybrid",
+            "priceEur": 17700,
+            "mileageKm": 75512,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "ToyotaHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 8.6,
+                    "available": true,
+                    "note": "Yes. no red flags [ROI matched as: Auris (matched from \"Auris Touring Sports\")]"
+                },
+                "Engine": {
+                    "value": 90.0,
+                    "available": true,
+                    "note": "ToyotaHybrid"
+                },
+                "Mileage": {
+                    "value": 82.805,
+                    "available": true,
+                    "note": "9439 km/yr"
+                },
+                "Value": {
+                    "value": 50.0,
+                    "available": true,
+                    "note": "exp €17700"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3.9 L/100km combined"
+                },
+                "ConsumptionUrban": {
+                    "value": 87.14285714285714,
+                    "available": true,
+                    "note": "3.9 L/100km urban"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "530 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 594.9478571428572,
+            "index": 1
+        },
+        {
             "id": "9054f9be-50e0-48be-894c-ac2a6458bd26",
             "name": "Toyota Corolla 2.0 Hybrid Club",
             "url": "https://www.autohero.com/de/toyota-corolla/id/9054f9be-50e0-48be-894c-ac2a6458bd26",
@@ -63,7 +141,7 @@
                 "ROI": {
                     "value": 8.2,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: Corolla (*)]"
                 },
                 "Engine": {
                     "value": 95.0,
@@ -122,7 +200,7 @@
                 }
             },
             "total": 571.9204247357482,
-            "index": 1
+            "index": 2
         },
         {
             "id": "d26b7d55-26ba-48b7-b7f5-a6a1b1962fce",
@@ -141,7 +219,7 @@
                 "ROI": {
                     "value": 8.2,
                     "available": true,
-                    "note": "Yes. Flags: commercial/fleet use"
+                    "note": "Yes. Flags: commercial/fleet use [ROI matched as: Corolla (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -200,7 +278,7 @@
                 }
             },
             "total": 564.4167710246052,
-            "index": 2
+            "index": 3
         },
         {
             "id": "fd9cd085-e2a0-4548-8a2f-df7da32929bb",
@@ -219,7 +297,7 @@
                 "ROI": {
                     "value": 8.23081092677734,
                     "available": true,
-                    "note": "Yes. Flags: overpriced; no full service history"
+                    "note": "Yes. Flags: overpriced; no full service history [ROI matched as: Corolla (*)]"
                 },
                 "Engine": {
                     "value": 95.0,
@@ -278,7 +356,7 @@
                 }
             },
             "total": 562.8603642259113,
-            "index": 3
+            "index": 4
         },
         {
             "id": "61a8b5c9-23c2-4d44-b2b9-b78f324ef458",
@@ -297,7 +375,7 @@
                 "ROI": {
                     "value": 8.2,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -356,7 +434,7 @@
                 }
             },
             "total": 550.6188815250115,
-            "index": 4
+            "index": 5
         },
         {
             "id": "95a7da91-9a2c-4aa5-9b4f-566d31ebd87c",
@@ -375,7 +453,7 @@
                 "ROI": {
                     "value": 7.999999999999999,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -434,7 +512,7 @@
                 }
             },
             "total": 547.8390676022909,
-            "index": 5
+            "index": 6
         },
         {
             "id": "cc4298b2-e978-48f7-b692-fbf1417aaee8",
@@ -453,7 +531,7 @@
                 "ROI": {
                     "value": 7.999999999999999,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -512,7 +590,7 @@
                 }
             },
             "total": 543.9161817608239,
-            "index": 6
+            "index": 7
         },
         {
             "id": "42802258-8d87-402c-b172-f03ed89e6577",
@@ -531,7 +609,7 @@
                 "ROI": {
                     "value": 6.27,
                     "available": true,
-                    "note": "No. Flags: no full service history"
+                    "note": "No. Flags: no full service history [ROI matched as: X1 (F48)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -590,7 +668,7 @@
                 }
             },
             "total": 535.2826424474409,
-            "index": 7
+            "index": 8
         },
         {
             "id": "3b5754e3-011d-4214-8202-18f9dbbe7a38",
@@ -609,7 +687,7 @@
                 "ROI": {
                     "value": 6.7,
                     "available": true,
-                    "note": "No. Flags: no full service history"
+                    "note": "No. Flags: no full service history [ROI matched as: Civic (*)]"
                 },
                 "Engine": {
                     "value": 65.0,
@@ -668,7 +746,7 @@
                 }
             },
             "total": 533.4855027771382,
-            "index": 8
+            "index": 9
         },
         {
             "id": "a62ec220-f5c3-4ca8-83f1-ba0787cc797a",
@@ -687,7 +765,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -746,7 +824,7 @@
                 }
             },
             "total": 531.2507312611019,
-            "index": 9
+            "index": 10
         },
         {
             "id": "823b0eec-9595-4420-b6dd-5be448c89195",
@@ -765,7 +843,7 @@
                 "ROI": {
                     "value": 7.84,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: 2er (F4x)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -824,7 +902,7 @@
                 }
             },
             "total": 529.2880370711893,
-            "index": 10
+            "index": 11
         },
         {
             "id": "276d511f-3619-4d52-ac87-ac700c93f00b",
@@ -843,7 +921,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -902,7 +980,7 @@
                 }
             },
             "total": 526.9973739085904,
-            "index": 11
+            "index": 12
         },
         {
             "id": "0dc5466d-0319-421b-92fe-5f0c30ab1cfd",
@@ -921,7 +999,7 @@
                 "ROI": {
                     "value": 8.2,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -980,7 +1058,7 @@
                 }
             },
             "total": 524.7689433303308,
-            "index": 12
+            "index": 13
         },
         {
             "id": "f9c64c0c-e3a2-4557-a486-5025237ea8f3",
@@ -999,7 +1077,7 @@
                 "ROI": {
                     "value": 6.890000000000001,
                     "available": true,
-                    "note": "No. Flags: no full service history"
+                    "note": "No. Flags: no full service history [ROI matched as: 3er (F30)]"
                 },
                 "Engine": {
                     "value": 80.0,
@@ -1058,7 +1136,7 @@
                 }
             },
             "total": 524.2983480789494,
-            "index": 13
+            "index": 14
         },
         {
             "id": "afef5c18-46b4-42bf-8275-7071383ec327",
@@ -1077,7 +1155,7 @@
                 "ROI": {
                     "value": 7.6,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1136,7 +1214,7 @@
                 }
             },
             "total": 523.6416804863015,
-            "index": 14
+            "index": 15
         },
         {
             "id": "fdd793f6-8fbd-4dc2-a5f8-bc6ee0bf0433",
@@ -1155,7 +1233,7 @@
                 "ROI": {
                     "value": 7.6,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1214,7 +1292,7 @@
                 }
             },
             "total": 522.3219210707376,
-            "index": 15
+            "index": 16
         },
         {
             "id": "14069918-1af9-4f09-9c21-28382c97a4af",
@@ -1233,7 +1311,7 @@
                 "ROI": {
                     "value": 8.3,
                     "available": true,
-                    "note": "Yes. Flags: boot 304L<360"
+                    "note": "Yes. Flags: boot 304L<360 [ROI matched as: Jazz (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1292,7 +1370,7 @@
                 }
             },
             "total": 520.996,
-            "index": 16
+            "index": 17
         },
         {
             "id": "5ab0a1dd-22c4-4d0b-a639-2b8be0e5aeb8",
@@ -1311,7 +1389,7 @@
                 "ROI": {
                     "value": 7.6,
                     "available": true,
-                    "note": "Yes. Flags: 3 owners"
+                    "note": "Yes. Flags: 3 owners [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1370,7 +1448,7 @@
                 }
             },
             "total": 520.2566630611141,
-            "index": 17
+            "index": 18
         },
         {
             "id": "96c554df-2d7a-4beb-8ba6-f123cc2767e1",
@@ -1389,7 +1467,7 @@
                 "ROI": {
                     "value": 7.2,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: Kona (*)]"
                 },
                 "Engine": {
                     "value": 75.0,
@@ -1448,7 +1526,7 @@
                 }
             },
             "total": 518.7285321998195,
-            "index": 18
+            "index": 19
         },
         {
             "id": "19cf8307-d634-4d04-91dd-4bf059395e7c",
@@ -1467,7 +1545,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1526,7 +1604,7 @@
                 }
             },
             "total": 516.4454614375294,
-            "index": 19
+            "index": 20
         },
         {
             "id": "1e373790-788e-4855-b861-44ebbdffed01",
@@ -1545,7 +1623,7 @@
                 "ROI": {
                     "value": 7.0,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: Kona (*)]"
                 },
                 "Engine": {
                     "value": 75.0,
@@ -1604,7 +1682,7 @@
                 }
             },
             "total": 515.2721417521509,
-            "index": 20
+            "index": 21
         },
         {
             "id": "32972cbb-01d0-4d13-80e9-a11d465dfd0a",
@@ -1623,7 +1701,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360"
+                    "note": "Yes. Flags: boot 286L<360 [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1682,7 +1760,7 @@
                 }
             },
             "total": 510.7687931634012,
-            "index": 21
+            "index": 22
         },
         {
             "id": "47922a59-cd0e-4879-95be-6c15ed56772d",
@@ -1701,7 +1779,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1760,7 +1838,7 @@
                 }
             },
             "total": 508.97818192435716,
-            "index": 22
+            "index": 23
         },
         {
             "id": "f9602fcb-7133-4293-8549-7b197058b7c0",
@@ -1779,7 +1857,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1838,7 +1916,7 @@
                 }
             },
             "total": 507.8070009333537,
-            "index": 23
+            "index": 24
         },
         {
             "id": "420ad7fb-800d-47ff-98f8-2b1e4b8d636a",
@@ -1857,7 +1935,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1916,7 +1994,7 @@
                 }
             },
             "total": 503.60358276041075,
-            "index": 24
+            "index": 25
         },
         {
             "id": "f9d36ab9-b21f-41cc-b59f-cc45e2c0df67",
@@ -1935,7 +2013,7 @@
                 "ROI": {
                     "value": 7.3999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -1994,7 +2072,7 @@
                 }
             },
             "total": 503.2672857908209,
-            "index": 25
+            "index": 26
         },
         {
             "id": "7129c7ed-b72b-4c0a-8562-c653bbc47c14",
@@ -2013,7 +2091,7 @@
                 "ROI": {
                     "value": 7.77,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: A3 Sportback (8V)]"
                 },
                 "Engine": {
                     "value": 80.0,
@@ -2072,7 +2150,7 @@
                 }
             },
             "total": 502.7572960435632,
-            "index": 26
+            "index": 27
         },
         {
             "id": "89fe93d3-5af0-44ec-96bf-27a0366fa136",
@@ -2091,7 +2169,7 @@
                 "ROI": {
                     "value": 7.6,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2150,7 +2228,7 @@
                 }
             },
             "total": 500.2666534637775,
-            "index": 27
+            "index": 28
         },
         {
             "id": "ffe53752-3073-4377-8912-cccbf12fba12",
@@ -2169,7 +2247,7 @@
                 "ROI": {
                     "value": 7.6899999999999995,
                     "available": true,
-                    "note": "Yes. Flags: boot 335L<360; no full service history"
+                    "note": "Yes. Flags: boot 335L<360; no full service history [ROI matched as: A1 Sportback (GB)]"
                 },
                 "Engine": {
                     "value": 80.0,
@@ -2228,7 +2306,7 @@
                 }
             },
             "total": 500.01959401418753,
-            "index": 28
+            "index": 29
         },
         {
             "id": "e27d14bb-aee3-4236-807a-2268cc5d68a1",
@@ -2247,7 +2325,7 @@
                 "ROI": {
                     "value": 8.01985,
                     "available": true,
-                    "note": "Yes. Flags: 19441 km/yr"
+                    "note": "Yes. Flags: 19441 km/yr [ROI matched as: C-HR (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2306,7 +2384,7 @@
                 }
             },
             "total": 498.18192332664864,
-            "index": 29
+            "index": 30
         },
         {
             "id": "f86d3bd2-e2e1-45e3-9b5a-a7f988d66426",
@@ -2325,7 +2403,7 @@
                 "ROI": {
                     "value": 6.47,
                     "available": true,
-                    "note": "No. Flags: no full service history"
+                    "note": "No. Flags: no full service history [ROI matched as: X1 (F48)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -2384,7 +2462,7 @@
                 }
             },
             "total": 498.1543218514532,
-            "index": 30
+            "index": 31
         },
         {
             "id": "d7e247aa-52e2-4923-89b2-7cbe60aacb03",
@@ -2403,7 +2481,7 @@
                 "ROI": {
                     "value": 6.7,
                     "available": true,
-                    "note": "No. Flags: no full service history"
+                    "note": "No. Flags: no full service history [ROI matched as: Civic (*)]"
                 },
                 "Engine": {
                     "value": 57.0,
@@ -2462,7 +2540,7 @@
                 }
             },
             "total": 497.2117622536539,
-            "index": 31
+            "index": 32
         },
         {
             "id": "9554f78c-7b73-4d1d-8097-4d2a15576506",
@@ -2481,7 +2559,7 @@
                 "ROI": {
                     "value": 7.6,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2540,7 +2618,7 @@
                 }
             },
             "total": 496.1100276922638,
-            "index": 32
+            "index": 33
         },
         {
             "id": "82dfe666-31a9-416b-8b05-12f028dc56c9",
@@ -2559,7 +2637,7 @@
                 "ROI": {
                     "value": 7.30878152437116,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2618,7 +2696,7 @@
                 }
             },
             "total": 495.20271747903865,
-            "index": 33
+            "index": 34
         },
         {
             "id": "23354f6c-eb03-4c18-83ea-74ef72ebc67f",
@@ -2637,7 +2715,7 @@
                 "ROI": {
                     "value": 8.12,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: B-Klasse (W247)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -2696,7 +2774,7 @@
                 }
             },
             "total": 494.98078292039133,
-            "index": 34
+            "index": 35
         },
         {
             "id": "2ede857b-d004-4d22-ac5c-add835a86f46",
@@ -2715,7 +2793,7 @@
                 "ROI": {
                     "value": 7.424183723657825,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2774,7 +2852,7 @@
                 }
             },
             "total": 494.8512431695466,
-            "index": 35
+            "index": 36
         },
         {
             "id": "c7350fee-cea2-41e4-b56e-495136eee221",
@@ -2793,7 +2871,7 @@
                 "ROI": {
                     "value": 7.397359044514435,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2852,7 +2930,7 @@
                 }
             },
             "total": 494.5910157695288,
-            "index": 36
+            "index": 37
         },
         {
             "id": "dbec6710-38e8-463f-9b56-4f761be44844",
@@ -2871,7 +2949,7 @@
                 "ROI": {
                     "value": 7.8999999999999995,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360"
+                    "note": "Yes. Flags: boot 286L<360 [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -2930,7 +3008,7 @@
                 }
             },
             "total": 494.05650091930266,
-            "index": 37
+            "index": 38
         },
         {
             "id": "c4a89c74-f55b-4ce1-907a-3a6bc515b0cd",
@@ -2949,7 +3027,7 @@
                 "ROI": {
                     "value": 7.246799116997792,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; overpriced; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -3008,7 +3086,7 @@
                 }
             },
             "total": 493.61967294754544,
-            "index": 38
+            "index": 39
         },
         {
             "id": "f49dc518-0337-4972-bf67-5aeb5a417ab3",
@@ -3027,7 +3105,7 @@
                 "ROI": {
                     "value": 7.34,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: 2er (F4x)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -3086,7 +3164,7 @@
                 }
             },
             "total": 493.49995271718575,
-            "index": 39
+            "index": 40
         },
         {
             "id": "0887567f-f6ab-4ebb-8e43-67dc69efac4e",
@@ -3105,7 +3183,7 @@
                 "ROI": {
                     "value": 7.819999999999999,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: B-Klasse (W247)]"
                 },
                 "Engine": {
                     "value": 75.0,
@@ -3164,7 +3242,7 @@
                 }
             },
             "total": 493.1981084376539,
-            "index": 40
+            "index": 41
         },
         {
             "id": "9da3be5b-b333-4a72-b820-d7f015c3f999",
@@ -3183,7 +3261,7 @@
                 "ROI": {
                     "value": 7.6,
                     "available": true,
-                    "note": "Yes. Flags: boot 286L<360; no full service history"
+                    "note": "Yes. Flags: boot 286L<360; no full service history [ROI matched as: Yaris (*)]"
                 },
                 "Engine": {
                     "value": 90.0,
@@ -3242,7 +3320,7 @@
                 }
             },
             "total": 493.1452074954734,
-            "index": 41
+            "index": 42
         },
         {
             "id": "ef452299-af4d-4192-abd9-de92c44db868",
@@ -3261,7 +3339,7 @@
                 "ROI": {
                     "value": 6.77,
                     "available": true,
-                    "note": "No. no red flags"
+                    "note": "No. no red flags [ROI matched as: X1 (F48)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -3320,7 +3398,7 @@
                 }
             },
             "total": 492.6517519969057,
-            "index": 42
+            "index": 43
         },
         {
             "id": "9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
@@ -3339,7 +3417,7 @@
                 "ROI": {
                     "value": 8.12,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: B-Klasse (W247)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -3398,7 +3476,7 @@
                 }
             },
             "total": 492.1127887114944,
-            "index": 43
+            "index": 44
         },
         {
             "id": "c6ed8424-cb93-4ee2-98ec-f83ceac85374",
@@ -3417,7 +3495,7 @@
                 "ROI": {
                     "value": 7.97,
                     "available": true,
-                    "note": "Yes. Flags: no full service history"
+                    "note": "Yes. Flags: no full service history [ROI matched as: A3 Limousine (8V)]"
                 },
                 "Engine": {
                     "value": 80.0,
@@ -3476,7 +3554,7 @@
                 }
             },
             "total": 490.4838853194838,
-            "index": 44
+            "index": 45
         },
         {
             "id": "78ab6ac0-241b-4689-885d-c6c3a0413bec",
@@ -3495,7 +3573,7 @@
                 "ROI": {
                     "value": 8.27,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: A3 Sportback (8V)]"
                 },
                 "Engine": {
                     "value": 45.0,
@@ -3554,7 +3632,7 @@
                 }
             },
             "total": 490.2505099695841,
-            "index": 45
+            "index": 46
         },
         {
             "id": "ca4537ee-c58f-4763-bede-9a0cbe7c29e8",
@@ -3573,7 +3651,7 @@
                 "ROI": {
                     "value": 7.5,
                     "available": true,
-                    "note": "Yes. no red flags"
+                    "note": "Yes. no red flags [ROI matched as: Tucson (*)]"
                 },
                 "Engine": {
                     "value": 70.0,
@@ -3632,7 +3710,7 @@
                 }
             },
             "total": 489.5280589379796,
-            "index": 46
+            "index": 47
         },
         {
             "id": "1ca08ae6-0a89-4d1a-bda7-3a038573c5af",
@@ -3651,7 +3729,7 @@
                 "ROI": {
                     "value": 6.47,
                     "available": true,
-                    "note": "No. Flags: no full service history"
+                    "note": "No. Flags: no full service history [ROI matched as: X1 (F48)]"
                 },
                 "Engine": {
                     "value": 85.0,
@@ -3710,7 +3788,7 @@
                 }
             },
             "total": 489.3073161418001,
-            "index": 47
+            "index": 48
         },
         {
             "id": "5b1e824c-1009-4904-9508-8586d0fda4cc",
@@ -3729,7 +3807,7 @@
                 "ROI": {
                     "value": 4.36,
                     "available": true,
-                    "note": "No. no red flags"
+                    "note": "No. no red flags [ROI matched as: 5er (G30)]"
                 },
                 "Engine": {
                     "value": 85.0,
@@ -3788,7 +3866,7 @@
                 }
             },
             "total": 488.76482142857145,
-            "index": 48
+            "index": 49
         },
         {
             "id": "7aea2a40-a0ba-47f7-9437-ec35da4c891b",
@@ -3807,7 +3885,7 @@
                 "ROI": {
                     "value": 5.129060094109736,
                     "available": true,
-                    "note": "No. Flags: boot 352L<360; overpriced"
+                    "note": "No. Flags: boot 352L<360; overpriced [ROI matched as: i20 (*)]"
                 },
                 "Engine": {
                     "value": 75.0,
@@ -3866,84 +3944,6 @@
                 }
             },
             "total": 488.73343170841974,
-            "index": 49
-        },
-        {
-            "id": "8953ca25-3f38-4a07-a2b1-520932f8d476",
-            "name": "Hyundai Kona 1.6 Hybrid Advantage 2WD",
-            "url": "https://www.autohero.com/de/hyundai-kona/id/8953ca25-3f38-4a07-a2b1-520932f8d476",
-            "source": "autohero",
-            "firstRegistration": 2020,
-            "fuel": "hybrid",
-            "priceEur": 17690,
-            "mileageKm": 57314,
-            "owners": 2,
-            "city": "Hemau",
-            "platform": "HyundaiHybrid",
-            "generation": "*",
-            "scores": {
-                "ROI": {
-                    "value": 6.539875860630086,
-                    "available": true,
-                    "note": "No. Flags: overpriced; no full service history"
-                },
-                "Engine": {
-                    "value": 75.0,
-                    "available": true,
-                    "note": "HyundaiHybrid"
-                },
-                "Mileage": {
-                    "value": 77.23833333333333,
-                    "available": true,
-                    "note": "9552 km/yr"
-                },
-                "Value": {
-                    "value": 34.66252868766952,
-                    "available": true,
-                    "note": "exp €15337"
-                },
-                "Transmission": {
-                    "value": 85.0,
-                    "available": true,
-                    "note": "automatic"
-                },
-                "Owners": {
-                    "value": 80.0,
-                    "available": true,
-                    "note": "2 owner(s)"
-                },
-                "Consumption": {
-                    "value": 94.0,
-                    "available": true,
-                    "note": "4.3 L/100km combined"
-                },
-                "ConsumptionUrban": {
-                    "value": 85.71428571428571,
-                    "available": true,
-                    "note": "4.0 L/100km urban"
-                },
-                "TrunkSize": {
-                    "value": 37.0,
-                    "available": true,
-                    "note": "374 L"
-                },
-                "TireSeason": {
-                    "value": 0.0,
-                    "available": false,
-                    "note": "n/a"
-                },
-                "MinorDamage": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "none"
-                },
-                "Commercial": {
-                    "value": 100.0,
-                    "available": true,
-                    "note": "private (margin scheme)"
-                }
-            },
-            "total": 488.6151477352886,
             "index": 50
         }
     ]

@@ -34,11 +34,14 @@ fun generation(make: String, model: String, year: Int): String {
             else -> "?"
         }
         "Mercedes-Benz" -> when {
-            "a-klasse" in m -> "W177"
-            "b-klasse" in m -> "W247"
+            // NOTE: order matters — "a-klasse" is a literal substring of "gla-klasse" AND "cla-klasse",
+            // so those two checks MUST come first or GLA/CLA silently misclassify as A-Klasse's generation
+            // (which doesn't exist in the reference table for them) and get excluded from the table.
             "gla" in m -> if (year <= 2020) "X156" else "H247"
-            "c-klasse" in m -> "W205"
             "cla" in m -> if (year <= 2019) "C117" else "C118"
+            "c-klasse" in m -> "W205"
+            "b-klasse" in m -> "W247"
+            "a-klasse" in m -> "W177"
             "citan" in m -> "Citan"
             else -> "?"
         }
@@ -111,6 +114,32 @@ fun isMultiDoor(l: Listing): Boolean {
     return true // sedans/hatch/SUV/estate/MPV by default
 }
 
+/**
+ * Resolve (make, model, year) to its ROI reference entry. Handles two cases:
+ *  - exact "MAKE|MODEL|GEN" or "MAKE|MODEL|*" match — used by BMW/Audi/Mercedes, which track real
+ *    generations and enumerate body-variant model names explicitly (e.g. "A3 Sportback" vs "A3 Limousine").
+ *  - a base-model PREFIX match for wildcard-generation makes (Toyota/Honda/Hyundai): Autohero sometimes
+ *    bakes a body-style suffix straight into the `model` field (e.g. "Auris Touring Sports" for the Auris
+ *    estate) instead of putting it in subType. We fall back to the longest known base model name that is
+ *    a whole-word prefix of the listing's model — "Auris Touring Sports" -> "Auris" — so it isn't silently
+ *    dropped. Returns null if nothing matches (car cannot be scored / is excluded upstream).
+ */
+fun resolveRoi(make: String, model: String, year: Int, ref: Reference): Pair<Double, String>? {
+    val gen = generation(make, model, year)
+    ref.roi["$make|$model|$gen"]?.let { return it to "$model ($gen)" }
+    ref.roi["$make|$model|*"]?.let { return it to model }
+    if (gen == "*") {
+        val ml = model.lowercase()
+        val base = ref.roi.keys
+            .filter { it.startsWith("$make|") && it.endsWith("|*") }
+            .map { it.removePrefix("$make|").removeSuffix("|*") }
+            .filter { ml == it.lowercase() || ml.startsWith(it.lowercase() + " ") }
+            .maxByOrNull { it.length }
+        if (base != null) return ref.roi["$make|$base|*"]!! to "$base (matched from \"$model\")"
+    }
+    return null
+}
+
 fun passesBaseFilter(l: Listing, ref: Reference): Boolean {
     if (l.make !in ALLOWED_MAKES) return false
     if (l.firstRegistrationYear < 2018) return false
@@ -122,10 +151,7 @@ fun passesBaseFilter(l: Listing, ref: Reference): Boolean {
     if (l.fuel.lowercase() !in setOf("petrol", "hybrid", "phev")) return false // exclude diesel & pure-electric
     if (!isMultiDoor(l)) return false
     // must have a known ROI (reliability) or it can't be scored
-    val gen = generation(l.make, l.model, l.firstRegistrationYear)
-    val key = "${l.make}|${l.model}|$gen"
-    val star = "${l.make}|${l.model}|*"
-    return ref.roi.containsKey(key) || ref.roi.containsKey(star)
+    return resolveRoi(l.make, l.model, l.firstRegistrationYear, ref) != null
 }
 
 // ---------- price model ----------
@@ -147,15 +173,14 @@ fun buildPriceModel(listings: List<Listing>): Map<String, ModelStats> {
 
 /** Holistic car-buying ROI (0-10, independent). Base = reliability; then hidden-flag penalties. See plugins/roi.md. */
 fun roiScore(l: Listing, ref: Reference, stats: ModelStats?): CellScore {
-    val gen = generation(l.make, l.model, l.firstRegistrationYear)
-    val base = ref.roi["${l.make}|${l.model}|$gen"] ?: ref.roi["${l.make}|${l.model}|*"]
-    ?: return CellScore(0.0, available = false, note = "no ROI data")
+    val (base, matchedAs) = resolveRoi(l.make, l.model, l.firstRegistrationYear, ref)
+        ?: return CellScore(0.0, available = false, note = "no ROI data")
     var adj = 0.0
     val flags = mutableListOf<String>()
     val age = max(1, ref.currentYear - l.firstRegistrationYear)
     val kmYr = l.mileageKm.toDouble() / age
     if (l.make == "Toyota" && l.fuel.lowercase() !in setOf("hybrid", "phev")) { adj -= 1.0; flags += "Toyota not hybrid" }
-    val boot = ref.bootLitres["${l.make}|${l.model}"]
+    val boot = resolveBootLitres(l.make, l.model, ref)
     if (boot != null && boot < 360) { adj -= 0.7; flags += "boot ${boot}L<360" }
     if (kmYr > 18000) { adj -= min(1.5, (kmYr - 18000) / 8000); flags += "${kmYr.toInt()} km/yr" }
     val expected = expectedPrice(l, stats)
@@ -166,7 +191,8 @@ fun roiScore(l: Listing, ref: Reference, stats: ModelStats?): CellScore {
     if (!l.hasFilledServiceBook) { adj -= 0.3; flags += "no full service history" }
     val roi = clamp(base + adj, 0.0, 10.0)
     val verdict = if (roi >= 7.0) "Yes" else "No"
-    val note = "$verdict. " + if (flags.isEmpty()) "no red flags" else "Flags: " + flags.joinToString("; ")
+    val matchNote = if (matchedAs != l.model) " [ROI matched as: $matchedAs]" else ""
+    val note = "$verdict. " + (if (flags.isEmpty()) "no red flags" else "Flags: " + flags.joinToString("; ")) + matchNote
     return CellScore(roi, note = note)
 }
 
@@ -239,8 +265,20 @@ fun consumptionUrbanScore(l: Listing): CellScore {
     return CellScore(clamp(100 * (10 - c) / (10 - 3), 0.0, 100.0), note = "$c L/100km urban")
 }
 
+/** Same body-style-suffix fallback as resolveRoi (e.g. "Auris Touring Sports" falls back to "Auris" only if no direct entry exists). */
+fun resolveBootLitres(make: String, model: String, ref: Reference): Int? {
+    ref.bootLitres["$make|$model"]?.let { return it }
+    val ml = model.lowercase()
+    val base = ref.bootLitres.keys
+        .filter { it.startsWith("$make|") }
+        .map { it.removePrefix("$make|") }
+        .filter { ml.startsWith(it.lowercase() + " ") }
+        .maxByOrNull { it.length }
+    return base?.let { ref.bootLitres["$make|$it"] }
+}
+
 fun trunkScore(l: Listing, ref: Reference): CellScore {
-    val litres = ref.bootLitres["${l.make}|${l.model}"]
+    val litres = resolveBootLitres(l.make, l.model, ref)
         ?: return CellScore(0.0, available = false, note = "n/a")
     return CellScore(clamp(100.0 * (litres - 300) / (500 - 300), 0.0, 100.0), note = "$litres L")
 }

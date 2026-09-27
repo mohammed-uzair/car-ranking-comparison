@@ -82,7 +82,8 @@
     "Mercedes-Benz|A-Klasse": 370, "Mercedes-Benz|A-Klasse Limousine": 420, "Mercedes-Benz|B-Klasse": 455,
     "Mercedes-Benz|C-Klasse": 455, "Mercedes-Benz|CLA-Klasse": 460, "Mercedes-Benz|GLA-Klasse": 435,
     "Mercedes-Benz|Citan": 700,
-    "Toyota|Corolla": 470, "Toyota|Auris": 360, "Toyota|C-HR": 377, "Toyota|Yaris": 286, "Toyota|RAV4": 580, "Toyota|Prius": 502,
+    "Toyota|Corolla": 470, "Toyota|Corolla Touring Sports": 596, "Toyota|Auris": 360, "Toyota|Auris Touring Sports": 530,
+    "Toyota|C-HR": 377, "Toyota|Yaris": 286, "Toyota|Yaris Cross": 397, "Toyota|RAV4": 580, "Toyota|Prius": 502,
     "Honda|Jazz": 304, "Honda|Civic": 478, "Honda|HR-V": 319, "Honda|CR-V": 497,
     "Hyundai|i10": 252, "Hyundai|i20": 352, "Hyundai|i30": 395, "Hyundai|Kona": 374,
     "Hyundai|Tucson": 546, "Hyundai|Bayon": 411, "Hyundai|IONIQ": 443, "Hyundai|Ioniq": 443, "Hyundai|i40": 553

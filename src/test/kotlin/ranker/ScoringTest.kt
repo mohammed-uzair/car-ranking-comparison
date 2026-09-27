@@ -34,6 +34,45 @@ class BaseFilterTest {
     @Test fun rejects_unknown_roi()  = assertFalse(passesBaseFilter(L(model = "9er", subType = "999i"), REF))
     @Test fun accepts_valid()        = assertTrue(passesBaseFilter(L(), REF))
     @Test fun accepts_phev()         = assertTrue(passesBaseFilter(L(fuel = "phev", model = "2er", subType = "225xe"), REF))
+    // Regression: Autohero bakes body-style suffixes into `model` for wildcard-gen makes (Toyota/Honda/Hyundai),
+    // e.g. "Auris Touring Sports" for the Auris estate. Must fall back to the base model, not silently drop the car.
+    @Test fun accepts_body_variant_suffix_via_fallback() =
+        assertTrue(passesBaseFilter(L(make = "Toyota", model = "Auris Touring Sports", subType = "1.8 Hybrid", fuel = "hybrid"), REF))
+    @Test fun rejects_unrelated_model_that_merely_shares_a_prefix() =
+        // "Aurislike" is not "Auris " + suffix (no word boundary) -> must NOT fuzzy-match
+        assertFalse(passesBaseFilter(L(make = "Toyota", model = "Aurislike", fuel = "hybrid"), REF))
+}
+
+class RoiResolutionTest {
+    @Test fun body_variant_suffix_resolves_to_base_model_roi() {
+        val base = resolveRoi("Toyota", "Auris", 2018, REF)!!.first
+        val variant = resolveRoi("Toyota", "Auris Touring Sports", 2018, REF)!!.first
+        assertEquals(base, variant)
+    }
+    @Test fun exact_match_preferred_over_fallback() {
+        // BMW/Audi/Mercedes enumerate body variants explicitly; an exact hit must win, no fallback needed.
+        val a3sportback = resolveRoi("Audi", "A3 Sportback", 2019, REF)
+        assertNotNull(a3sportback)
+    }
+    @Test fun unrelated_model_does_not_resolve() =
+        assertNull(resolveRoi("Toyota", "Supra", 2020, REF))
+    // Regression: "a-klasse" is a literal substring of "gla-klasse" and "cla-klasse" — generation()
+    // must check the longer/more-specific tokens first or these silently misclassify and vanish.
+    @Test fun gla_klasse_does_not_misclassify_as_a_klasse() {
+        assertEquals("X156", generation("Mercedes-Benz", "GLA-Klasse", 2018))
+        assertNotNull(resolveRoi("Mercedes-Benz", "GLA-Klasse", 2018, REF))
+    }
+    @Test fun cla_klasse_does_not_misclassify_as_a_klasse() {
+        assertEquals("C117", generation("Mercedes-Benz", "CLA-Klasse", 2018))
+        assertNotNull(resolveRoi("Mercedes-Benz", "CLA-Klasse", 2018, REF))
+    }
+    @Test fun boot_litres_fallback_prefers_direct_entry_over_base() {
+        // Auris Touring Sports (estate) has its own accurate entry and must NOT fall back to the
+        // hatchback Auris figure.
+        val direct = resolveBootLitres("Toyota", "Auris Touring Sports", REF)
+        val base = resolveBootLitres("Toyota", "Auris", REF)
+        assertNotEquals(base, direct)
+    }
 }
 
 class DeterminismTest {
