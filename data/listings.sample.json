@@ -1,0 +1,24 @@
+[
+  {
+    "source": "autohero",
+    "id": "sample-1",
+    "url": "https://www.autohero.com/de/bmw-2-er/id/0b3fa7b8-b4f0-43c8-a1cc-8b7eb8fb4573",
+    "make": "BMW", "model": "2er", "subType": "218d Active Tourer", "subTypeExtra": "Advantage",
+    "firstRegistrationYear": 2018, "mileageKm": 45154, "priceEur": 14690,
+    "fuel": "diesel", "gearRaw": "1139", "kw": 110, "ccm": 1995,
+    "owners": 1, "accidents": 0, "numberOfDamages": 0, "damageList": [],
+    "hasFilledServiceBook": true, "commercial": false, "consumptionCombined": 4.5,
+    "tireSeason": null, "doors": 5, "body": "mpv", "country": "DE", "city": "Hemau"
+  },
+  {
+    "source": "manual",
+    "id": "sample-2",
+    "url": "https://www.autoscout24.de/angebote/example",
+    "make": "Audi", "model": "A1 Sportback", "subType": "30 TFSI", "subTypeExtra": "advanced",
+    "firstRegistrationYear": 2020, "mileageKm": 9891, "priceEur": 19610,
+    "fuel": "petrol", "gearRaw": "manual", "kw": 85, "ccm": 999,
+    "owners": 0, "accidents": 0, "numberOfDamages": 1, "damageList": ["minor scratch rear bumper"],
+    "hasFilledServiceBook": true, "commercial": false, "consumptionCombined": 5.1,
+    "tireSeason": "all-season", "doors": 5, "body": "hatch", "country": "DE", "city": "Berlin"
+  }
+]

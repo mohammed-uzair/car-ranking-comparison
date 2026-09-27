@@ -1,0 +1,3701 @@
+{
+    "generatedAt": "2026-09-27T10:58:53.585106Z",
+    "independentColumns": [
+        {
+            "name": "ROI",
+            "label": "ROI (Independent score)",
+            "scale": 10,
+            "plugin": "plugins/roi.md"
+        }
+    ],
+    "totalColumns": [
+        "Engine",
+        "Mileage",
+        "Value",
+        "Transmission",
+        "Owners",
+        "Consumption",
+        "TrunkSize",
+        "TireSeason",
+        "MinorDamage",
+        "Commercial"
+    ],
+    "scoredColumns": [
+        "ROI",
+        "Engine",
+        "Mileage",
+        "Value",
+        "Transmission",
+        "Owners",
+        "Consumption",
+        "TrunkSize",
+        "TireSeason",
+        "MinorDamage",
+        "Commercial"
+    ],
+    "activeColumns": [
+        "Engine",
+        "Mileage",
+        "Value",
+        "Transmission",
+        "Owners",
+        "Consumption",
+        "TrunkSize",
+        "TireSeason",
+        "MinorDamage",
+        "Commercial"
+    ],
+    "rowCount": 50,
+    "rows": [
+        {
+            "id": "f9c64c0c-e3a2-4557-a486-5025237ea8f3",
+            "name": "BMW 3er 318i Advantage",
+            "url": "https://www.autohero.com/de/bmw-3-er/id/f9c64c0c-e3a2-4557-a486-5025237ea8f3",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18990,
+            "mileageKm": 50525,
+            "owners": 0,
+            "city": "Ketzin",
+            "platform": "B48",
+            "generation": "F30",
+            "scores": {
+                "ROI": {
+                    "value": 6.890000000000001,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 88.91071428571428,
+                    "available": true,
+                    "note": "7217 km/yr"
+                },
+                "Value": {
+                    "value": 62.89530235512938,
+                    "available": true,
+                    "note": "exp €21801"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 74.0,
+                    "available": true,
+                    "note": "5.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 90.0,
+                    "available": true,
+                    "note": "480 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 780.8060166408436,
+            "index": 1
+        },
+        {
+            "id": "823b0eec-9595-4420-b6dd-5be448c89195",
+            "name": "BMW 2er 218i Active Tourer Advantage",
+            "url": "https://www.autohero.com/de/bmw-2-er/id/823b0eec-9595-4420-b6dd-5be448c89195",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 15690,
+            "mileageKm": 25158,
+            "owners": 0,
+            "city": "Please call us to get further information about the location // Bitte rufen Sie uns an, um nähere Informationen zum Standort zu erhalten",
+            "platform": "B38",
+            "generation": "F4x",
+            "scores": {
+                "ROI": {
+                    "value": 7.84,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3144 km/yr"
+                },
+                "Value": {
+                    "value": 56.87860834264398,
+                    "available": true,
+                    "note": "exp €16848"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 78.00000000000001,
+                    "available": true,
+                    "note": "5.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 774.8786083426439,
+            "index": 2
+        },
+        {
+            "id": "92809e05-da38-4c15-bf08-beee9c56305c",
+            "name": "Toyota Corolla 1.2 Turbo Comfort",
+            "url": "https://www.autohero.com/de/toyota-corolla/id/92809e05-da38-4c15-bf08-beee9c56305c",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "petrol",
+            "priceEur": 15750,
+            "mileageKm": 16212,
+            "owners": 0,
+            "city": "Ketzin",
+            "platform": "ToyotaTurbo",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.3999999999999995,
+                    "available": true,
+                    "note": "Yes. Flags: Toyota not hybrid; no full service history"
+                },
+                "Engine": {
+                    "value": 65.0,
+                    "available": true,
+                    "note": "ToyotaTurbo"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "2702 km/yr"
+                },
+                "Value": {
+                    "value": 81.50997671339208,
+                    "available": true,
+                    "note": "exp €22996"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 68.00000000000001,
+                    "available": true,
+                    "note": "5.6 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 769.509976713392,
+            "index": 3
+        },
+        {
+            "id": "3b5754e3-011d-4214-8202-18f9dbbe7a38",
+            "name": "Honda Civic 1.0 VTEC Elegance",
+            "url": "https://www.autohero.com/de/honda-civic/id/3b5754e3-011d-4214-8202-18f9dbbe7a38",
+            "source": "autohero",
+            "firstRegistration": 2021,
+            "fuel": "petrol",
+            "priceEur": 17300,
+            "mileageKm": 53915,
+            "owners": 0,
+            "city": "Hemau",
+            "platform": "Honda1.0T",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 6.7,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 65.0,
+                    "available": true,
+                    "note": "Honda1.0T"
+                },
+                "Mileage": {
+                    "value": 71.085,
+                    "available": true,
+                    "note": "10783 km/yr"
+                },
+                "Value": {
+                    "value": 68.82907420570965,
+                    "available": true,
+                    "note": "exp €21313"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 86.0,
+                    "available": true,
+                    "note": "4.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 89.0,
+                    "available": true,
+                    "note": "478 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 764.9140742057097,
+            "index": 4
+        },
+        {
+            "id": "c8361356-83c5-4c3f-8a98-8d97df488e62",
+            "name": "Hyundai IONIQ 1.6 Plug-in Hybrid Trend",
+            "url": "https://www.autohero.com/de/hyundai-ioniq/id/c8361356-83c5-4c3f-8a98-8d97df488e62",
+            "source": "autohero",
+            "firstRegistration": 2022,
+            "fuel": "phev",
+            "priceEur": 16860,
+            "mileageKm": 35092,
+            "owners": 1,
+            "city": "Neufahrn",
+            "platform": "HyundaiHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 6.7,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 65.0,
+                    "available": true,
+                    "note": "HyundaiHybrid"
+                },
+                "Mileage": {
+                    "value": 81.135,
+                    "available": true,
+                    "note": "8773 km/yr"
+                },
+                "Value": {
+                    "value": 57.70645616877785,
+                    "available": true,
+                    "note": "exp €18267"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 71.5,
+                    "available": true,
+                    "note": "443 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 760.3414561687778,
+            "index": 5
+        },
+        {
+            "id": "ca4537ee-c58f-4763-bede-9a0cbe7c29e8",
+            "name": "Hyundai Tucson 1.6 Classic blue 2WD",
+            "url": "https://www.autohero.com/de/hyundai-tucson/id/ca4537ee-c58f-4763-bede-9a0cbe7c29e8",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 14490,
+            "mileageKm": 40785,
+            "owners": 1,
+            "city": "Atting",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.5,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "5098 km/yr"
+                },
+                "Value": {
+                    "value": 65.12069965380492,
+                    "available": true,
+                    "note": "exp €17071"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 54.0,
+                    "available": true,
+                    "note": "6.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "546 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 759.1206996538049,
+            "index": 6
+        },
+        {
+            "id": "fd9cd085-e2a0-4548-8a2f-df7da32929bb",
+            "name": "Toyota Corolla 2.0 Hybrid Club",
+            "url": "https://www.autohero.com/de/toyota-corolla/id/fd9cd085-e2a0-4548-8a2f-df7da32929bb",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "phev",
+            "priceEur": 19450,
+            "mileageKm": 92100,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "ToyotaHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 8.229088695850644,
+                    "available": true,
+                    "note": "Yes. Flags: overpriced; no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "ToyotaHybrid"
+                },
+                "Mileage": {
+                    "value": 59.214285714285715,
+                    "available": true,
+                    "note": "13157 km/yr"
+                },
+                "Value": {
+                    "value": 44.302956528354805,
+                    "available": true,
+                    "note": "exp €18401"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 758.5172422426406,
+            "index": 7
+        },
+        {
+            "id": "23354f6c-eb03-4c18-83ea-74ef72ebc67f",
+            "name": "Mercedes-Benz B-Klasse B 180 Style",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/23354f6c-eb03-4c18-83ea-74ef72ebc67f",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 15410,
+            "mileageKm": 11301,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 8.12,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1412 km/yr"
+                },
+                "Value": {
+                    "value": 72.83038710000501,
+                    "available": true,
+                    "note": "exp €19969"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 68.00000000000001,
+                    "available": true,
+                    "note": "5.6 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 758.330387100005,
+            "index": 8
+        },
+        {
+            "id": "28a71914-5155-463c-9a97-ad60d3705d64",
+            "name": "Hyundai i40 1.6 GDI Space Blue",
+            "url": "https://www.autohero.com/de/hyundai-i-40/id/28a71914-5155-463c-9a97-ad60d3705d64",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 14650,
+            "mileageKm": 29694,
+            "owners": 0,
+            "city": "Ketzin",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 4.7,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "4242 km/yr"
+                },
+                "Value": {
+                    "value": 54.84711399348219,
+                    "available": true,
+                    "note": "exp €15396"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 58.000000000000014,
+                    "available": true,
+                    "note": "6.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "553 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 752.8471139934823,
+            "index": 9
+        },
+        {
+            "id": "0887567f-f6ab-4ebb-8e43-67dc69efac4e",
+            "name": "Mercedes-Benz B-Klasse B 200 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/0887567f-f6ab-4ebb-8e43-67dc69efac4e",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "petrol",
+            "priceEur": 19860,
+            "mileageKm": 18309,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 7.819999999999999,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 75.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3051 km/yr"
+                },
+                "Value": {
+                    "value": 56.402872951090075,
+                    "available": true,
+                    "note": "exp €21218"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 750.9028729510901,
+            "index": 10
+        },
+        {
+            "id": "42802258-8d87-402c-b172-f03ed89e6577",
+            "name": "BMW X1 sDrive 18i Advantage",
+            "url": "https://www.autohero.com/de/bmw-x-1/id/42802258-8d87-402c-b172-f03ed89e6577",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18580,
+            "mileageKm": 37767,
+            "owners": 2,
+            "city": "Ketzin",
+            "platform": "B38",
+            "generation": "F48",
+            "scores": {
+                "ROI": {
+                    "value": 6.27,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 98.02357142857143,
+                    "available": true,
+                    "note": "5395 km/yr"
+                },
+                "Value": {
+                    "value": 61.11621387601238,
+                    "available": true,
+                    "note": "exp €20903"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "2 owner(s)"
+                },
+                "Consumption": {
+                    "value": 54.0,
+                    "available": true,
+                    "note": "6.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "505 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 748.1397853045838,
+            "index": 11
+        },
+        {
+            "id": "61a8b5c9-23c2-4d44-b2b9-b78f324ef458",
+            "name": "Toyota C-HR 1.8 Hybrid Lounge",
+            "url": "https://www.autohero.com/de/toyota-c-hr/id/61a8b5c9-23c2-4d44-b2b9-b78f324ef458",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "phev",
+            "priceEur": 17220,
+            "mileageKm": 72784,
+            "owners": 0,
+            "city": "Hemau",
+            "platform": "ToyotaHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 8.2,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "ToyotaHybrid"
+                },
+                "Mileage": {
+                    "value": 84.51,
+                    "available": true,
+                    "note": "9098 km/yr"
+                },
+                "Value": {
+                    "value": 59.75173866786858,
+                    "available": true,
+                    "note": "exp €19080"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3.9 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 38.5,
+                    "available": true,
+                    "note": "377 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 747.7617386678686,
+            "index": 12
+        },
+        {
+            "id": "9054f9be-50e0-48be-894c-ac2a6458bd26",
+            "name": "Toyota Corolla 2.0 Hybrid Club",
+            "url": "https://www.autohero.com/de/toyota-corolla/id/9054f9be-50e0-48be-894c-ac2a6458bd26",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "phev",
+            "priceEur": 19690,
+            "mileageKm": 76615,
+            "owners": 2,
+            "city": "Hemau",
+            "platform": "ToyotaHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 8.2,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "ToyotaHybrid"
+                },
+                "Mileage": {
+                    "value": 61.154166666666676,
+                    "available": true,
+                    "note": "12769 km/yr"
+                },
+                "Value": {
+                    "value": 51.43122462567394,
+                    "available": true,
+                    "note": "exp €19975"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "2 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 747.5853912923405,
+            "index": 13
+        },
+        {
+            "id": "5b1e824c-1009-4904-9508-8586d0fda4cc",
+            "name": "BMW 5er 520i Sport Line",
+            "url": "https://www.autohero.com/de/bmw-5-er/id/5b1e824c-1009-4904-9508-8586d0fda4cc",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 19910,
+            "mileageKm": 106662,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "B48",
+            "generation": "G30",
+            "scores": {
+                "ROI": {
+                    "value": 4.36,
+                    "available": true,
+                    "note": "No. no red flags"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 63.33625,
+                    "available": true,
+                    "note": "13332 km/yr"
+                },
+                "Value": {
+                    "value": 50.0,
+                    "available": true,
+                    "note": "exp €19910"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 64.0,
+                    "available": true,
+                    "note": "5.8 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "530 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 747.3362500000001,
+            "index": 14
+        },
+        {
+            "id": "9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
+            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "petrol",
+            "priceEur": 19620,
+            "mileageKm": 18673,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 8.12,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3112 km/yr"
+                },
+                "Value": {
+                    "value": 57.45457632874852,
+                    "available": true,
+                    "note": "exp €21200"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 746.9545763287485,
+            "index": 15
+        },
+        {
+            "id": "1ca08ae6-0a89-4d1a-bda7-3a038573c5af",
+            "name": "BMW X1 sDrive 20i Advantage",
+            "url": "https://www.autohero.com/de/bmw-x-1/id/1ca08ae6-0a89-4d1a-bda7-3a038573c5af",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18340,
+            "mileageKm": 90002,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "B48",
+            "generation": "F48",
+            "scores": {
+                "ROI": {
+                    "value": 6.47,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 60.712857142857146,
+                    "available": true,
+                    "note": "12857 km/yr"
+                },
+                "Value": {
+                    "value": 49.737316141800086,
+                    "available": true,
+                    "note": "exp €18291"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 66.0,
+                    "available": true,
+                    "note": "5.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "505 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 746.4501732846572,
+            "index": 16
+        },
+        {
+            "id": "716ab8db-f84a-4ef5-9483-0ddaa4ae2507",
+            "name": "Hyundai Tucson 1.6 TGDI Advantage 2WD",
+            "url": "https://www.autohero.com/de/hyundai-tucson/id/716ab8db-f84a-4ef5-9483-0ddaa4ae2507",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 17220,
+            "mileageKm": 54715,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.2,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 75.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 85.91785714285713,
+                    "available": true,
+                    "note": "7816 km/yr"
+                },
+                "Value": {
+                    "value": 49.73682371847124,
+                    "available": true,
+                    "note": "exp €17174"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 50.0,
+                    "available": true,
+                    "note": "6.5 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "546 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 745.6546808613284,
+            "index": 17
+        },
+        {
+            "id": "f86d3bd2-e2e1-45e3-9b5a-a7f988d66426",
+            "name": "BMW X1 sDrive 18i Advantage",
+            "url": "https://www.autohero.com/de/bmw-x-1/id/f86d3bd2-e2e1-45e3-9b5a-a7f988d66426",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 15520,
+            "mileageKm": 84241,
+            "owners": 1,
+            "city": "Atting",
+            "platform": "B38",
+            "generation": "F48",
+            "scores": {
+                "ROI": {
+                    "value": 6.47,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 64.82785714285714,
+                    "available": true,
+                    "note": "12034 km/yr"
+                },
+                "Value": {
+                    "value": 66.46932185145317,
+                    "available": true,
+                    "note": "exp €18580"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 74.0,
+                    "available": true,
+                    "note": "5.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "505 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 745.2971789943103,
+            "index": 18
+        },
+        {
+            "id": "2a1c1116-e6f7-44c4-9a27-b88b5ebf58bf",
+            "name": "BMW 2er 218i Active Tourer Luxury Line",
+            "url": "https://www.autohero.com/de/bmw-2-er/id/2a1c1116-e6f7-44c4-9a27-b88b5ebf58bf",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 16570,
+            "mileageKm": 63002,
+            "owners": 1,
+            "city": "Hamburg",
+            "platform": "B38",
+            "generation": "F4x",
+            "scores": {
+                "ROI": {
+                    "value": 7.685166602937467,
+                    "available": true,
+                    "note": "Yes. Flags: overpriced"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 84.99857142857144,
+                    "available": true,
+                    "note": "9000 km/yr"
+                },
+                "Value": {
+                    "value": 44.83888676458221,
+                    "available": true,
+                    "note": "exp €15756"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 74.0,
+                    "available": true,
+                    "note": "5.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 743.8374581931537,
+            "index": 19
+        },
+        {
+            "id": "9639efd8-6a3b-4b5e-b68c-6f338c785bbc",
+            "name": "BMW 2er 225xe Active Tourer Sport Line",
+            "url": "https://www.autohero.com/de/bmw-2-er/id/9639efd8-6a3b-4b5e-b68c-6f338c785bbc",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "phev",
+            "priceEur": 18350,
+            "mileageKm": 33232,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "BMWPHEV",
+            "generation": "F4x",
+            "scores": {
+                "ROI": {
+                    "value": 7.347821272783415,
+                    "available": true,
+                    "note": "Yes. Flags: overpriced; no full service history"
+                },
+                "Engine": {
+                    "value": 30.0,
+                    "available": true,
+                    "note": "BMWPHEV"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "4747 km/yr"
+                },
+                "Value": {
+                    "value": 43.59404242611383,
+                    "available": true,
+                    "note": "exp €17245"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "2.0 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 743.5940424261139,
+            "index": 20
+        },
+        {
+            "id": "203c98d6-573d-4747-8af5-e2418e8dc956",
+            "name": "BMW 3er 320i GT Sport Line",
+            "url": "https://www.autohero.com/de/bmw-3-er/id/203c98d6-573d-4747-8af5-e2418e8dc956",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 19290,
+            "mileageKm": 90752,
+            "owners": 1,
+            "city": "Atting",
+            "platform": "B48",
+            "generation": "F30",
+            "scores": {
+                "ROI": {
+                    "value": 6.890000000000001,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 68.28,
+                    "available": true,
+                    "note": "11344 km/yr"
+                },
+                "Value": {
+                    "value": 48.42022116903634,
+                    "available": true,
+                    "note": "exp €18990"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 64.0,
+                    "available": true,
+                    "note": "5.8 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 90.0,
+                    "available": true,
+                    "note": "480 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 740.7002211690364,
+            "index": 21
+        },
+        {
+            "id": "6e5e5f8e-1b20-4df8-9e58-ddcdf1d5b74f",
+            "name": "Toyota Corolla 2.0 Hybrid Club",
+            "url": "https://www.autohero.com/de/toyota-corolla/id/6e5e5f8e-1b20-4df8-9e58-ddcdf1d5b74f",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "phev",
+            "priceEur": 18160,
+            "mileageKm": 97265,
+            "owners": 2,
+            "city": "Hemau",
+            "platform": "ToyotaHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 8.2,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "ToyotaHybrid"
+                },
+                "Mileage": {
+                    "value": 55.525,
+                    "available": true,
+                    "note": "13895 km/yr"
+                },
+                "Value": {
+                    "value": 49.908506674603444,
+                    "available": true,
+                    "note": "exp €18143"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "2 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 740.4335066746034,
+            "index": 22
+        },
+        {
+            "id": "ef452299-af4d-4192-abd9-de92c44db868",
+            "name": "BMW X1 sDrive 18i M Sport",
+            "url": "https://www.autohero.com/de/bmw-x-1/id/ef452299-af4d-4192-abd9-de92c44db868",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18880,
+            "mileageKm": 76522,
+            "owners": 0,
+            "city": "Ketzin",
+            "platform": "B38",
+            "generation": "F48",
+            "scores": {
+                "ROI": {
+                    "value": 6.77,
+                    "available": true,
+                    "note": "No. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 75.34142857142857,
+                    "available": true,
+                    "note": "10931 km/yr"
+                },
+                "Value": {
+                    "value": 50.45318056833431,
+                    "available": true,
+                    "note": "exp €18965"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 74.0,
+                    "available": true,
+                    "note": "5.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "505 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 739.7946091397629,
+            "index": 23
+        },
+        {
+            "id": "0599144a-1953-4f09-99ad-f82ecc8a175b",
+            "name": "Hyundai Tucson 1.6 T-GDI Mild-Hybrid Trend 2WD",
+            "url": "https://www.autohero.com/de/hyundai-tucson/id/0599144a-1953-4f09-99ad-f82ecc8a175b",
+            "source": "autohero",
+            "firstRegistration": 2021,
+            "fuel": "petrol",
+            "priceEur": 19770,
+            "mileageKm": 49466,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "HyundaiHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.5,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "HyundaiHybrid"
+                },
+                "Mileage": {
+                    "value": 80.534,
+                    "available": true,
+                    "note": "9893 km/yr"
+                },
+                "Value": {
+                    "value": 46.15096718276011,
+                    "available": true,
+                    "note": "exp €19037"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 61.999999999999986,
+                    "available": true,
+                    "note": "5.9 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "546 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 738.6849671827601,
+            "index": 24
+        },
+        {
+            "id": "7dc4739d-8baa-425c-a820-c55995d825d2",
+            "name": "Hyundai Tucson 1.6 TGDI Style 2WD",
+            "url": "https://www.autohero.com/de/hyundai-tucson/id/7dc4739d-8baa-425c-a820-c55995d825d2",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 16710,
+            "mileageKm": 53723,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.5,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 75.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 96.423125,
+                    "available": true,
+                    "note": "6715 km/yr"
+                },
+                "Value": {
+                    "value": 48.26112369401623,
+                    "available": true,
+                    "note": "exp €16424"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 34.00000000000001,
+                    "available": true,
+                    "note": "7.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "546 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 738.6842486940162,
+            "index": 25
+        },
+        {
+            "id": "a0dfdbbe-7964-44fd-95fa-823a1d2f2123",
+            "name": "Hyundai Tucson 1.6 Classic blue 2WD",
+            "url": "https://www.autohero.com/de/hyundai-tucson/id/a0dfdbbe-7964-44fd-95fa-823a1d2f2123",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 14650,
+            "mileageKm": 62426,
+            "owners": 0,
+            "city": "Hemau",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.2,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 85.98375,
+                    "available": true,
+                    "note": "7803 km/yr"
+                },
+                "Value": {
+                    "value": 58.375940084744435,
+                    "available": true,
+                    "note": "exp €15989"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 54.0,
+                    "available": true,
+                    "note": "6.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "546 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 738.3596900847444,
+            "index": 26
+        },
+        {
+            "id": "28226cb4-4bc0-4d0e-bac9-306238d36a4f",
+            "name": "Hyundai i30 1.0 T-GDI Edition 30+",
+            "url": "https://www.autohero.com/de/hyundai-i-30/id/28226cb4-4bc0-4d0e-bac9-306238d36a4f",
+            "source": "autohero",
+            "firstRegistration": 2023,
+            "fuel": "petrol",
+            "priceEur": 18710,
+            "mileageKm": 11498,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.0,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3832 km/yr"
+                },
+                "Value": {
+                    "value": 63.637716915421734,
+                    "available": true,
+                    "note": "exp €21664"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 47.5,
+                    "available": true,
+                    "note": "395 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 738.1377169154217,
+            "index": 27
+        },
+        {
+            "id": "75d18a19-05c6-4c7e-9386-33162775e6f3",
+            "name": "Hyundai Tucson 1.6 TGDI Passion 2WD",
+            "url": "https://www.autohero.com/de/hyundai-tucson/id/75d18a19-05c6-4c7e-9386-33162775e6f3",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 17080,
+            "mileageKm": 52734,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.2,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 75.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 92.04125,
+                    "available": true,
+                    "note": "6591 km/yr"
+                },
+                "Value": {
+                    "value": 46.32053223745511,
+                    "available": true,
+                    "note": "exp €16473"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 38.00000000000001,
+                    "available": true,
+                    "note": "7.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "546 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 736.3617822374551,
+            "index": 28
+        },
+        {
+            "id": "d7e247aa-52e2-4923-89b2-7cbe60aacb03",
+            "name": "Honda Civic 1.0 VTEC Elegance",
+            "url": "https://www.autohero.com/de/honda-civic/id/d7e247aa-52e2-4923-89b2-7cbe60aacb03",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 14900,
+            "mileageKm": 97767,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "Honda1.0T",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 6.7,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 57.0,
+                    "available": true,
+                    "note": "Honda1.0T"
+                },
+                "Mileage": {
+                    "value": 63.895625,
+                    "available": true,
+                    "note": "12220 km/yr"
+                },
+                "Value": {
+                    "value": 60.88756582508246,
+                    "available": true,
+                    "note": "exp €16720"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "5.0 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 89.0,
+                    "available": true,
+                    "note": "478 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 735.7831908250824,
+            "index": 29
+        },
+        {
+            "id": "178d6c76-c6cb-4c76-98d0-7c3d97c12669",
+            "name": "BMW 1er 118i Advantage",
+            "url": "https://www.autohero.com/de/bmw-1-er/id/178d6c76-c6cb-4c76-98d0-7c3d97c12669",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 15990,
+            "mileageKm": 25689,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "B38",
+            "generation": "F20",
+            "scores": {
+                "ROI": {
+                    "value": 6.180000000000001,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3211 km/yr"
+                },
+                "Value": {
+                    "value": 62.495758862609044,
+                    "available": true,
+                    "note": "exp €18273"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 78.00000000000001,
+                    "available": true,
+                    "note": "5.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 40.0,
+                    "available": true,
+                    "note": "380 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 735.495758862609,
+            "index": 30
+        },
+        {
+            "id": "7a8a40ab-ed79-4e10-ac72-ddf778c206ec",
+            "name": "BMW 3er 320i Advantage",
+            "url": "https://www.autohero.com/de/bmw-3-er/id/7a8a40ab-ed79-4e10-ac72-ddf778c206ec",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 18220,
+            "mileageKm": 114331,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "B48",
+            "generation": "F30",
+            "scores": {
+                "ROI": {
+                    "value": 6.890000000000001,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 53.543125,
+                    "available": true,
+                    "note": "14291 km/yr"
+                },
+                "Value": {
+                    "value": 47.70395344463128,
+                    "available": true,
+                    "note": "exp €17811"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 74.0,
+                    "available": true,
+                    "note": "5.3 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 90.0,
+                    "available": true,
+                    "note": "480 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 735.2470784446313,
+            "index": 31
+        },
+        {
+            "id": "61085db8-a3b8-408f-9b25-e86efbf35d3e",
+            "name": "Audi Q3 1.4 TFSI ACT Sport",
+            "url": "https://www.autohero.com/de/audi-q-3/id/61085db8-a3b8-408f-9b25-e86efbf35d3e",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 17670,
+            "mileageKm": 64831,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "1.4ACT",
+            "generation": "F3",
+            "scores": {
+                "ROI": {
+                    "value": 7.920000000000001,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 65.0,
+                    "available": true,
+                    "note": "1.4ACT"
+                },
+                "Mileage": {
+                    "value": 84.480625,
+                    "available": true,
+                    "note": "8103 km/yr"
+                },
+                "Value": {
+                    "value": 59.298332516316805,
+                    "available": true,
+                    "note": "exp €19481"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 56.0,
+                    "available": true,
+                    "note": "6.2 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "530 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 734.7789575163168,
+            "index": 32
+        },
+        {
+            "id": "808a20eb-eafd-485b-9c61-400dcbb2e78d",
+            "name": "Audi Q2 1.4 TFSI ACT Sport",
+            "url": "https://www.autohero.com/de/audi-q-2/id/808a20eb-eafd-485b-9c61-400dcbb2e78d",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 19300,
+            "mileageKm": 13978,
+            "owners": 0,
+            "city": "Ketzin",
+            "platform": "1.4ACT",
+            "generation": "Q2",
+            "scores": {
+                "ROI": {
+                    "value": 8.0,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 65.0,
+                    "available": true,
+                    "note": "1.4ACT"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1747 km/yr"
+                },
+                "Value": {
+                    "value": 55.553040776128896,
+                    "available": true,
+                    "note": "exp €20434"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 76.0,
+                    "available": true,
+                    "note": "5.2 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 52.5,
+                    "available": true,
+                    "note": "405 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 734.0530407761289,
+            "index": 33
+        },
+        {
+            "id": "2587bb81-8196-410b-8498-1fd0febb221f",
+            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/2587bb81-8196-410b-8498-1fd0febb221f",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18710,
+            "mileageKm": 35762,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 8.12,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "5108 km/yr"
+                },
+                "Value": {
+                    "value": 54.27684507532251,
+                    "available": true,
+                    "note": "exp €19545"
+                },
+                "Transmission": {
+                    "value": 60.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 733.7768450753225,
+            "index": 34
+        },
+        {
+            "id": "8a528219-4e1c-4db1-9c5d-447d468783da",
+            "name": "BMW X2 sDrive 18i Advantage",
+            "url": "https://www.autohero.com/de/bmw-x-2/id/8a528219-4e1c-4db1-9c5d-447d468783da",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 18650,
+            "mileageKm": 81378,
+            "owners": 1,
+            "city": "Atting",
+            "platform": "B38",
+            "generation": "F39",
+            "scores": {
+                "ROI": {
+                    "value": 8.75,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 71.87285714285714,
+                    "available": true,
+                    "note": "11625 km/yr"
+                },
+                "Value": {
+                    "value": 53.69919035029743,
+                    "available": true,
+                    "note": "exp €19366"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 68.00000000000001,
+                    "available": true,
+                    "note": "5.6 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 733.5720474931545,
+            "index": 35
+        },
+        {
+            "id": "1823b4fd-a19b-46e7-b777-07d5afbf51bc",
+            "name": "BMW X2 sDrive 20i Advantage Plus",
+            "url": "https://www.autohero.com/de/bmw-x-2/id/1823b4fd-a19b-46e7-b777-07d5afbf51bc",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 19380,
+            "mileageKm": 83681,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "B48",
+            "generation": "F39",
+            "scores": {
+                "ROI": {
+                    "value": 8.45,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "B48"
+                },
+                "Mileage": {
+                    "value": 65.22785714285715,
+                    "available": true,
+                    "note": "11954 km/yr"
+                },
+                "Value": {
+                    "value": 49.33121225894423,
+                    "available": true,
+                    "note": "exp €19251"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 64.0,
+                    "available": true,
+                    "note": "5.8 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 733.5590694018014,
+            "index": 36
+        },
+        {
+            "id": "2a8b5eb3-dc1e-4827-bbc2-c4ea6d132668",
+            "name": "Audi A3 Limousine 35 TFSI Sport",
+            "url": "https://www.autohero.com/de/audi-a-3-limousine/id/2a8b5eb3-dc1e-4827-bbc2-c4ea6d132668",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 19940,
+            "mileageKm": 46973,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "1.5Evo",
+            "generation": "8V",
+            "scores": {
+                "ROI": {
+                    "value": 7.717649222388047,
+                    "available": true,
+                    "note": "Yes. Flags: overpriced; no full service history"
+                },
+                "Engine": {
+                    "value": 75.0,
+                    "available": true,
+                    "note": "1.5Evo"
+                },
+                "Mileage": {
+                    "value": 91.44785714285713,
+                    "available": true,
+                    "note": "6710 km/yr"
+                },
+                "Value": {
+                    "value": 41.58830741293491,
+                    "available": true,
+                    "note": "exp €18392"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 78.00000000000001,
+                    "available": true,
+                    "note": "5.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 62.5,
+                    "available": true,
+                    "note": "425 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 733.5361645557921,
+            "index": 37
+        },
+        {
+            "id": "96fc806a-8b48-4083-b50a-035d0044b491",
+            "name": "Mercedes-Benz C-Klasse C 180 CGI T Avantgarde",
+            "url": "https://www.autohero.com/de/mercedes-benz-c-klasse/id/96fc806a-8b48-4083-b50a-035d0044b491",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "petrol",
+            "priceEur": 18900,
+            "mileageKm": 58899,
+            "owners": 1,
+            "city": "Atting",
+            "platform": "M274",
+            "generation": "W205",
+            "scores": {
+                "ROI": {
+                    "value": 7.0,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 75.0,
+                    "available": true,
+                    "note": "M274"
+                },
+                "Mileage": {
+                    "value": 80.9175,
+                    "available": true,
+                    "note": "9816 km/yr"
+                },
+                "Value": {
+                    "value": 58.013642209570726,
+                    "available": true,
+                    "note": "exp €20546"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 733.4311422095707,
+            "index": 38
+        },
+        {
+            "id": "c6ed8424-cb93-4ee2-98ec-f83ceac85374",
+            "name": "Audi A3 Limousine 30 TFSI",
+            "url": "https://www.autohero.com/de/audi-a-3-limousine/id/c6ed8424-cb93-4ee2-98ec-f83ceac85374",
+            "source": "autohero",
+            "firstRegistration": 2020,
+            "fuel": "petrol",
+            "priceEur": 16050,
+            "mileageKm": 55862,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "1.0TSI",
+            "generation": "8V",
+            "scores": {
+                "ROI": {
+                    "value": 7.97,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "1.0TSI"
+                },
+                "Mileage": {
+                    "value": 78.44833333333332,
+                    "available": true,
+                    "note": "9310 km/yr"
+                },
+                "Value": {
+                    "value": 64.3926948432933,
+                    "available": true,
+                    "note": "exp €18748"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 78.00000000000001,
+                    "available": true,
+                    "note": "5.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 62.5,
+                    "available": true,
+                    "note": "425 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 733.3410281766267,
+            "index": 39
+        },
+        {
+            "id": "e1ac650b-8788-42ec-8e90-f9f6b9b88bbb",
+            "name": "Mercedes-Benz B-Klasse B 160 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/e1ac650b-8788-42ec-8e90-f9f6b9b88bbb",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 16150,
+            "mileageKm": 31326,
+            "owners": 2,
+            "city": "Atting",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 7.919999999999999,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "4475 km/yr"
+                },
+                "Value": {
+                    "value": 68.3012735389713,
+                    "available": true,
+                    "note": "exp €19767"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "2 owner(s)"
+                },
+                "Consumption": {
+                    "value": 66.0,
+                    "available": true,
+                    "note": "5.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 731.8012735389714,
+            "index": 40
+        },
+        {
+            "id": "ffe53752-3073-4377-8912-cccbf12fba12",
+            "name": "Audi A1 Sportback 1.0 TFSI Sport",
+            "url": "https://www.autohero.com/de/audi-a-1-sportback/id/ffe53752-3073-4377-8912-cccbf12fba12",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 14960,
+            "mileageKm": 34367,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "1.0TSI",
+            "generation": "GB",
+            "scores": {
+                "ROI": {
+                    "value": 7.6899999999999995,
+                    "available": true,
+                    "note": "Yes. Flags: boot 335L<360; no full service history"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "1.0TSI"
+                },
+                "Mileage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "4909 km/yr"
+                },
+                "Value": {
+                    "value": 71.94816544275895,
+                    "available": true,
+                    "note": "exp €19166"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 91.99999999999999,
+                    "available": true,
+                    "note": "4.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 17.5,
+                    "available": true,
+                    "note": "335 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 731.448165442759,
+            "index": 41
+        },
+        {
+            "id": "21831eb7-5f0c-486e-b44c-6ce3cdc1c1c6",
+            "name": "Audi A4 1.4 TFSI ACT Sport",
+            "url": "https://www.autohero.com/de/audi-a-4/id/21831eb7-5f0c-486e-b44c-6ce3cdc1c1c6",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "petrol",
+            "priceEur": 17800,
+            "mileageKm": 62436,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "1.4ACT",
+            "generation": "B9",
+            "scores": {
+                "ROI": {
+                    "value": 8.43,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 65.0,
+                    "available": true,
+                    "note": "1.4ACT"
+                },
+                "Mileage": {
+                    "value": 90.9775,
+                    "available": true,
+                    "note": "7804 km/yr"
+                },
+                "Value": {
+                    "value": 61.42736297365213,
+                    "available": true,
+                    "note": "exp €20096"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 64.0,
+                    "available": true,
+                    "note": "5.8 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "460 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 731.4048629736521,
+            "index": 42
+        },
+        {
+            "id": "e3cd43d7-b6c8-4cd2-a43e-7c861292aafb",
+            "name": "BMW X2 sDrive 18i M Sport",
+            "url": "https://www.autohero.com/de/bmw-x-2/id/e3cd43d7-b6c8-4cd2-a43e-7c861292aafb",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 19690,
+            "mileageKm": 55298,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "B38",
+            "generation": "F39",
+            "scores": {
+                "ROI": {
+                    "value": 8.45,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 85.50142857142856,
+                    "available": true,
+                    "note": "7899 km/yr"
+                },
+                "Value": {
+                    "value": 54.74301416518307,
+                    "available": true,
+                    "note": "exp €20670"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 66.0,
+                    "available": true,
+                    "note": "5.7 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 731.2444427366116,
+            "index": 43
+        },
+        {
+            "id": "18490c95-b136-496e-9422-824d77d2b8d4",
+            "name": "BMW 2er 218i Active Tourer Sport Line",
+            "url": "https://www.autohero.com/de/bmw-2-er/id/18490c95-b136-496e-9422-824d77d2b8d4",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 15290,
+            "mileageKm": 68673,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "B38",
+            "generation": "F4x",
+            "scores": {
+                "ROI": {
+                    "value": 7.54,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "B38"
+                },
+                "Mileage": {
+                    "value": 75.94785714285715,
+                    "available": true,
+                    "note": "9810 km/yr"
+                },
+                "Value": {
+                    "value": 51.18414228449467,
+                    "available": true,
+                    "note": "exp €15473"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 64.0,
+                    "available": true,
+                    "note": "5.8 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "470 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 731.1319994273518,
+            "index": 44
+        },
+        {
+            "id": "86c424f3-f709-4206-8338-98ee517a5acb",
+            "name": "Mercedes-Benz Citan 113",
+            "url": "https://www.autohero.com/de/mercedes-benz-citan/id/86c424f3-f709-4206-8338-98ee517a5acb",
+            "source": "autohero",
+            "firstRegistration": 2023,
+            "fuel": "petrol",
+            "priceEur": 18690,
+            "mileageKm": 26679,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "M282",
+            "generation": "Citan",
+            "scores": {
+                "ROI": {
+                    "value": 1.7,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 80.535,
+                    "available": true,
+                    "note": "8893 km/yr"
+                },
+                "Value": {
+                    "value": 50.0,
+                    "available": true,
+                    "note": "exp €18690"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 58.000000000000014,
+                    "available": true,
+                    "note": "6.1 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "700 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 728.535,
+            "index": 45
+        },
+        {
+            "id": "bca38d0c-523f-405b-9dc5-aedcd06e923c",
+            "name": "Hyundai i30 1.5 T-GDI Mild-Hybrid Trend",
+            "url": "https://www.autohero.com/de/hyundai-i-30/id/bca38d0c-523f-405b-9dc5-aedcd06e923c",
+            "source": "autohero",
+            "firstRegistration": 2023,
+            "fuel": "petrol",
+            "priceEur": 18990,
+            "mileageKm": 19075,
+            "owners": 1,
+            "city": "Atting",
+            "platform": "HyundaiHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.0,
+                    "available": true,
+                    "note": "Yes. no red flags"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "HyundaiHybrid"
+                },
+                "Mileage": {
+                    "value": 98.20833333333334,
+                    "available": true,
+                    "note": "6358 km/yr"
+                },
+                "Value": {
+                    "value": 60.7851750236074,
+                    "available": true,
+                    "note": "exp €21285"
+                },
+                "Transmission": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "manual"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 47.5,
+                    "available": true,
+                    "note": "395 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 728.4935083569408,
+            "index": 46
+        },
+        {
+            "id": "a62ec220-f5c3-4ca8-83f1-ba0787cc797a",
+            "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "url": "https://www.autohero.com/de/toyota-c-hr/id/a62ec220-f5c3-4ca8-83f1-ba0787cc797a",
+            "source": "autohero",
+            "firstRegistration": 2018,
+            "fuel": "phev",
+            "priceEur": 16830,
+            "mileageKm": 91688,
+            "owners": 1,
+            "city": "Ketzin",
+            "platform": "ToyotaHybrid",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 7.8999999999999995,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "ToyotaHybrid"
+                },
+                "Mileage": {
+                    "value": 67.695,
+                    "available": true,
+                    "note": "11461 km/yr"
+                },
+                "Value": {
+                    "value": 57.198588403959086,
+                    "available": true,
+                    "note": "exp €18135"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "3.9 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 38.5,
+                    "available": true,
+                    "note": "377 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 728.393588403959,
+            "index": 47
+        },
+        {
+            "id": "7eddd62f-9045-4d29-835f-006c5bd50ff9",
+            "name": "Mercedes-Benz B-Klasse B 180 Progressive",
+            "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/7eddd62f-9045-4d29-835f-006c5bd50ff9",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 19620,
+            "mileageKm": 36084,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "M282",
+            "generation": "W247",
+            "scores": {
+                "ROI": {
+                    "value": 7.819999999999999,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "M282"
+                },
+                "Mileage": {
+                    "value": 99.22571428571428,
+                    "available": true,
+                    "note": "5154 km/yr"
+                },
+                "Value": {
+                    "value": 49.53839891243403,
+                    "available": true,
+                    "note": "exp €19529"
+                },
+                "Transmission": {
+                    "value": 60.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 77.5,
+                    "available": true,
+                    "note": "455 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 728.2641131981484,
+            "index": 48
+        },
+        {
+            "id": "2acdd063-8bbc-45e4-a990-8924020ded86",
+            "name": "Hyundai Bayon 1.0 TGDI Trend 2WD",
+            "url": "https://www.autohero.com/de/hyundai-bayon/id/2acdd063-8bbc-45e4-a990-8924020ded86",
+            "source": "autohero",
+            "firstRegistration": 2025,
+            "fuel": "petrol",
+            "priceEur": 17710,
+            "mileageKm": 7060,
+            "owners": 1,
+            "city": "Hemau",
+            "platform": "HyundaiTGDI",
+            "generation": "*",
+            "scores": {
+                "ROI": {
+                    "value": 6.7,
+                    "available": true,
+                    "note": "No. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "HyundaiTGDI"
+                },
+                "Mileage": {
+                    "value": 89.7,
+                    "available": true,
+                    "note": "7060 km/yr"
+                },
+                "Value": {
+                    "value": 57.67843319197517,
+                    "available": true,
+                    "note": "exp €19182"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "1 owner(s)"
+                },
+                "Consumption": {
+                    "value": 70.0,
+                    "available": true,
+                    "note": "5.5 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 55.5,
+                    "available": true,
+                    "note": "411 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 727.8784331919751,
+            "index": 49
+        },
+        {
+            "id": "901359c8-a7be-49da-ac45-4f29be11961b",
+            "name": "Audi Q2 30 TFSI",
+            "url": "https://www.autohero.com/de/audi-q-2/id/901359c8-a7be-49da-ac45-4f29be11961b",
+            "source": "autohero",
+            "firstRegistration": 2019,
+            "fuel": "petrol",
+            "priceEur": 19250,
+            "mileageKm": 52172,
+            "owners": 0,
+            "city": "Ketzin",
+            "platform": "1.0TSI",
+            "generation": "Q2",
+            "scores": {
+                "ROI": {
+                    "value": 7.7,
+                    "available": true,
+                    "note": "Yes. Flags: no full service history"
+                },
+                "Engine": {
+                    "value": 80.0,
+                    "available": true,
+                    "note": "1.0TSI"
+                },
+                "Mileage": {
+                    "value": 87.73428571428573,
+                    "available": true,
+                    "note": "7453 km/yr"
+                },
+                "Value": {
+                    "value": 50.38835604565059,
+                    "available": true,
+                    "note": "exp €19325"
+                },
+                "Transmission": {
+                    "value": 85.0,
+                    "available": true,
+                    "note": "automatic"
+                },
+                "Owners": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "0 owner(s)"
+                },
+                "Consumption": {
+                    "value": 71.99999999999999,
+                    "available": true,
+                    "note": "5.4 L/100km"
+                },
+                "TrunkSize": {
+                    "value": 52.5,
+                    "available": true,
+                    "note": "405 L"
+                },
+                "TireSeason": {
+                    "value": 0.0,
+                    "available": false,
+                    "note": "n/a"
+                },
+                "MinorDamage": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "none"
+                },
+                "Commercial": {
+                    "value": 100.0,
+                    "available": true,
+                    "note": "private (margin scheme)"
+                }
+            },
+            "total": 727.6226417599363,
+            "index": 50
+        }
+    ]
+}

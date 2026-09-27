@@ -1,0 +1,21 @@
+# ROI / Reliability method
+
+The **ROI** column is a reliability index (0–10, ×10 for the 0–100 column), anchored to **published German data** and keyed by **model + generation** (deterministic; same model+gen → same ROI).
+
+## Sources (equal blend)
+- **TÜV Report** — Mängelquote: % of cars failing the HU main inspection for significant defects, per model × age band. Normalised: `tuvScore = clamp(10 * (1 - pct/25), 0, 10)`.
+- **ADAC Pannenstatistik** — real breakdowns per 1,000 vehicles. Mapped from standing: very-reliable/lowest = 9, good/winner = 8, average = 5, poor = 2.
+- **DEKRA Gebrauchtwagenreport** — severity-weighted fault index by mileage band. Mapped from standing: class-winner/top-3 = 9, best/very-good = 8.5, good = 7, average = 5, poor = 2; missing → skipped.
+
+`roi = mean(available components)`, then a small engine-platform ± adjustment for known variant-specific risks (PHEV −1.0, Merc 7G-DCT city-diesel −0.3, GLA X156 −0.5, Audi 3.0 TDI −0.5, Audi 1.5 Evo1 −0.2, BMW B58 +0.3).
+
+## Generation split (year → generation)
+BMW: 1er F20 ≤2019 / F40 ≥2020 · 3er F30 ≤2019 / G20 ≥2020 · 2er F4x (Active/Gran Tourer) · 5er G30 · X1 F48 · X2 F39.
+Audi: A1 GB · A3 8V ≤2020 / 8Y ≥2020 · A4 B9 · Q2 · Q3 F3.
+Mercedes: A W177 · B W247 · GLA X156 ≤2020 / H247 ≥2020 · C W205 · CLA C117 ≤2019 / C118 ≥2019 · Citan.
+Toyota / Honda / Hyundai: filled per model (Toyota done; **Honda & Hyundai pending research** — see reference.json TODOs).
+
+## Per-model ROI (current)
+Stored in `data/reference.json` under `roi` as `"MAKE|MODEL|GEN": value`. Values are point-in-time (TÜV Report 2026, ADAC 2025, DEKRA). Full per-brand engine/model detail lives in the Notion Reliability Knowledge Base (linked in README) and is mirrored here.
+
+> Note: TÜV (inspection defects, incl. wear items) and ADAC (breakdowns) can diverge — e.g. BMW X1/X2 have minor HU wear items but excellent breakdown records. Per user decision, we **blend the available components** (a missing TÜV number is not imputed).

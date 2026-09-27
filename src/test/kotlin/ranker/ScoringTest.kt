@@ -1,0 +1,145 @@
+package ranker
+
+import kotlin.test.*
+
+private val REF = Ref.load("data/reference.json")
+
+/** Listing factory with sensible defaults; override only what a test needs. */
+private fun L(
+    id: String = "t", make: String = "BMW", model: String = "3er", subType: String = "318i",
+    year: Int = 2019, km: Int = 50000, price: Int = 15000, fuel: String = "petrol",
+    gear: String = "1139", kw: Int = 100, ccm: Int = 1998, owners: Int = 1, accidents: Int = 0,
+    damages: Int = 0, damageList: List<String> = emptyList(), svc: Boolean = false,
+    commercial: Boolean = false, cons: Double? = 6.0, tire: String? = null, doors: Int? = 5, body: String? = null
+) = Listing(
+    source = "test", id = id, url = "http://x", make = make, model = model, subType = subType,
+    firstRegistrationYear = year, mileageKm = km, priceEur = price, fuel = fuel, gearRaw = gear,
+    kw = kw, ccm = ccm, owners = owners, accidents = accidents, numberOfDamages = damages,
+    damageList = damageList, hasFilledServiceBook = svc, commercial = commercial, consumptionCombined = cons,
+    tireSeason = tire, doors = doors, body = body
+)
+
+class BaseFilterTest {
+    @Test fun rejects_bad_brand()    = assertFalse(passesBaseFilter(L(make = "Fiat"), REF))
+    @Test fun rejects_old_year()     = assertFalse(passesBaseFilter(L(year = 2017), REF))
+    @Test fun rejects_low_price()    = assertFalse(passesBaseFilter(L(price = 9000), REF))
+    @Test fun rejects_high_price()   = assertFalse(passesBaseFilter(L(price = 21000), REF))
+    @Test fun rejects_many_owners()  = assertFalse(passesBaseFilter(L(owners = 4), REF))
+    @Test fun rejects_accident()     = assertFalse(passesBaseFilter(L(accidents = 1), REF))
+    @Test fun rejects_diesel()       = assertFalse(passesBaseFilter(L(fuel = "diesel"), REF))
+    @Test fun rejects_electric()     = assertFalse(passesBaseFilter(L(fuel = "electric"), REF))
+    @Test fun rejects_two_door()     = assertFalse(passesBaseFilter(L(doors = 2), REF))
+    @Test fun rejects_unknown_roi()  = assertFalse(passesBaseFilter(L(model = "9er", subType = "999i"), REF))
+    @Test fun accepts_valid()        = assertTrue(passesBaseFilter(L(), REF))
+    @Test fun accepts_phev()         = assertTrue(passesBaseFilter(L(fuel = "phev", model = "2er", subType = "225xe"), REF))
+}
+
+class DeterminismTest {
+    @Test fun same_listing_same_scores() {
+        val a = scoreCar(L(), REF, emptyMap())
+        val b = scoreCar(L(), REF, emptyMap())
+        assertEquals(a.scores.mapValues { it.value.value }, b.scores.mapValues { it.value.value })
+    }
+    @Test fun different_id_same_total() {
+        val stats = buildPriceModel(listOf(L(id = "a"), L(id = "b")))
+        val a = scoreCar(L(id = "a"), REF, stats).also { it.total = totalOf(it, TOTAL_COLUMNS.toSet()) }
+        val b = scoreCar(L(id = "b"), REF, stats).also { it.total = totalOf(it, TOTAL_COLUMNS.toSet()) }
+        assertEquals(a.total, b.total)
+    }
+    @Test fun identical_car_same_roi() =
+        assertEquals(roiScore(L(id = "a"), REF, null).value, roiScore(L(id = "b"), REF, null).value)
+    @Test fun flags_lower_roi() {
+        val clean = roiScore(L(km = 30000, svc = true, owners = 1), REF, null).value
+        val flagged = roiScore(L(km = 220000, svc = false, owners = 3, commercial = true), REF, null).value
+        assertTrue(flagged < clean, "flagged $flagged should be < clean $clean")
+    }
+}
+
+class RoiIndependenceTest {
+    @Test fun roi_is_0_to_10() {
+        val roi = roiScore(L(), REF, null)
+        assertTrue(roi.value in 0.0..10.0, "ROI ${roi.value} not in 0..10")
+    }
+    @Test fun roi_not_in_total_columns() = assertFalse("ROI" in TOTAL_COLUMNS)
+    @Test fun total_excludes_roi() {
+        val car = scoreCar(L(), REF, emptyMap())
+        val withRoi = car.scores.filterValues { it.available }.values.sumOf { it.value }
+        val total = totalOf(car, TOTAL_COLUMNS.toSet())
+        assertTrue(total < withRoi, "total should exclude the ROI cell")
+        assertEquals(total, totalOf(car, SCORED_COLUMNS.toSet()) - car.scores["ROI"]!!.value, 0.001)
+    }
+}
+
+class EngineThresholdTest {
+    @Test fun over_threshold_scores_lower() {
+        // Audi Q2 1.4 TFSI, kw>=108 → platform 1.4ACT, threshold 90000 km
+        val under = engineScore(L(make = "Audi", model = "Q2", subType = "1.4 TFSI", kw = 110, km = 80000), REF)
+        val over  = engineScore(L(make = "Audi", model = "Q2", subType = "1.4 TFSI", kw = 110, km = 120000), REF)
+        assertTrue(over.value < under.value, "over-threshold ${over.value} should be < under ${under.value}")
+    }
+}
+
+class ColumnScoreTest {
+    @Test fun consumption_missing_is_X() = assertFalse(consumptionScore(L(cons = null)).available)
+    @Test fun tire_missing_is_X()        = assertFalse(tireScore(L(tire = null)).available)
+    @Test fun trunk_unknown_model_is_X() = assertFalse(trunkScore(L(make = "BMW", model = "ZZ"), REF).available)
+    @Test fun no_damage_full()           = assertEquals(100.0, damageScore(L(damages = 0)).value)
+    @Test fun minor_damage_penalised()   = assertTrue(damageScore(L(damages = 2, damageList = listOf("a","b"))).value < 100.0)
+    @Test fun fewer_owners_higher()      = assertTrue(ownersScore(L(owners = 0)).value > ownersScore(L(owners = 3)).value)
+    @Test fun commercial_downgraded()    = assertTrue(commercialScore(L(commercial = true)).value < commercialScore(L(commercial = false)).value)
+    @Test fun lower_mileage_higher()     = assertTrue(mileageScore(L(km = 20000), REF).value > mileageScore(L(km = 180000), REF).value)
+    @Test fun cheaper_higher_value() {
+        val stats = mapOf("BMW|3er" to ModelStats(20000.0, 60000.0, 2019.0))
+        assertTrue(valueScore(L(price = 14000), stats["BMW|3er"]).value >
+                   valueScore(L(price = 19000), stats["BMW|3er"]).value)
+    }
+    @Test fun automatic_beats_manual() =
+        assertTrue(transmissionScore(L(gear = "1139"), REF).value > transmissionScore(L(gear = "manual"), REF).value)
+}
+
+class TotalAndToggleTest {
+    @Test fun total_is_sum_of_active_available() {
+        val car = scoreCar(L(cons = null), REF, emptyMap())   // Consumption + Tire + (maybe Trunk) unavailable
+        val expected = TOTAL_COLUMNS.filter { car.scores[it]!!.available }.sumOf { car.scores[it]!!.value }
+        assertEquals(expected, totalOf(car, TOTAL_COLUMNS.toSet()), 0.001)
+    }
+    @Test fun toggling_column_off_lowers_total() {
+        val car = scoreCar(L(), REF, emptyMap())
+        val full = totalOf(car, TOTAL_COLUMNS.toSet())
+        val without = totalOf(car, (TOTAL_COLUMNS - "Owners").toSet())
+        assertEquals(full - car.scores["Owners"]!!.value, without, 0.001)
+    }
+}
+
+class BuildTableTest {
+    private fun pool() = (1..60).map { i ->
+        L(id = "c$i", model = if (i % 2 == 0) "3er" else "1er", subType = if (i % 2 == 0) "318i" else "118i",
+          year = 2019, km = 30000 + i * 1000, price = 12000 + i * 100)
+    }
+    @Test fun caps_at_50_sorted_desc_indexed() {
+        val t = buildTable(pool(), REF)
+        assertEquals(50, t.size)
+        for (i in 0 until t.size - 1) assertTrue(t[i].total >= t[i + 1].total, "not sorted at $i")
+        assertEquals((1..50).toList(), t.map { it.index })
+    }
+    @Test fun eviction_high_total_car_enters_and_last_drops() {
+        val base = buildTable(pool(), REF)
+        val lastTotalBefore = base.last().total
+        // a synthetic near-zero-mileage, low-price car should land high and push out old #50
+        val boosted = pool() + L(id = "BOOST", model = "3er", subType = "318i", km = 1000, price = 11000, owners = 0, svc = true)
+        val t = buildTable(boosted, REF)
+        assertEquals(50, t.size)
+        assertTrue(t.any { it.id == "BOOST" }, "boosted car should be in top 50")
+        assertTrue(t.first().total >= lastTotalBefore)
+    }
+}
+
+class EdgeCaseTest {
+    @Test fun current_year_no_divide_by_zero() {
+        val s = mileageScore(L(year = REF.currentYear, km = 5000), REF)   // age → 1
+        assertTrue(s.value in 0.0..100.0)
+    }
+    @Test fun low_power_clamped()  = assertTrue(engineScore(L(kw = 40), REF).value in 0.0..100.0)
+    @Test fun high_power_clamped() = assertTrue(engineScore(L(kw = 300), REF).value in 0.0..100.0)
+    @Test fun huge_mileage_clamped() = assertEquals(0.0, mileageScore(L(km = 400000, svc = false), REF).value)
+}

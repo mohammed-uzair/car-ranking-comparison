@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Car Ranking</title>
+<style>
+  :root{
+    --bg:#0f1216; --panel:#171b21; --line:#262c35; --text:#e7ebf0; --muted:#93a0b0;
+    --accent:#4a90ff; --good:#2ecc71; --mid:#f2c94c; --bad:#eb5757; --off:#4b5563;
+  }
+  :root:not([data-theme="dark"]) @media (prefers-color-scheme: light){}
+  @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+    --bg:#f6f8fa; --panel:#fff; --line:#e2e6ea; --text:#1a1f26; --muted:#5b6773; --off:#c2cad3;
+  }}
+  :root[data-theme="light"]{ --bg:#f6f8fa; --panel:#fff; --line:#e2e6ea; --text:#1a1f26; --muted:#5b6773; --off:#c2cad3; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:16px}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 14px;font-size:13px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+  .controls input{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 10px;min-width:220px}
+  .wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  table{border-collapse:collapse;table-layout:fixed;width:max-content;min-width:100%}
+  th,td{padding:7px 10px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+        text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  th{position:sticky;top:0;background:var(--panel);cursor:pointer;user-select:none;font-weight:600;overflow:visible}
+  th.left,td.left{text-align:left}
+  th .tog{margin-right:6px}
+  th .rez{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:2}
+  th .rez:hover{background:var(--accent);opacity:.6}
+  th.resizing,body.resizing{cursor:col-resize}
+  tr:hover td{background:rgba(74,144,255,.06)}
+  .rank{font-weight:700;color:var(--accent)}
+  .total{font-weight:700}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .pill{display:inline-block;padding:2px 7px;border-radius:20px;font-size:12px}
+  .col-off{opacity:.35}
+  .x{color:var(--muted);font-style:italic}
+  .score{border-radius:6px;padding:1px 6px;display:inline-block;min-width:34px}
+  .s-good{background:rgba(46,204,113,.16);color:var(--good)}
+  .s-mid{background:rgba(242,201,76,.16);color:var(--mid)}
+  .s-bad{background:rgba(235,87,87,.16);color:var(--bad)}
+  .note{color:var(--muted);font-size:11px}
+  .meta{color:var(--muted);font-size:12px;margin-top:10px}
+</style>
+</head>
+<body>
+  <h1>Car Ranking — Final Candidates</h1>
+  <p class="sub" id="sub">Loading…</p>
+  <div class="controls">
+    <input id="q" placeholder="Filter by name / fuel / city…"/>
+    <span class="note">Click a header to sort. Tick/untick a scored column to include/exclude it from Total (it fades and Total re-sums &amp; re-sorts). Cells marked <span class="x">X</span> are N/A and never counted.</span>
+  </div>
+  <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+  <p class="meta" id="meta"></p>
+
+<script>
+const IDENT = [
+  {k:"index", label:"#", cls:"left rank"},
+  {k:"name", label:"Name", cls:"left"},
+  {k:"firstRegistration", label:"Reg"},
+  {k:"fuel", label:"Fuel", cls:"left"},
+  {k:"priceEur", label:"Price €"},
+  {k:"mileageKm", label:"km"},
+  {k:"owners", label:"Own"},
+];
+let DATA=null, active=new Set(), sortKey="total", sortDir=-1, colW={};
+const DEFAULT_W={index:44,name:230,firstRegistration:56,fuel:74,priceEur:86,mileageKm:82,owners:50,city:150,total:76,ROI:168};
+function widthOf(k){ return colW[k] || DEFAULT_W[k] || 66; }
+
+function scoreClass(v){ return v>=75?"s-good":v>=55?"s-mid":"s-bad"; }
+function roiClass(v){ return v>=8?"s-good":v>=6.5?"s-mid":"s-bad"; }   // ROI is 0-10
+function fmt(n){ return typeof n==="number" ? n.toLocaleString() : (n??""); }
+
+function rowTotal(r){
+  let t=0;
+  for(const c of DATA.scoredColumns){
+    if(!active.has(c)) continue;
+    const s=r.scores[c]; if(s && s.available) t+=s.value;
+  }
+  return Math.round(t*100)/100;
+}
+function cellVal(r,key){
+  if(key==="total") return rowTotal(r);
+  if(r.scores && r.scores[key]!==undefined){ const s=r.scores[key]; return (s&&s.available)?s.value:-1; }
+  return r[key];
+}
+function render(){
+  const q=(document.getElementById("q").value||"").toLowerCase();
+  let rows=DATA.rows.filter(r=>!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q));
+  rows.sort((a,b)=>{ const x=cellVal(a,sortKey),y=cellVal(b,sortKey);
+    if(x<y)return sortDir; if(x>y)return -sortDir; return 0; });
+  rows.forEach((r,i)=>r._pos=i+1);
+
+  const thead=document.querySelector("#tbl thead"); const tbody=document.querySelector("#tbl tbody");
+  // independent plugins (advisory, never summed into Total) come from data; ROI is the first one
+  const indep = DATA.independentColumns || [{name:"ROI",label:"ROI (Independent score)",scale:10}];
+  const totalCols = DATA.totalColumns || DATA.scoredColumns.filter(c=>c!=="ROI");
+  const cols=[
+    ...IDENT,
+    ...indep.map(p=>({k:p.name, label:p.label, indep:true, scale:p.scale||10})),
+    {k:"total", label:"TOTAL", cls:"total"},
+    ...totalCols.map(c=>({k:c,label:c,scored:true})),
+    {k:"city", label:"City", cls:"left"},
+  ];
+  thead.innerHTML="<tr>"+cols.map(c=>{
+    const off=c.scored&&!active.has(c.k)?" col-off":"";
+    const tog=c.scored?`<input type="checkbox" class="tog" data-c="${c.k}" ${active.has(c.k)?"checked":""}/>`:"";
+    const arrow=sortKey===c.k?(sortDir<0?" ▼":" ▲"):"";
+    if(c.indep && !colW[c.k] && !DEFAULT_W[c.k]) colW[c.k]=Math.max(120, c.label.length*7.2);
+    const w=widthOf(c.k);
+    return `<th class="${c.cls||""}${off}" data-sort="${c.k}" style="width:${w}px" title="${c.label}">`+
+           `<span class="rez" data-c="${c.k}"></span>${tog}${c.label}${arrow}</th>`;
+  }).join("")+"</tr>";
+
+  tbody.innerHTML=rows.map(r=>"<tr>"+cols.map(c=>{
+    if(c.k==="index") return `<td class="left rank">${r._pos}</td>`;
+    if(c.k==="name") return `<td class="left" title="${r.name}"><a href="${r.url}" target="_blank" rel="noopener noreferrer">${r.name}</a></td>`;
+    if(c.k==="total") return `<td class="total">${rowTotal(r).toFixed(1)}</td>`;
+    if(c.indep){ const s=r.scores[c.k];
+      if(!s||!s.available) return `<td><span class="x">X</span></td>`;
+      const pct=s.value/(c.scale||10)*100, cls=pct>=80?"s-good":pct>=55?"s-mid":"s-bad", dec=(c.scale||10)<=10?1:0;
+      return `<td title="${s.note||""} (independent · scale 0–${c.scale||10})"><span class="score ${cls}">${s.value.toFixed(dec)}</span></td>`;
+    }
+    if(c.scored){
+      const off=!active.has(c.k)?" col-off":""; const s=r.scores[c.k];
+      if(!s||!s.available) return `<td class="${off}"><span class="x">X</span></td>`;
+      return `<td class="${off}" title="${s.note||""}"><span class="score ${scoreClass(s.value)}">${s.value.toFixed(0)}</span></td>`;
+    }
+    let raw=r[c.k];
+    let v = c.k==="priceEur" ? "€"+fmt(raw) : (c.k==="firstRegistration" ? String(raw) : fmt(raw));
+    return `<td class="${c.cls||""}" title="${String(raw??"")}">${v}</td>`;
+  }).join("")+"</tr>").join("");
+
+  document.querySelectorAll("th[data-sort]").forEach(th=>th.onclick=e=>{
+    if(e.target.classList.contains("tog")||e.target.classList.contains("rez"))return;
+    const k=th.dataset.sort; if(sortKey===k)sortDir=-sortDir; else {sortKey=k;sortDir=-1;} render();
+  });
+  document.querySelectorAll(".tog").forEach(cb=>cb.onclick=e=>{
+    e.stopPropagation(); const c=cb.dataset.c; if(cb.checked)active.add(c); else active.delete(c); render();
+  });
+  // drag-to-resize columns (like Sheets)
+  document.querySelectorAll(".rez").forEach(h=>h.addEventListener("mousedown",e=>{
+    e.preventDefault(); e.stopPropagation();
+    const k=h.dataset.c, th=h.closest("th"), startX=e.clientX, startW=th.offsetWidth;
+    document.body.classList.add("resizing");
+    const move=ev=>{ const w=Math.max(36,startW+(ev.clientX-startX)); colW[k]=w; th.style.width=w+"px"; };
+    const up=()=>{ document.removeEventListener("mousemove",move); document.removeEventListener("mouseup",up); document.body.classList.remove("resizing"); };
+    document.addEventListener("mousemove",move); document.addEventListener("mouseup",up);
+  }));
+  document.getElementById("meta").textContent=
+    `${rows.length} shown · active columns: ${[...active].join(", ")||"none"}`;
+}
+
+fetch("data.json").then(r=>r.json()).then(d=>{
+  DATA=d; active=new Set(d.activeColumns);
+  document.getElementById("sub").textContent=
+    `${d.rowCount} candidates · generated ${d.generatedAt?.slice(0,16).replace("T"," ")} · Total = sum of active columns`;
+  document.getElementById("q").oninput=render;
+  render();
+}).catch(e=>{ document.getElementById("sub").textContent="Could not load data.json: "+e; });
+</script>
+</body>
+</html>
