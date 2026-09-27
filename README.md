@@ -26,14 +26,17 @@ Full rules & pseudocode: [`docs/algorithm.md`](docs/algorithm.md). Reliability (
 ROI is not one of the total columns — it is the first **independent score plugin** (0–10, advisory, never summed into Total). Anyone can add another (e.g. a carwow-style rating) by dropping a `plugins/<name>.md` and registering it; a new advisory column appears. See [`plugins/README.md`](plugins/README.md). Use these to accept/skip a car regardless of its Total.
 **Avg** sits right before ROI and is the default sort key: `mean(Total normalized to 0–10, every available independent plugin score)` — the one place Total and the plugins are combined into a single "best overall" figure, highest first.
 
-### Brand & model filters (client-side, page-only)
-A "Brands" chip row (checked by default = everything shown) and a "Hide models" free-text field sit above the table. Unchecking a brand or typing a model name (e.g. `Yaris`) hides matching rows instantly — pure display filtering, no re-scoring, no pipeline changes. New brands added to the data pipeline appear as filter chips automatically.
+### Filter panel — brand / source / model, re-ranked on Update
+`site/data.json` ships the **entire eligible pool**, not just top 50 — the page owns the top-50 cut so it can re-derive it after a filter change. A hamburger icon (☰) opens a drawer with **Brands**, **Listing source**, and **Hide models** — all staged, applied only on **Update**. Update filters the full pool, re-sorts (same rule as `buildTable`: total desc, mileage → price → id), and re-caps to 50 — so excluding a brand backfills with the next-best contenders instead of shrinking the list. Ford/Kia and AutoScout24/mobile.de show as disabled "no data yet" chips (separate future work); real brands/sources appear automatically once added, no page changes needed.
+
+### Cross-source de-duplication
+`dedupeAcrossSources` keeps one listing per (name, price, color) when 2+ sources report the same car — see `docs/algorithm.md`. Effectively a no-op today (only Autohero is fetched; it has no `color` field), ready to activate once a second source exists.
 
 ### Hide / exclude a column (fairness across sources)
 In the page, untick a column's header checkbox → it fades and is removed from every Total (which re-sums and re-sorts). A per-cell `X` marks a value as N/A (never counted). Use this when a field (e.g. tire season) exists on Autohero but not on AutoScout, so the comparison stays fair.
 
 ## Base filters
-Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai · first reg ≥ 2018 · €10k–20k · Germany · ≤3 owners · accident-free · ≥4 doors (no 2-door coupés) · **petrol / hybrid / plug-in hybrid only** (no diesel, no pure-electric) · **excludes reserved / sale-in-progress listings**.
+Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai · first reg ≥ 2018 · €10k–20k · Germany · ≤3 owners · accident-free · ≥4 doors (no 2-door coupés) · **petrol / hybrid / plug-in hybrid only** (no diesel, no pure-electric) · **excludes reserved / sale-in-progress listings** · **trunk ≥ 360L when known** (listing's own value, else the per-model reference estimate; fully unknown is not excluded).
 
 ## Run (Phase 2 — needs Kotlin/Gradle)
 ```bash
@@ -47,10 +50,11 @@ cd site && python3 -m http.server 8080   # then open http://localhost:8080
 
 ## Status
 - **Phase 1 (done):** algorithm (`docs/` + Kotlin) + page (`site/`) + independent-score plugins (`plugins/`).
-- **Phase 2 (done):** JUnit suite — **41 tests, 0 failures** (`src/test/kotlin`): base-filter gate (incl. sale-in-progress), determinism, ROI independence, mileage-threshold penalty, column scores, X/toggle exclusion, default-active columns, sort, eviction, edge cases. The real Kotlin run (`gradlew run`) generates `site/data.json` and was **cross-checked cell-for-cell against a Python oracle (0 mismatches)**.
-- **Data:** all 7 brands researched (Honda & Hyundai ROI added). Fresh fetch: 474 listings → 437 eligible (after excluding 35 reserved/sale-in-progress) → top 50 (`data/listings.json` → `site/data.json`).
-- **Pending data:** tire-season & trunk-size ingestion from listing detail pages (currently `X` / model-lookup).
+- **Phase 2 (done):** JUnit suite — **60 tests, 0 failures** (`src/test/kotlin`): base-filter gate (incl. sale-in-progress, trunk<360L), determinism, ROI independence, mileage-threshold penalty, column scores, X/toggle exclusion, default-active columns, cross-source dedup, full-pool sizing, sort, eviction, edge cases. The real Kotlin run (`gradlew run`) generates `site/data.json` and was **cross-checked cell-for-cell against a Python oracle (0 mismatches)**.
+- **Data:** all 7 brands researched (Honda & Hyundai ROI added). Fresh fetch: 474 listings → 317 eligible (after excluding 35 reserved/sale-in-progress and cars with a known boot <360L) → **entire pool shipped** to `site/data.json`; the page caps to top 50 (see the filter-panel section above).
+- **Pending work (separate, larger tasks — see `docs/algorithm.md`):** Ford & Kia reliability research + fetch; real AutoScout24/mobile.de ingestion; tire-season, trunk-size, and color ingestion from listing detail pages (currently `X`/model-lookup/`null`).
 - **Fixed model-name matching bugs:** body-style suffixes baked into Autohero's `model` field (e.g. "Auris Touring Sports") and a Mercedes-Benz `generation()` substring collision (GLA/CLA-Klasse silently misclassifying as A-Klasse) were both silently dropping cars from the table. See `docs/algorithm.md` for the fix and the regression tests in `ScoringTest.kt`.
+- **Fixed a cross-language rounding bug:** the Python oracle rounded each individual score to 2dp before summing into `total`, while Kotlin summed full-precision scores and rounded once at the end — a systematic (not just floating-point-noise) discrepancy that only started flipping sort order once the full pool (hundreds of rows, densely-packed totals) shipped instead of just 50. Both now match exactly (Kotlin: `Math.round`-based half-up rounding once, at the end; oracle: mirrors it via `round2_half_up`, plus unrounded individual cells).
 
 ## References
 - Notion — [Reliability Knowledge Base](https://app.notion.com/p/3e76f8b68bea81ea9cf0ec6e7f3d809e) · [Car Evaluation framework](https://app.notion.com/p/3e76f8b68bea8150a0a7c121d078504a) · [Final Candidate](https://app.notion.com/p/3e76f8b68bea8153b125eeb95032475c) · [Autohero AI Search (fetch recipe)](https://app.notion.com/p/3e76f8b68bea819fb075dd9506db194c)

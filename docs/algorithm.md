@@ -18,14 +18,27 @@ This file defines HOW every number in the ranking is produced. The Kotlin code i
 - **Fuel:** petrol, hybrid, or plug-in hybrid (petrol+electric) only → **diesel and pure-electric excluded.** Applied server-side via an OR-group on `fuelType ∈ {1039 petrol, 1041 hybrid, 1046 phev-or-hybrid}`. ⚠️ Autohero's `fuelType 1046` covers BOTH plug-in hybrids and plain hybrids — disambiguate at ingestion with `isPluginSystem` (`true` → `phev`, `false` → `hybrid`); getting this wrong also wrongly applies the Engine column's PHEV battery-risk penalty to plain hybrids.
 - **Sale in progress:** listings already reserved/mid-sale are excluded. Autohero: `retailAdState == "reserved"`.
 - **Doors:** ≥4 → excludes 2-door coupés/cabrios/roadsters and 3-door hatches; sedans, hatchbacks, SUVs, estates, MPVs pass. Applied **server-side at fetch** via Autohero's `doorCount >= 4` filter (confirmed working; the value is not returned in the list object, so it can't be displayed — only filtered). For manually-pasted listings, set `doors` on the Listing and the offline gate `isMultiDoor` enforces the same rule.
+- **Trunk size ≥ 360L:** `resolveTrunkLitres(listing, ref)` = the listing's own `trunkLitres` **when the source reports it** (Autohero's search API doesn't — only a future detail-page scrape or a source like AutoScout24/mobile.de would), else falls back to `resolveBootLitres(make, model, ref)` (the per-model reference estimate). A car is excluded only when a value is **resolved and it's < 360L** — fully unknown (neither the listing nor the table has one) is **not** excluded, to avoid silently dropping every model/source we don't have boot data for.
 
 ## Columns
 Identity (no score): `index`, `name` (Make · Model · Variant), `make`, `model` (exposed separately from `name` so the page can filter by brand/model reliably rather than parsing a combined string), `firstRegistration`, `fuelType`, `url` (clickable).
 
-## Page-only filters (client-side, no scoring impact)
-- **Brand filter:** a checkbox chip per distinct brand present in the loaded data, built dynamically from `ScoredCar.make` — so it automatically picks up any newly-added brand with zero page-code changes. All checked by default (nothing hidden); uncheck a brand to hide it from the table. State lives in `excludedBrands` (a Set of hidden brands, empty by default).
-- **Model exclude filter:** a free-text, comma-separated field (`hideModels`) matched case-insensitively as a substring against `ScoredCar.model` — e.g. typing `Yaris` hides every Yaris variant. Empty by default (nothing hidden).
-- Both compose with the existing name/fuel/city search box in the same row-filter chain; index/rank renumber among the currently-visible rows.
+## Full pool shipped; the page owns the top-50 cut
+`site/data.json` ships **every eligible scored car** (`buildTable(..., maxRows = listings.size)`), not just the top 50 — already sorted by Total with the standard tie-break (mileage asc → price asc → id asc). The page is responsible for capping to 50, both on first load and after a filter change, so brand/model/source selection can re-derive a full 50-car table instead of merely hiding rows from an already-capped set (see next section for why that distinction matters).
+
+## Filter panel (hamburger drawer) — brand / source / model, staged behind "Update"
+A hamburger icon (☰) opens a slide-in drawer with three staged filters, applied only when **Update** is clicked (checkbox/text changes inside the drawer do nothing to the table until then):
+- **Brands:** a checkbox chip per distinct `ScoredCar.make` in the data, all checked by default, plus **Ford** and **Kia** shown as disabled "no data yet" placeholders (no fetch/reliability research exists for them — separate future task; they activate automatically once added, no page changes needed).
+- **Listing source:** a checkbox chip per distinct `ScoredCar.source`, plus **AutoScout24** and **mobile.de** as disabled "no data yet" placeholders (only Autohero is actually fetched today).
+- **Hide models:** a free-text, comma-separated field matched case-insensitively as a substring against `ScoredCar.model` (e.g. typing `Yaris` hides every Yaris variant).
+
+**Why "Update" re-ranks instead of just hiding rows:** the brand/model chips used to filter the already-capped top-50 live — so unchecking a brand that held many of those 50 slots (e.g. Toyota, which dominates via hybrid urban-consumption scores) just **shrank the visible list** instead of backfilling with the next-best BMW/Audi/etc. that would have made top-50 had that brand been excluded from the start. Clicking **Update** now:
+1. Takes the **full** pool (`DATA.rows`, from the previous section).
+2. Filters by the drawer's staged brand-exclusion, source-exclusion, and hide-models selections.
+3. Sorts by `total` with the same tie-break as `buildTable` (mileage asc → price asc → id asc).
+4. Takes the first 50, re-assigns `index` 1..N — this becomes `workingSet`, the pool the rest of the page (search box, sort clicks, column toggles) operates on.
+
+This is filter+sort+cap over already-computed scores — no score is invented and nothing is fetched, consistent with "the page does no math." The top search box, column-score toggles, and Avg/Total stay **live/instant** as before (they narrow what's visible within the current `workingSet` or change its scoring inclusion, not which cars are in it — no re-rank needed).
 
 Scored (0–100 each, independent, **toggle-able**, summed into Total):
 
@@ -104,7 +117,7 @@ if (type==automatic && model ∈ reference.dctRiskModels) score = 60   # fragile
 
 **7b. ConsumptionUrban (0–100):** `c = fuelConsumptionUrban` (Autohero's `fuelConsumption.city`); `score = clamp(100 * (10 - c) / (10 - 3), 0, 100)` (≤3 L→100, ≥10 L→0). Wider/shifted band than combined since urban figures run higher for non-hybrids (stop-start traffic) but can be *lower* for hybrids (electric motor does more of the low-speed work) — reflects the user's actual Berlin-city use case more directly than the combined figure. Missing → `X`.
 
-**8. Trunk size (0–100):** `litres = reference.bootLitres["MAKE|MODEL"]`; `score = clamp(100 * (litres - 300) / (500 - 300), 0, 100)` (≤300 L→0, ≥500 L→100). Missing → `X`.
+**8. Trunk size (0–100):** `litres = resolveTrunkLitres(listing, ref)` (listing's own value first, else the reference-table estimate — same resolution as the base filter above); `score = clamp(100 * (litres - 300) / (500 - 300), 0, 100)` (≤300 L→0, ≥500 L→100). Missing (neither source) → `X`. Note distinguishes `"(listing)"` vs `"(est.)"`.
 
 **9. Tire season (0–100):** `all-season/both → 100 ; single season → 70 ; missing → X`.
 
@@ -112,5 +125,17 @@ if (type==automatic && model ∈ reference.dctRiskModels) score = 60   # fragile
 
 **11. Commercial (0–100):** `private → 100 ; commercial/fleet (VAT-deductible) → 50` (downgrade, not a reject — negotiating leverage). Detected from Autohero `vatType==1054` (VAT-reclaimable = ex-business); margin scheme (`1053`) = private. For manual listings, set `commercial` on the Listing.
 
-## Insertion / eviction (table stays ≤ 50)
-Add a listing → base-filter gate → score all columns → compute Total → insert in sorted order → if size > 50, drop the lowest-Total row.
+## Cross-source de-duplication (`dedupeAcrossSources`)
+When the SAME car is reported by more than one source, keep only the highest-priority source's listing before scoring/ranking. `SOURCE_PRIORITY = [autohero, autoscout24, mobile.de]` (earlier = kept).
+```
+if distinct(listings.source).count < 2: return listings unchanged   # nothing to dedupe with one source
+key(l) = (l.color known?) ? (normalize(name), priceEur, normalize(color)) : NO_KEY   # color unknown -> never keyed
+group listings with a key by that key; within each group, keep only the lowest-SOURCE_PRIORITY-index entry
+listings without a key (color unknown) always stay distinct
+```
+Deliberately requires **both** ≥2 sources present **and** a known `color` before two listings are even considered a match — grouping purely by (name, price) with color unset would risk merging two genuinely different cars that just happen to share a name and price (plausible for same-spec batches). Runs inside `buildTable`, right after the base-filter gate and before scoring, so duplicates never skew the price-baseline stats either.
+
+**Status today:** effectively a no-op. Only Autohero is actually fetched (never ≥2 sources), and Autohero's API exposes no `color` field at all (confirmed against the raw fetch — `color` stays listing-level `null`). Ready to activate once a second source (AutoScout24/mobile.de ingestion — separate future task) and real color data exist.
+
+## Insertion / eviction
+Add a listing → base-filter gate → dedup → score all columns → compute Total → insert in sorted order. The **page's working set** (post filter-panel Update, or on first load) stays ≤ 50 — if a new/boosted car's Total lands it in the top 50, the previous lowest-Total row drops out of `workingSet`, same eviction behavior as before. (`site/data.json` itself now ships the *full* eligible pool, uncapped — see "Full pool shipped" above — so there's nothing to evict at that layer; the cap moved to the page.)

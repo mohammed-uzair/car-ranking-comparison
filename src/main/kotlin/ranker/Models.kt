@@ -32,7 +32,9 @@ data class Listing(
     val doors: Int? = null,                  // null → derive from body/model
     val body: String? = null,                // "suv"|"sedan"|"hatch"|"estate"|"mpv"|"coupe"|"cabrio" if known
     val country: String = "DE",
-    val city: String = ""
+    val city: String = "",
+    val color: String? = null,               // exterior color, when the source reports it (used for cross-source dedup; Autohero: not exposed)
+    val trunkLitres: Int? = null             // boot volume, when the source reports it directly (Autohero: not exposed — falls back to reference.bootLitres via resolveTrunkLitres)
 )
 
 /** Score for one scored column. `available=false` renders as `X` and is excluded from Total for this row. */
@@ -48,6 +50,7 @@ data class ScoredCar(
     val model: String,
     val url: String,
     val source: String,
+    val color: String? = null,  // for future cross-source dedup; null until a source reports it
     val firstRegistration: Int,
     val fuel: String,
     val priceEur: Int,
@@ -62,7 +65,7 @@ data class ScoredCar(
 )
 
 /**
- * All eleven scored columns, in display order. ROI is independent (0-10) and NOT summed into Total.
+ * All twelve scored columns (ROI + eleven total-columns), in display order. ROI is independent (0-10) and NOT summed into Total.
  * Owners, TireSeason, MinorDamage, Commercial are placed last and are OFF by default (see DEFAULT_ACTIVE_COLUMNS) —
  * they can skew comparisons across data sources that don't all report them, or are situational rather than
  * core to the ranking; the user can tick them back on in the page.

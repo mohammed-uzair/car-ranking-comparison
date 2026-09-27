@@ -44,24 +44,63 @@
   .s-bad{background:rgba(235,87,87,.16);color:var(--bad)}
   .note{color:var(--muted);font-size:11px}
   .meta{color:var(--muted);font-size:12px;margin-top:10px}
-  .brandchip{display:inline-flex;align-items:center;gap:4px;background:var(--panel);border:1px solid var(--line);
-    border-radius:20px;padding:4px 10px;font-size:13px;cursor:pointer;user-select:none}
+  .brandchip{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--line);
+    border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;user-select:none}
   .brandchip.off{opacity:.4}
+  .brandchip.disabled{opacity:.35;cursor:not-allowed}
+  .brandchip.disabled input{cursor:not-allowed}
   .brandchip input{cursor:pointer}
-  #brandFilters{gap:6px}
+  .hamburger{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;
+    padding:8px 12px;font-size:16px;cursor:pointer;line-height:1}
+  .hamburger:hover{border-color:var(--accent)}
+  .titlebar{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;
+    transition:opacity .2s;z-index:50}
+  .backdrop.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:85vw;background:var(--panel);
+    border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .22s ease;
+    z-index:51;padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+  .drawer.open{transform:translateX(0)}
+  .drawer h2{font-size:15px;margin:0 0 8px}
+  .drawer-section{display:flex;flex-direction:column;gap:6px}
+  .drawer input[type="text"]{background:var(--bg);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:7px 10px;width:100%}
+  .updateBtn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 14px;
+    font-size:14px;font-weight:600;cursor:pointer;margin-top:auto}
+  .updateBtn:hover{opacity:.9}
 </style>
 </head>
 <body>
-  <h1>Car Ranking — Final Candidates</h1>
+  <div class="titlebar">
+    <button class="hamburger" id="hamburgerBtn" title="Filters" aria-label="Open filters">☰</button>
+    <h1>Car Ranking — Final Candidates</h1>
+  </div>
   <p class="sub" id="sub">Loading…</p>
   <div class="controls">
-    <input id="q" placeholder="Filter by name / fuel / city…"/>
-    <input id="hideModels" placeholder="Hide models (comma-separated, e.g. Yaris, i10)…"/>
-    <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted.</span>
+    <input id="q" placeholder="Search visible rows: name / fuel / city…"/>
+    <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted. Use ☰ to filter by brand/model/source and re-rank the top 50 from the full pool.</span>
   </div>
-  <div class="controls" id="brandFilters"></div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="drawer" id="drawer">
+    <h2>Filters</h2>
+    <div class="drawer-section">
+      <strong class="note">Brands</strong>
+      <div id="drawerBrands" class="drawer-section"></div>
+    </div>
+    <div class="drawer-section">
+      <strong class="note">Listing source</strong>
+      <div id="drawerSources" class="drawer-section"></div>
+    </div>
+    <div class="drawer-section">
+      <strong class="note">Hide models</strong>
+      <input type="text" id="hideModels" placeholder="Comma-separated, e.g. Yaris, i10"/>
+    </div>
+    <button class="updateBtn" id="updateBtn">Update</button>
+    <span class="note">Changes here apply on Update — the top 50 re-ranks from the full eligible pool (not just what's currently shown), so excluding a brand refills with the next-best contenders instead of shrinking the list.</span>
+  </div>
 
 <script>
 const IDENT = [
@@ -73,21 +112,75 @@ const IDENT = [
   {k:"mileageKm", label:"km"},
 ];
 let DATA=null, active=new Set(), sortKey="avg", sortDir=-1, colW={};
-let excludedBrands=new Set();  // empty by default = every brand shown, matching current behaviour until you opt to narrow it
+let workingSet=[];   // the current top-50 (or fewer) — what render() displays/sorts/searches; rebuilt by applyUpdate()
+const MAX_ROWS=50;
+
+// Brands/sources with no data yet — shown as disabled chips so the panel is shaped for where this is headed;
+// checking them does nothing today (there's nothing in DATA.rows to match) and they activate automatically
+// once real data exists, no page changes needed.
+const BRAND_PLACEHOLDERS=["Ford","Kia"];
+const SOURCE_PLACEHOLDERS=[{key:"autoscout24",label:"AutoScout24"},{key:"mobile.de",label:"mobile.de"}];
+const SOURCE_LABELS={autohero:"Autohero"};
 
 function buildBrandFilters(){
-  const brands=[...new Set(DATA.rows.map(r=>r.make))].sort();
-  const box=document.getElementById("brandFilters");
-  box.innerHTML='<span class="note" style="margin-right:4px">Brands:</span>'+brands.map(b=>
-    `<label class="brandchip${excludedBrands.has(b)?" off":""}" data-make="${b}"><input type="checkbox" ${excludedBrands.has(b)?"":"checked"}/>${b}</label>`
+  const real=[...new Set(DATA.rows.map(r=>r.make))].sort();
+  const box=document.getElementById("drawerBrands");
+  box.innerHTML = real.map(b=>
+    `<label class="brandchip" data-make="${b}"><input type="checkbox" checked/>${b}</label>`
+  ).join("") + BRAND_PLACEHOLDERS.map(b=>
+    `<label class="brandchip disabled" title="No data yet"><input type="checkbox" checked disabled/>${b} <span class="note">(no data yet)</span></label>`
   ).join("");
-  box.querySelectorAll(".brandchip").forEach(chip=>chip.querySelector("input").onchange=e=>{
-    const b=chip.dataset.make;
-    if(e.target.checked) excludedBrands.delete(b); else excludedBrands.add(b);
-    chip.classList.toggle("off", !e.target.checked);
-    render();
+  box.querySelectorAll(".brandchip:not(.disabled)").forEach(chip=>chip.querySelector("input").onchange=e=>{
+    chip.classList.toggle("off", !e.target.checked);   // visual only — takes effect on Update
   });
 }
+
+function buildSourceFilters(){
+  const real=[...new Set(DATA.rows.map(r=>r.source))].sort();
+  const box=document.getElementById("drawerSources");
+  box.innerHTML = real.map(s=>
+    `<label class="brandchip" data-source="${s}"><input type="checkbox" checked/>${SOURCE_LABELS[s]||s}</label>`
+  ).join("") + SOURCE_PLACEHOLDERS.filter(p=>!real.includes(p.key)).map(p=>
+    `<label class="brandchip disabled" title="No data yet"><input type="checkbox" checked disabled/>${p.label} <span class="note">(no data yet)</span></label>`
+  ).join("");
+  box.querySelectorAll(".brandchip:not(.disabled)").forEach(chip=>chip.querySelector("input").onchange=e=>{
+    chip.classList.toggle("off", !e.target.checked);
+  });
+}
+
+/**
+ * The core fix: re-derive the top 50 from the FULL eligible pool (DATA.rows) under the drawer's current
+ * (staged) brand/source/model selection, instead of filtering an already-capped list of 50. Excluding a
+ * brand that held many top-50 slots now backfills with the next-best contenders rather than shrinking the
+ * table. Mirrors buildTable()'s own selection rule (sort by total, tie-break mileage→price→id, cap to 50) —
+ * filter+sort+cap over already-computed scores, not a re-fetch or a new algorithm run.
+ */
+function applyUpdate(){
+  const excludedBrands=new Set([...document.querySelectorAll("#drawerBrands .brandchip:not(.disabled) input")]
+    .filter(cb=>!cb.checked).map(cb=>cb.closest(".brandchip").dataset.make));
+  const excludedSources=new Set([...document.querySelectorAll("#drawerSources .brandchip:not(.disabled) input")]
+    .filter(cb=>!cb.checked).map(cb=>cb.closest(".brandchip").dataset.source));
+  const hideList=(document.getElementById("hideModels").value||"").toLowerCase()
+    .split(",").map(s=>s.trim()).filter(Boolean);
+
+  const filtered=DATA.rows.filter(r=>
+    !excludedBrands.has(r.make) && !excludedSources.has(r.source) &&
+    !hideList.some(h=>r.model.toLowerCase().includes(h))
+  );
+  filtered.sort((a,b)=>{
+    if(a.total!==b.total) return b.total-a.total;
+    if(a.mileageKm!==b.mileageKm) return a.mileageKm-b.mileageKm;
+    if(a.priceEur!==b.priceEur) return a.priceEur-b.priceEur;
+    return a.id<b.id?-1:a.id>b.id?1:0;
+  });
+  workingSet=filtered.slice(0,MAX_ROWS);
+  workingSet.forEach((r,i)=>r.index=i+1);
+  closeDrawer();
+  render();
+}
+
+function openDrawer(){ document.getElementById("drawer").classList.add("open"); document.getElementById("backdrop").classList.add("open"); }
+function closeDrawer(){ document.getElementById("drawer").classList.remove("open"); document.getElementById("backdrop").classList.remove("open"); }
 const DEFAULT_W={index:44,name:230,firstRegistration:56,fuel:74,priceEur:86,mileageKm:82,city:150,total:76,ROI:168,avg:64};
 function widthOf(k){ return colW[k] || DEFAULT_W[k] || 66; }
 
@@ -126,13 +219,9 @@ function cellVal(r,key){
 }
 function render(){
   const q=(document.getElementById("q").value||"").toLowerCase();
-  const hideList=(document.getElementById("hideModels").value||"").toLowerCase()
-    .split(",").map(s=>s.trim()).filter(Boolean);
-  let rows=DATA.rows.filter(r=>
-    (!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q)) &&
-    !excludedBrands.has(r.make) &&
-    !hideList.some(h=>r.model.toLowerCase().includes(h))
-  );
+  // workingSet is already the current top-50 (post brand/source/model filter + re-rank, see applyUpdate()).
+  // The search box only narrows what's VISIBLE within it — a quick find-in-table, not a pool-changing filter.
+  let rows=workingSet.filter(r=>!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q));
   rows.sort((a,b)=>{ const x=cellVal(a,sortKey),y=cellVal(b,sortKey);
     if(x<y)return sortDir; if(x>y)return -sortDir; return 0; });
   rows.forEach((r,i)=>r._pos=i+1);
@@ -198,17 +287,20 @@ function render(){
     document.addEventListener("mousemove",move); document.addEventListener("mouseup",up);
   }));
   document.getElementById("meta").textContent=
-    `${rows.length} shown · active columns: ${[...active].join(", ")||"none"}`;
+    `${rows.length} of ${workingSet.length} in current top ${MAX_ROWS} shown (${DATA.rowCount} in full eligible pool) · active columns: ${[...active].join(", ")||"none"}`;
 }
 
 fetch("data.json").then(r=>r.json()).then(d=>{
   DATA=d; active=new Set(d.activeColumns);
   document.getElementById("sub").textContent=
-    `${d.rowCount} candidates · generated ${d.generatedAt?.slice(0,16).replace("T"," ")} · Total = sum of active columns · Avg = mean(normalized Total, independent plugins) · excludes reserved/sale-in-progress listings`;
+    `${d.rowCount} eligible candidates · generated ${d.generatedAt?.slice(0,16).replace("T"," ")} · Total = sum of active columns · Avg = mean(normalized Total, independent plugins) · excludes reserved/sale-in-progress listings`;
   document.getElementById("q").oninput=render;
-  document.getElementById("hideModels").oninput=render;
+  document.getElementById("hamburgerBtn").onclick=openDrawer;
+  document.getElementById("backdrop").onclick=closeDrawer;
+  document.getElementById("updateBtn").onclick=applyUpdate;
   buildBrandFilters();
-  render();
+  buildSourceFilters();
+  applyUpdate();   // builds the initial top-50 working set (no filters staged) and renders
 }).catch(e=>{ document.getElementById("sub").textContent="Could not load data.json: "+e; });
 </script>
 </body>

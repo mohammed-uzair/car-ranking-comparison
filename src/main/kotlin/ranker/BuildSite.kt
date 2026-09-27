@@ -41,7 +41,9 @@ fun main(args: Array<String>) {
             File(listingsPath).readText())
 
     val active = DEFAULT_ACTIVE_COLUMNS.toSet()
-    val table = buildTable(listings, ref, active)
+    // Ship the FULL eligible pool, not just the top 50: the page owns the top-50 cut so it can re-derive it
+    // after a brand/model/source filter change (the drawer's "Update" button) without a real re-fetch.
+    val table = buildTable(listings, ref, active, maxRows = listings.size)
 
     val out = SiteData(
         generatedAt = Instant.now().toString(),

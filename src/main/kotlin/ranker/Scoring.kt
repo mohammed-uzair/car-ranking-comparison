@@ -150,8 +150,46 @@ fun passesBaseFilter(l: Listing, ref: Reference): Boolean {
     if (l.saleInProgress) return false      // exclude reserved / sale-already-in-progress listings
     if (l.fuel.lowercase() !in setOf("petrol", "hybrid", "phev")) return false // exclude diesel & pure-electric
     if (!isMultiDoor(l)) return false
+    // trunk size: only reject when a value is KNOWN (listing itself, else the reference table) and it's
+    // below the minimum. Fully unknown boot size is NOT excluded — don't silently drop every model/source
+    // we don't have boot data for.
+    val trunk = resolveTrunkLitres(l, ref)
+    if (trunk != null && trunk < 360) return false
     // must have a known ROI (reliability) or it can't be scored
     return resolveRoi(l.make, l.model, l.firstRegistrationYear, ref) != null
+}
+
+// ---------- cross-source de-duplication ----------
+
+/** Fixed keep-priority when the same car is reported by more than one source. Earlier = kept. */
+val SOURCE_PRIORITY = listOf("autohero", "autoscout24", "mobile.de")
+
+/**
+ * When the SAME car (same name + price + color) is reported by more than one source, keep only the
+ * highest-priority source's listing and drop the rest.
+ *
+ * Effectively a no-op today: only Autohero is actually fetched (so there's never more than one source to
+ * compare), and Autohero's API doesn't expose `color` at all — confirmed against the raw fetch. Ready to
+ * activate once a second source (AutoScout24/mobile.de ingestion) and real color data exist; see
+ * docs/algorithm.md.
+ *
+ * Deliberately requires BOTH ≥2 distinct sources present AND a known `color` on a listing before it's even
+ * considered for matching — grouping purely by (name, price) with color unset would risk merging two
+ * genuinely different cars that just happen to share a name and price (quite plausible for same-spec
+ * batches), which is why this isn't a naive "no-op because nothing collides today" implementation.
+ */
+fun dedupeAcrossSources(listings: List<Listing>): List<Listing> {
+    if (listings.map { it.source }.distinct().size < 2) return listings
+    fun key(l: Listing): Triple<String, Int, String>? {
+        val color = l.color?.trim()?.lowercase() ?: return null
+        val name = listOf(l.make, l.model, l.subType, l.subTypeExtra)
+            .filter { it.isNotBlank() }.joinToString(" ").trim().lowercase()
+        return Triple(name, l.priceEur, color)
+    }
+    fun priority(l: Listing) = SOURCE_PRIORITY.indexOf(l.source.lowercase()).let { if (it < 0) SOURCE_PRIORITY.size else it }
+    val (keyed, unkeyed) = listings.partition { key(it) != null }
+    val deduped = keyed.groupBy { key(it) }.values.map { group -> group.minByOrNull { priority(it) }!! }
+    return deduped + unkeyed
 }
 
 // ---------- price model ----------
@@ -180,8 +218,8 @@ fun roiScore(l: Listing, ref: Reference, stats: ModelStats?): CellScore {
     val age = max(1, ref.currentYear - l.firstRegistrationYear)
     val kmYr = l.mileageKm.toDouble() / age
     if (l.make == "Toyota" && l.fuel.lowercase() !in setOf("hybrid", "phev")) { adj -= 1.0; flags += "Toyota not hybrid" }
-    val boot = resolveBootLitres(l.make, l.model, ref)
-    if (boot != null && boot < 360) { adj -= 0.7; flags += "boot ${boot}L<360" }
+    // NOTE: the old "boot < 360L" soft penalty here was removed — passesBaseFilter now hard-excludes any
+    // car with a KNOWN trunk size below 360L, so a car reaching this point never has a known-too-small boot.
     if (kmYr > 18000) { adj -= min(1.5, (kmYr - 18000) / 8000); flags += "${kmYr.toInt()} km/yr" }
     val expected = expectedPrice(l, stats)
     if (expected != null && l.priceEur > 1.05 * expected) { adj -= min(1.0, (l.priceEur - expected) / expected * 3); flags += "overpriced" }
@@ -277,10 +315,15 @@ fun resolveBootLitres(make: String, model: String, ref: Reference): Int? {
     return base?.let { ref.bootLitres["$make|$it"] }
 }
 
+/** Listing's own trunk figure wins when the source reports it; falls back to the per-model reference estimate. */
+fun resolveTrunkLitres(l: Listing, ref: Reference): Int? =
+    l.trunkLitres ?: resolveBootLitres(l.make, l.model, ref)
+
 fun trunkScore(l: Listing, ref: Reference): CellScore {
-    val litres = resolveBootLitres(l.make, l.model, ref)
+    val litres = resolveTrunkLitres(l, ref)
         ?: return CellScore(0.0, available = false, note = "n/a")
-    return CellScore(clamp(100.0 * (litres - 300) / (500 - 300), 0.0, 100.0), note = "$litres L")
+    val src = if (l.trunkLitres != null) " (listing)" else " (est.)"
+    return CellScore(clamp(100.0 * (litres - 300) / (500 - 300), 0.0, 100.0), note = "$litres L$src")
 }
 
 fun tireScore(l: Listing): CellScore = when (l.tireSeason?.lowercase()) {
@@ -314,7 +357,7 @@ fun scoreCar(l: Listing, ref: Reference, stats: Map<String, ModelStats>): Scored
     )
     val name = listOf(l.make, l.model, l.subType, l.subTypeExtra).filter { it.isNotBlank() }.joinToString(" ")
     return ScoredCar(
-        id = l.id, name = name, make = l.make, model = l.model, url = l.url, source = l.source,
+        id = l.id, name = name, make = l.make, model = l.model, url = l.url, source = l.source, color = l.color,
         firstRegistration = l.firstRegistrationYear, fuel = l.fuel, priceEur = l.priceEur,
         mileageKm = l.mileageKm, owners = l.owners, city = l.city,
         platform = platform(l), generation = generation(l.make, l.model, l.firstRegistrationYear),
@@ -322,14 +365,28 @@ fun scoreCar(l: Listing, ref: Reference, stats: Map<String, ModelStats>): Scored
     )
 }
 
-/** Total = sum of scores that are available AND whose column is globally active. */
-fun totalOf(car: ScoredCar, activeColumns: Set<String>): Double =
-    car.scores.entries.filter { it.key in activeColumns && it.value.available }.sumOf { it.value.value }
+/**
+ * Total = sum of scores that are available AND whose column is globally active, rounded to 2dp.
+ * Rounding matters here beyond cosmetics: with the full pool (hundreds of rows) shipped to the page,
+ * totals cluster closely enough that raw floating-point noise can flip the sort order between two cars
+ * that are meant to tie. Rounding to the same precision the page's own live recompute (`rowTotal()` in
+ * site/index.html) and the Python oracle already use keeps the tie-break (mileage → price → id) the
+ * deciding factor consistently, instead of an invisible 0.0001 of float noise.
+ */
+fun totalOf(car: ScoredCar, activeColumns: Set<String>): Double {
+    val sum = car.scores.entries.filter { it.key in activeColumns && it.value.available }.sumOf { it.value.value }
+    return Math.round(sum * 100) / 100.0
+}
 
-/** Score, gate, sum, sort desc, cap at 50, assign index. */
+/**
+ * Score, gate, dedup, sum, sort desc, cap at `maxRows`, assign index.
+ * `maxRows` defaults to 50 (the page's top-50 table); pass `listings.size` (or any larger value) to get the
+ * full eligible pool instead — used for the site output so the page itself owns the top-50 cut and can
+ * re-derive it after a brand/model/source filter change without a real re-fetch.
+ */
 fun buildTable(listings: List<Listing>, ref: Reference,
                activeColumns: Set<String> = DEFAULT_ACTIVE_COLUMNS.toSet(), maxRows: Int = 50): List<ScoredCar> {
-    val eligible = listings.filter { passesBaseFilter(it, ref) }
+    val eligible = dedupeAcrossSources(listings.filter { passesBaseFilter(it, ref) })
     val stats = buildPriceModel(eligible)
     val scored = eligible.map { l ->
         val car = scoreCar(l, ref, stats)

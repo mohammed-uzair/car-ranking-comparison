@@ -12,7 +12,7 @@ A holistic "should I buy this specific car" judgment. Prestige does **not** earn
 ## Budget & needs anchor
 - Budget ≤ ~€20,000.
 - Use: Berlin city + occasional long trips (Warsaw/Vienna/Zurich, ~2×/yr).
-- **Minimum boot: 360 L.**
+- **Minimum boot: 360 L** — enforced as a **hard base filter** (`passesBaseFilter`/`resolveTrunkLitres`, see `docs/algorithm.md`), not a scoring flag here. A car reaching this plugin never has a *known* boot below 360L.
 - Drivetrain: petrol or hybrid. **Hybrid required only for Toyota**; for premium brands petrol (and manual) are fine.
 - SUV is a bonus, not a requirement — judge on practicality, stability, long-trip + city comfort, parking.
 
@@ -24,10 +24,9 @@ kmPerYear = mileageKm / max(1, YEAR - firstRegistrationYear)
 
 # hidden flags — every one lowers the score AND is listed unprompted:
 Toyota not hybrid   : make==Toyota && fuel∉{hybrid,phev}      → adj -= 1.0 ; flag
-boot < 360 L        : bootLitres[MAKE|MODEL] < 360            → adj -= 0.7 ; flag
 high km for age     : kmPerYear > 18000                       → adj -= min(1.5,(kmPerYear-18000)/8000) ; flag
 overpriced          : askingPrice > 1.05 * expectedPrice      → adj -= min(1.0,(asking-expected)/expected*3) ; flag
-prior/repaired damage: numberOfDamages>0 || damageList≠∅       → adj -= 0.6 ; flag (Vorschäden)
+listed damage       : damageList≠∅ (minor cosmetic COUNT alone is NOT penalised) → adj -= 0.6 ; flag
 previous owners     : owners==2 → adj-=0.2 ; owners≥3 → adj-=0.6 ; flag
 service history      : !hasFilledServiceBook                   → adj -= 0.3 ; flag
 commercial use       : (Gewerbliche Nutzung, when known)       → adj -= 0.5 ; flag (downgrade, NOT auto-reject; negotiating leverage)
@@ -36,6 +35,7 @@ roi = clamp(base + adj, 0, 10)
 verdict = roi >= 7 ? "Yes" : "No"
 note = "{verdict}. " + (flags ? "Flags: " + join(flags) : "no red flags")
 ```
+> **Removed:** the old "boot < 360L" soft penalty here — superseded by the hard filter above, which now removes those cars entirely rather than merely downgrading them.
 
 ## Non-negotiables (checked; flag if failing / unknown)
 TÜV/HU validity · accident/damage history (accident-free enforced upstream) · previous owners · commercial-use flag · **Deutsche Ausführung (German spec)** preferred · service-history completeness.

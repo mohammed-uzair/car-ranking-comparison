@@ -11,13 +11,15 @@ private fun L(
     gear: String = "1139", kw: Int = 100, ccm: Int = 1998, owners: Int = 1, accidents: Int = 0,
     damages: Int = 0, damageList: List<String> = emptyList(), svc: Boolean = false,
     commercial: Boolean = false, saleInProgress: Boolean = false,
-    cons: Double? = 6.0, consUrban: Double? = 6.5, tire: String? = null, doors: Int? = 5, body: String? = null
+    cons: Double? = 6.0, consUrban: Double? = 6.5, tire: String? = null, doors: Int? = 5, body: String? = null,
+    source: String = "test", color: String? = null, trunkLitres: Int? = null
 ) = Listing(
-    source = "test", id = id, url = "http://x", make = make, model = model, subType = subType,
+    source = source, id = id, url = "http://x", make = make, model = model, subType = subType,
     firstRegistrationYear = year, mileageKm = km, priceEur = price, fuel = fuel, gearRaw = gear,
     kw = kw, ccm = ccm, owners = owners, accidents = accidents, numberOfDamages = damages,
     damageList = damageList, hasFilledServiceBook = svc, commercial = commercial, saleInProgress = saleInProgress,
-    consumptionCombined = cons, consumptionUrban = consUrban, tireSeason = tire, doors = doors, body = body
+    consumptionCombined = cons, consumptionUrban = consUrban, tireSeason = tire, doors = doors, body = body,
+    color = color, trunkLitres = trunkLitres
 )
 
 class BaseFilterTest {
@@ -41,6 +43,16 @@ class BaseFilterTest {
     @Test fun rejects_unrelated_model_that_merely_shares_a_prefix() =
         // "Aurislike" is not "Auris " + suffix (no word boundary) -> must NOT fuzzy-match
         assertFalse(passesBaseFilter(L(make = "Toyota", model = "Aurislike", fuel = "hybrid"), REF))
+    // Trunk-size hard filter (min 360L): listing's own value wins; unknown (neither listing nor
+    // reference table) must NOT be rejected.
+    @Test fun rejects_known_small_trunk_from_listing() =
+        assertFalse(passesBaseFilter(L(trunkLitres = 300), REF))  // BMW 3er's reference entry (480L) is fine, but the LISTING says 300L -> listing wins
+    @Test fun accepts_known_large_trunk_from_listing() =
+        assertTrue(passesBaseFilter(L(trunkLitres = 400), REF))
+    @Test fun accepts_when_trunk_size_fully_unknown() {
+        val noBootData = REF.copy(bootLitres = emptyMap())
+        assertTrue(passesBaseFilter(L(trunkLitres = null), noBootData))
+    }
 }
 
 class RoiResolutionTest {
@@ -145,7 +157,9 @@ class TotalAndToggleTest {
     @Test fun total_is_sum_of_active_available() {
         val car = scoreCar(L(cons = null), REF, emptyMap())   // Consumption + Tire + (maybe Trunk) unavailable
         val expected = TOTAL_COLUMNS.filter { car.scores[it]!!.available }.sumOf { car.scores[it]!!.value }
-        assertEquals(expected, totalOf(car, TOTAL_COLUMNS.toSet()), 0.001)
+        // totalOf() rounds to 2dp (see its doc comment: keeps sort order stable across the full pool) —
+        // compare with a tolerance that accounts for that rounding, not raw floating-point noise.
+        assertEquals(expected, totalOf(car, TOTAL_COLUMNS.toSet()), 0.01)
     }
     @Test fun disabled_by_default_columns_excluded_from_default_active() {
         for (c in listOf("Owners", "TireSeason", "MinorDamage", "Commercial")) assertFalse(c in DEFAULT_ACTIVE_COLUMNS)
@@ -207,4 +221,56 @@ class EdgeCaseTest {
     @Test fun low_power_clamped()  = assertTrue(engineScore(L(kw = 40), REF).value in 0.0..100.0)
     @Test fun high_power_clamped() = assertTrue(engineScore(L(kw = 300), REF).value in 0.0..100.0)
     @Test fun huge_mileage_clamped() = assertEquals(0.0, mileageScore(L(km = 400000, svc = false), REF).value)
+}
+
+class FullPoolTest {
+    // buildTable with maxRows = pool size must ship EVERYTHING eligible, not silently cap at 50 —
+    // this is what lets the page re-derive its own top-50 after a filter change without a re-fetch.
+    @Test fun maxRows_equal_to_pool_size_ships_full_eligible_set() {
+        val pool = (1..80).map { i ->
+            L(id = "c$i", model = if (i % 2 == 0) "3er" else "1er", subType = if (i % 2 == 0) "318i" else "118i",
+              year = 2019, km = 30000 + i * 1000, price = 12000 + i * 100)
+        }
+        val eligibleCount = pool.count { passesBaseFilter(it, REF) }
+        val full = buildTable(pool, REF, maxRows = pool.size)
+        assertEquals(eligibleCount, full.size)
+        assertTrue(full.size > 50, "test setup should exceed 50 to actually prove no cap happened")
+        for (i in 0 until full.size - 1) assertTrue(full[i].total >= full[i + 1].total, "not sorted at $i")
+        assertEquals((1..full.size).toList(), full.map { it.index })
+    }
+}
+
+class DedupTest {
+    @Test fun single_source_is_a_true_noop() {
+        val listings = listOf(
+            L(id = "a", source = "autohero", color = "black"),
+            L(id = "b", source = "autohero", color = "black")   // same name/price/color, but only one source present
+        )
+        assertEquals(listings, dedupeAcrossSources(listings))
+    }
+    @Test fun cross_source_duplicate_with_known_color_is_merged_keeping_highest_priority() {
+        val listings = listOf(
+            L(id = "scout", source = "autoscout24", color = "black", price = 15000),
+            L(id = "hero",  source = "autohero",    color = "black", price = 15000)
+        )
+        val result = dedupeAcrossSources(listings)
+        assertEquals(1, result.size)
+        assertEquals("hero", result[0].id)   // autohero outranks autoscout24 in SOURCE_PRIORITY
+    }
+    @Test fun cross_source_same_name_price_but_unknown_color_stays_distinct() {
+        // color must be KNOWN on both sides to risk a match — unset color must never merge two listings
+        // that only coincidentally share a name and price.
+        val listings = listOf(
+            L(id = "scout", source = "autoscout24", color = null, price = 15000),
+            L(id = "hero",  source = "autohero",    color = null, price = 15000)
+        )
+        assertEquals(2, dedupeAcrossSources(listings).size)
+    }
+    @Test fun cross_source_different_color_stays_distinct() {
+        val listings = listOf(
+            L(id = "scout", source = "autoscout24", color = "black", price = 15000),
+            L(id = "hero",  source = "autohero",    color = "white", price = 15000)
+        )
+        assertEquals(2, dedupeAcrossSources(listings).size)
+    }
 }
