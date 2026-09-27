@@ -11,13 +11,13 @@ private fun L(
     gear: String = "1139", kw: Int = 100, ccm: Int = 1998, owners: Int = 1, accidents: Int = 0,
     damages: Int = 0, damageList: List<String> = emptyList(), svc: Boolean = false,
     commercial: Boolean = false, saleInProgress: Boolean = false,
-    cons: Double? = 6.0, tire: String? = null, doors: Int? = 5, body: String? = null
+    cons: Double? = 6.0, consUrban: Double? = 6.5, tire: String? = null, doors: Int? = 5, body: String? = null
 ) = Listing(
     source = "test", id = id, url = "http://x", make = make, model = model, subType = subType,
     firstRegistrationYear = year, mileageKm = km, priceEur = price, fuel = fuel, gearRaw = gear,
     kw = kw, ccm = ccm, owners = owners, accidents = accidents, numberOfDamages = damages,
     damageList = damageList, hasFilledServiceBook = svc, commercial = commercial, saleInProgress = saleInProgress,
-    consumptionCombined = cons, tireSeason = tire, doors = doors, body = body
+    consumptionCombined = cons, consumptionUrban = consUrban, tireSeason = tire, doors = doors, body = body
 )
 
 class BaseFilterTest {
@@ -83,6 +83,9 @@ class EngineThresholdTest {
 
 class ColumnScoreTest {
     @Test fun consumption_missing_is_X() = assertFalse(consumptionScore(L(cons = null)).available)
+    @Test fun consumption_urban_missing_is_X() = assertFalse(consumptionUrbanScore(L(consUrban = null)).available)
+    @Test fun consumption_urban_lower_is_higher() =
+        assertTrue(consumptionUrbanScore(L(consUrban = 4.0)).value > consumptionUrbanScore(L(consUrban = 9.0)).value)
     @Test fun tire_missing_is_X()        = assertFalse(tireScore(L(tire = null)).available)
     @Test fun trunk_unknown_model_is_X() = assertFalse(trunkScore(L(make = "BMW", model = "ZZ"), REF).available)
     @Test fun no_damage_full()           = assertEquals(100.0, damageScore(L(damages = 0)).value)

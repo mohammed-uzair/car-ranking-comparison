@@ -7,7 +7,8 @@
     "firstRegistrationYear": 2018, "mileageKm": 45154, "priceEur": 14690,
     "fuel": "diesel", "gearRaw": "1139", "kw": 110, "ccm": 1995,
     "owners": 1, "accidents": 0, "numberOfDamages": 0, "damageList": [],
-    "hasFilledServiceBook": true, "commercial": false, "consumptionCombined": 4.5,
+    "hasFilledServiceBook": true, "commercial": false, "saleInProgress": false,
+    "consumptionCombined": 4.5, "consumptionUrban": 5.0,
     "tireSeason": null, "doors": 5, "body": "mpv", "country": "DE", "city": "Hemau"
   },
   {
@@ -18,7 +19,8 @@
     "firstRegistrationYear": 2020, "mileageKm": 9891, "priceEur": 19610,
     "fuel": "petrol", "gearRaw": "manual", "kw": 85, "ccm": 999,
     "owners": 0, "accidents": 0, "numberOfDamages": 1, "damageList": ["minor scratch rear bumper"],
-    "hasFilledServiceBook": true, "commercial": false, "consumptionCombined": 5.1,
+    "hasFilledServiceBook": true, "commercial": false, "saleInProgress": false,
+    "consumptionCombined": 5.1, "consumptionUrban": 5.9,
     "tireSeason": "all-season", "doors": 5, "body": "hatch", "country": "DE", "city": "Berlin"
   }
 ]

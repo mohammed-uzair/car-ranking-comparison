@@ -230,7 +230,13 @@ fun commercialScore(l: Listing): CellScore =
 
 fun consumptionScore(l: Listing): CellScore {
     val c = l.consumptionCombined ?: return CellScore(0.0, available = false, note = "n/a")
-    return CellScore(clamp(100 * (9 - c) / (9 - 4), 0.0, 100.0), note = "$c L/100km")
+    return CellScore(clamp(100 * (9 - c) / (9 - 4), 0.0, 100.0), note = "$c L/100km combined")
+}
+
+/** Urban/city consumption — weighted higher in practice for a Berlin-city use case than the combined figure. */
+fun consumptionUrbanScore(l: Listing): CellScore {
+    val c = l.consumptionUrban ?: return CellScore(0.0, available = false, note = "n/a")
+    return CellScore(clamp(100 * (10 - c) / (10 - 3), 0.0, 100.0), note = "$c L/100km urban")
 }
 
 fun trunkScore(l: Listing, ref: Reference): CellScore {
@@ -262,6 +268,7 @@ fun scoreCar(l: Listing, ref: Reference, stats: Map<String, ModelStats>): Scored
         "Transmission" to transmissionScore(l, ref),
         "Owners" to ownersScore(l),
         "Consumption" to consumptionScore(l),
+        "ConsumptionUrban" to consumptionUrbanScore(l),
         "TrunkSize" to trunkScore(l, ref),
         "TireSeason" to tireScore(l),
         "MinorDamage" to damageScore(l),

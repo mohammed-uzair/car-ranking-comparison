@@ -18,7 +18,7 @@ site/index.html (GitHub Pages)  ── displays, sorts, toggles columns. No logi
 
 ## Columns
 Identity: index · name · first registration · fuel · price · km · URL · city (last).
-Scored (0–100, toggle-able), **on by default**: Engine · Mileage · Value · Transmission · Consumption · TrunkSize.
+Scored (0–100, toggle-able), **on by default**: Engine · Mileage · Value · Transmission · Consumption · ConsumptionUrban · TrunkSize.
 Scored, **off by default** (placed last — situational / source-dependent, tick on to include): Owners · TireSeason · MinorDamage · Commercial.
 Full rules & pseudocode: [`docs/algorithm.md`](docs/algorithm.md). Reliability (ROI) method: [`docs/reliability.md`](docs/reliability.md).
 

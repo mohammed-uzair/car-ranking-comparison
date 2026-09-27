@@ -32,13 +32,14 @@ Scored (0–100 each, independent, **toggle-able**, summed into Total):
 | 4 | Price (Value) | cheaper vs expected market price |
 | 5 | Transmission | more desirable/robust gearbox |
 | 6 | Owners | fewer previous owners |
-| 7 | Consumption | lower L/100km |
+| 7 | Consumption | lower L/100km (combined) |
+| 7b | ConsumptionUrban | lower L/100km (urban/city) — the more relevant figure for a Berlin-city use case |
 | 8 | Trunk size | larger boot |
 | 9 | Tire season | data present & favourable |
 | 10 | Minor damage | no/fewer recorded minor damages |
 | 11 | Commercial | private ownership (not ex-fleet/commercial) |
 
-**Display order:** Engine, Mileage, Value, Transmission, Consumption, TrunkSize come first and are **ON by default**. **Owners, TireSeason, MinorDamage, Commercial are placed last and are OFF by default** — situational/source-dependent signals that can skew cross-source comparisons; tick them back on in the page when wanted. `DEFAULT_ACTIVE_COLUMNS` = the first six; this is also what the *stored* Total in `site/data.json` is computed from (the page recomputes live as columns are toggled).
+**Display order:** Engine, Mileage, Value, Transmission, Consumption, ConsumptionUrban, TrunkSize come first and are **ON by default**. **Owners, TireSeason, MinorDamage, Commercial are placed last and are OFF by default** — situational/source-dependent signals that can skew cross-source comparisons; tick them back on in the page when wanted. `DEFAULT_ACTIVE_COLUMNS` = the first six; this is also what the *stored* Total in `site/data.json` is computed from (the page recomputes live as columns are toggled).
 
 ## Total, Avg & sorting
 - **Column order:** identity (index · name · reg · fuel · price · km) → **Avg** → **ROI (Independent score, 0–10)** → **Total** → Engine/Mileage/Value/Transmission/Consumption/TrunkSize (on by default) → Owners/TireSeason/MinorDamage/Commercial (off by default) → **City (last)**.
@@ -91,6 +92,8 @@ if (type==automatic && model ∈ reference.dctRiskModels) score = 60   # fragile
 **6. Owners (0–100):** `owners ≤ 1 → 100 ; 2 → 80 ; 3 → 60 ; else 40`.
 
 **7. Consumption (0–100):** `c = fuelConsumptionCombined`; `score = clamp(100 * (9 - c) / (9 - 4), 0, 100)` (≤4 L→100, ≥9 L→0). PHEV/hybrid scored on the same electric-adjusted figure when provided; missing → `X`.
+
+**7b. ConsumptionUrban (0–100):** `c = fuelConsumptionUrban` (Autohero's `fuelConsumption.city`); `score = clamp(100 * (10 - c) / (10 - 3), 0, 100)` (≤3 L→100, ≥10 L→0). Wider/shifted band than combined since urban figures run higher for non-hybrids (stop-start traffic) but can be *lower* for hybrids (electric motor does more of the low-speed work) — reflects the user's actual Berlin-city use case more directly than the combined figure. Missing → `X`.
 
 **8. Trunk size (0–100):** `litres = reference.bootLitres["MAKE|MODEL"]`; `score = clamp(100 * (litres - 300) / (500 - 300), 0, 100)` (≤300 L→0, ≥500 L→100). Missing → `X`.
 
