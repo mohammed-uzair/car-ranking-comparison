@@ -26,6 +26,9 @@ Full rules & pseudocode: [`docs/algorithm.md`](docs/algorithm.md). Reliability (
 ROI is not one of the total columns — it is the first **independent score plugin** (0–10, advisory, never summed into Total). Anyone can add another (e.g. a carwow-style rating) by dropping a `plugins/<name>.md` and registering it; a new advisory column appears. See [`plugins/README.md`](plugins/README.md). Use these to accept/skip a car regardless of its Total.
 **Avg** sits right before ROI and is the default sort key: `mean(Total normalized to 0–10, every available independent plugin score)` — the one place Total and the plugins are combined into a single "best overall" figure, highest first.
 
+### Brand & model filters (client-side, page-only)
+A "Brands" chip row (checked by default = everything shown) and a "Hide models" free-text field sit above the table. Unchecking a brand or typing a model name (e.g. `Yaris`) hides matching rows instantly — pure display filtering, no re-scoring, no pipeline changes. New brands added to the data pipeline appear as filter chips automatically.
+
 ### Hide / exclude a column (fairness across sources)
 In the page, untick a column's header checkbox → it fades and is removed from every Total (which re-sums and re-sorts). A per-cell `X` marks a value as N/A (never counted). Use this when a field (e.g. tire season) exists on Autohero but not on AutoScout, so the comparison stays fair.
 

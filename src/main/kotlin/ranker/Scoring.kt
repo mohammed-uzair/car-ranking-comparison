@@ -314,7 +314,7 @@ fun scoreCar(l: Listing, ref: Reference, stats: Map<String, ModelStats>): Scored
     )
     val name = listOf(l.make, l.model, l.subType, l.subTypeExtra).filter { it.isNotBlank() }.joinToString(" ")
     return ScoredCar(
-        id = l.id, name = name, url = l.url, source = l.source,
+        id = l.id, name = name, make = l.make, model = l.model, url = l.url, source = l.source,
         firstRegistration = l.firstRegistrationYear, fuel = l.fuel, priceEur = l.priceEur,
         mileageKm = l.mileageKm, owners = l.owners, city = l.city,
         platform = platform(l), generation = generation(l.make, l.model, l.firstRegistrationYear),

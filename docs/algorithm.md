@@ -20,7 +20,12 @@ This file defines HOW every number in the ranking is produced. The Kotlin code i
 - **Doors:** ≥4 → excludes 2-door coupés/cabrios/roadsters and 3-door hatches; sedans, hatchbacks, SUVs, estates, MPVs pass. Applied **server-side at fetch** via Autohero's `doorCount >= 4` filter (confirmed working; the value is not returned in the list object, so it can't be displayed — only filtered). For manually-pasted listings, set `doors` on the Listing and the offline gate `isMultiDoor` enforces the same rule.
 
 ## Columns
-Identity (no score): `index`, `name` (Make · Model · Variant), `firstRegistration`, `fuelType`, `url` (clickable).
+Identity (no score): `index`, `name` (Make · Model · Variant), `make`, `model` (exposed separately from `name` so the page can filter by brand/model reliably rather than parsing a combined string), `firstRegistration`, `fuelType`, `url` (clickable).
+
+## Page-only filters (client-side, no scoring impact)
+- **Brand filter:** a checkbox chip per distinct brand present in the loaded data, built dynamically from `ScoredCar.make` — so it automatically picks up any newly-added brand with zero page-code changes. All checked by default (nothing hidden); uncheck a brand to hide it from the table. State lives in `excludedBrands` (a Set of hidden brands, empty by default).
+- **Model exclude filter:** a free-text, comma-separated field (`hideModels`) matched case-insensitively as a substring against `ScoredCar.model` — e.g. typing `Yaris` hides every Yaris variant. Empty by default (nothing hidden).
+- Both compose with the existing name/fuel/city search box in the same row-filter chain; index/rank renumber among the currently-visible rows.
 
 Scored (0–100 each, independent, **toggle-able**, summed into Total):
 

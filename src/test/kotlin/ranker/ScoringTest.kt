@@ -166,6 +166,16 @@ class TotalAndToggleTest {
     }
 }
 
+class ScoredCarIdentityTest {
+    // Regression: the page filters by brand/model on ScoredCar.make/model directly (not by parsing
+    // the combined `name` string), so these must be populated verbatim from the listing.
+    @Test fun make_and_model_populated_verbatim() {
+        val car = scoreCar(L(make = "BMW", model = "3er"), REF, emptyMap())
+        assertEquals("BMW", car.make)
+        assertEquals("3er", car.model)
+    }
+}
+
 class BuildTableTest {
     private fun pool() = (1..60).map { i ->
         L(id = "c$i", model = if (i % 2 == 0) "3er" else "1er", subType = if (i % 2 == 0) "318i" else "118i",

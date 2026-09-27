@@ -44,6 +44,11 @@
   .s-bad{background:rgba(235,87,87,.16);color:var(--bad)}
   .note{color:var(--muted);font-size:11px}
   .meta{color:var(--muted);font-size:12px;margin-top:10px}
+  .brandchip{display:inline-flex;align-items:center;gap:4px;background:var(--panel);border:1px solid var(--line);
+    border-radius:20px;padding:4px 10px;font-size:13px;cursor:pointer;user-select:none}
+  .brandchip.off{opacity:.4}
+  .brandchip input{cursor:pointer}
+  #brandFilters{gap:6px}
 </style>
 </head>
 <body>
@@ -51,8 +56,10 @@
   <p class="sub" id="sub">Loading…</p>
   <div class="controls">
     <input id="q" placeholder="Filter by name / fuel / city…"/>
+    <input id="hideModels" placeholder="Hide models (comma-separated, e.g. Yaris, i10)…"/>
     <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted.</span>
   </div>
+  <div class="controls" id="brandFilters"></div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
 
@@ -66,6 +73,21 @@ const IDENT = [
   {k:"mileageKm", label:"km"},
 ];
 let DATA=null, active=new Set(), sortKey="avg", sortDir=-1, colW={};
+let excludedBrands=new Set();  // empty by default = every brand shown, matching current behaviour until you opt to narrow it
+
+function buildBrandFilters(){
+  const brands=[...new Set(DATA.rows.map(r=>r.make))].sort();
+  const box=document.getElementById("brandFilters");
+  box.innerHTML='<span class="note" style="margin-right:4px">Brands:</span>'+brands.map(b=>
+    `<label class="brandchip${excludedBrands.has(b)?" off":""}" data-make="${b}"><input type="checkbox" ${excludedBrands.has(b)?"":"checked"}/>${b}</label>`
+  ).join("");
+  box.querySelectorAll(".brandchip").forEach(chip=>chip.querySelector("input").onchange=e=>{
+    const b=chip.dataset.make;
+    if(e.target.checked) excludedBrands.delete(b); else excludedBrands.add(b);
+    chip.classList.toggle("off", !e.target.checked);
+    render();
+  });
+}
 const DEFAULT_W={index:44,name:230,firstRegistration:56,fuel:74,priceEur:86,mileageKm:82,city:150,total:76,ROI:168,avg:64};
 function widthOf(k){ return colW[k] || DEFAULT_W[k] || 66; }
 
@@ -104,7 +126,13 @@ function cellVal(r,key){
 }
 function render(){
   const q=(document.getElementById("q").value||"").toLowerCase();
-  let rows=DATA.rows.filter(r=>!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q));
+  const hideList=(document.getElementById("hideModels").value||"").toLowerCase()
+    .split(",").map(s=>s.trim()).filter(Boolean);
+  let rows=DATA.rows.filter(r=>
+    (!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q)) &&
+    !excludedBrands.has(r.make) &&
+    !hideList.some(h=>r.model.toLowerCase().includes(h))
+  );
   rows.sort((a,b)=>{ const x=cellVal(a,sortKey),y=cellVal(b,sortKey);
     if(x<y)return sortDir; if(x>y)return -sortDir; return 0; });
   rows.forEach((r,i)=>r._pos=i+1);
@@ -178,6 +206,8 @@ fetch("data.json").then(r=>r.json()).then(d=>{
   document.getElementById("sub").textContent=
     `${d.rowCount} candidates · generated ${d.generatedAt?.slice(0,16).replace("T"," ")} · Total = sum of active columns · Avg = mean(normalized Total, independent plugins) · excludes reserved/sale-in-progress listings`;
   document.getElementById("q").oninput=render;
+  document.getElementById("hideModels").oninput=render;
+  buildBrandFilters();
   render();
 }).catch(e=>{ document.getElementById("sub").textContent="Could not load data.json: "+e; });
 </script>

@@ -44,6 +44,8 @@ data class CellScore(val value: Double, val available: Boolean = true, val note:
 data class ScoredCar(
     val id: String,
     val name: String,
+    val make: String,        // exposed separately from `name` so the page can filter by brand/model reliably
+    val model: String,
     val url: String,
     val source: String,
     val firstRegistration: Int,

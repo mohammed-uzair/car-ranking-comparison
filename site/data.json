@@ -1,5 +1,5 @@
 {
-    "generatedAt": "2026-09-27T16:55:27.348678Z",
+    "generatedAt": "2026-09-27T18:01:08.576610Z",
     "independentColumns": [
         {
             "name": "ROI",
@@ -49,6 +49,8 @@
         {
             "id": "dce22603-d8db-4091-a32c-ea5ce7cbf1a8",
             "name": "Toyota Auris Touring Sports 1.8 Hybrid Free Style",
+            "make": "Toyota",
+            "model": "Auris Touring Sports",
             "url": "https://www.autohero.com/de/toyota-auris-touring-sports/id/dce22603-d8db-4091-a32c-ea5ce7cbf1a8",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -127,6 +129,8 @@
         {
             "id": "9054f9be-50e0-48be-894c-ac2a6458bd26",
             "name": "Toyota Corolla 2.0 Hybrid Club",
+            "make": "Toyota",
+            "model": "Corolla",
             "url": "https://www.autohero.com/de/toyota-corolla/id/9054f9be-50e0-48be-894c-ac2a6458bd26",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -205,6 +209,8 @@
         {
             "id": "d26b7d55-26ba-48b7-b7f5-a6a1b1962fce",
             "name": "Toyota Corolla 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Corolla",
             "url": "https://www.autohero.com/de/toyota-corolla/id/d26b7d55-26ba-48b7-b7f5-a6a1b1962fce",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -283,6 +289,8 @@
         {
             "id": "fd9cd085-e2a0-4548-8a2f-df7da32929bb",
             "name": "Toyota Corolla 2.0 Hybrid Club",
+            "make": "Toyota",
+            "model": "Corolla",
             "url": "https://www.autohero.com/de/toyota-corolla/id/fd9cd085-e2a0-4548-8a2f-df7da32929bb",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -361,6 +369,8 @@
         {
             "id": "61a8b5c9-23c2-4d44-b2b9-b78f324ef458",
             "name": "Toyota C-HR 1.8 Hybrid Lounge",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/61a8b5c9-23c2-4d44-b2b9-b78f324ef458",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -439,6 +449,8 @@
         {
             "id": "95a7da91-9a2c-4aa5-9b4f-566d31ebd87c",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/95a7da91-9a2c-4aa5-9b4f-566d31ebd87c",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -517,6 +529,8 @@
         {
             "id": "cc4298b2-e978-48f7-b692-fbf1417aaee8",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/cc4298b2-e978-48f7-b692-fbf1417aaee8",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -595,6 +609,8 @@
         {
             "id": "42802258-8d87-402c-b172-f03ed89e6577",
             "name": "BMW X1 sDrive 18i Advantage",
+            "make": "BMW",
+            "model": "X1",
             "url": "https://www.autohero.com/de/bmw-x-1/id/42802258-8d87-402c-b172-f03ed89e6577",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -673,6 +689,8 @@
         {
             "id": "3b5754e3-011d-4214-8202-18f9dbbe7a38",
             "name": "Honda Civic 1.0 VTEC Elegance",
+            "make": "Honda",
+            "model": "Civic",
             "url": "https://www.autohero.com/de/honda-civic/id/3b5754e3-011d-4214-8202-18f9dbbe7a38",
             "source": "autohero",
             "firstRegistration": 2021,
@@ -751,6 +769,8 @@
         {
             "id": "a62ec220-f5c3-4ca8-83f1-ba0787cc797a",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/a62ec220-f5c3-4ca8-83f1-ba0787cc797a",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -829,6 +849,8 @@
         {
             "id": "823b0eec-9595-4420-b6dd-5be448c89195",
             "name": "BMW 2er 218i Active Tourer Advantage",
+            "make": "BMW",
+            "model": "2er",
             "url": "https://www.autohero.com/de/bmw-2-er/id/823b0eec-9595-4420-b6dd-5be448c89195",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -907,6 +929,8 @@
         {
             "id": "276d511f-3619-4d52-ac87-ac700c93f00b",
             "name": "Toyota C-HR 1.8 Hybrid Flow",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/276d511f-3619-4d52-ac87-ac700c93f00b",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -985,6 +1009,8 @@
         {
             "id": "0dc5466d-0319-421b-92fe-5f0c30ab1cfd",
             "name": "Toyota C-HR 1.8 Hybrid Business Edition",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/0dc5466d-0319-421b-92fe-5f0c30ab1cfd",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -1063,6 +1089,8 @@
         {
             "id": "f9c64c0c-e3a2-4557-a486-5025237ea8f3",
             "name": "BMW 3er 318i Advantage",
+            "make": "BMW",
+            "model": "3er",
             "url": "https://www.autohero.com/de/bmw-3-er/id/f9c64c0c-e3a2-4557-a486-5025237ea8f3",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -1141,6 +1169,8 @@
         {
             "id": "afef5c18-46b4-42bf-8275-7071383ec327",
             "name": "Toyota Yaris 1.5 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/afef5c18-46b4-42bf-8275-7071383ec327",
             "source": "autohero",
             "firstRegistration": 2022,
@@ -1219,6 +1249,8 @@
         {
             "id": "fdd793f6-8fbd-4dc2-a5f8-bc6ee0bf0433",
             "name": "Toyota Yaris 1.5 Hybrid Business Edition",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/fdd793f6-8fbd-4dc2-a5f8-bc6ee0bf0433",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -1297,6 +1329,8 @@
         {
             "id": "14069918-1af9-4f09-9c21-28382c97a4af",
             "name": "Honda Jazz 1.5 i-MMD Hybrid Executive",
+            "make": "Honda",
+            "model": "Jazz",
             "url": "https://www.autohero.com/de/honda-jazz/id/14069918-1af9-4f09-9c21-28382c97a4af",
             "source": "autohero",
             "firstRegistration": 2021,
@@ -1375,6 +1409,8 @@
         {
             "id": "5ab0a1dd-22c4-4d0b-a639-2b8be0e5aeb8",
             "name": "Toyota C-HR 1.8 Hybrid Club",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/5ab0a1dd-22c4-4d0b-a639-2b8be0e5aeb8",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -1453,6 +1489,8 @@
         {
             "id": "96c554df-2d7a-4beb-8ba6-f123cc2767e1",
             "name": "Hyundai Kona 1.6 Hybrid Select 2WD",
+            "make": "Hyundai",
+            "model": "Kona",
             "url": "https://www.autohero.com/de/hyundai-kona/id/96c554df-2d7a-4beb-8ba6-f123cc2767e1",
             "source": "autohero",
             "firstRegistration": 2022,
@@ -1531,6 +1569,8 @@
         {
             "id": "19cf8307-d634-4d04-91dd-4bf059395e7c",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/19cf8307-d634-4d04-91dd-4bf059395e7c",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -1609,6 +1649,8 @@
         {
             "id": "1e373790-788e-4855-b861-44ebbdffed01",
             "name": "Hyundai Kona 1.6 Hybrid Style 2WD",
+            "make": "Hyundai",
+            "model": "Kona",
             "url": "https://www.autohero.com/de/hyundai-kona/id/1e373790-788e-4855-b861-44ebbdffed01",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -1687,6 +1729,8 @@
         {
             "id": "32972cbb-01d0-4d13-80e9-a11d465dfd0a",
             "name": "Toyota Yaris 1.5 Hybrid Y20 Club",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/32972cbb-01d0-4d13-80e9-a11d465dfd0a",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -1765,6 +1809,8 @@
         {
             "id": "47922a59-cd0e-4879-95be-6c15ed56772d",
             "name": "Toyota C-HR 1.8 Hybrid Style Selection",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/47922a59-cd0e-4879-95be-6c15ed56772d",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -1843,6 +1889,8 @@
         {
             "id": "f9602fcb-7133-4293-8549-7b197058b7c0",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/f9602fcb-7133-4293-8549-7b197058b7c0",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -1921,6 +1969,8 @@
         {
             "id": "420ad7fb-800d-47ff-98f8-2b1e4b8d636a",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/420ad7fb-800d-47ff-98f8-2b1e4b8d636a",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -1999,6 +2049,8 @@
         {
             "id": "f9d36ab9-b21f-41cc-b59f-cc45e2c0df67",
             "name": "Toyota Yaris 1.5 Hybrid Club",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/f9d36ab9-b21f-41cc-b59f-cc45e2c0df67",
             "source": "autohero",
             "firstRegistration": 2021,
@@ -2077,6 +2129,8 @@
         {
             "id": "7129c7ed-b72b-4c0a-8562-c653bbc47c14",
             "name": "Audi A3 Sportback 1.0 TFSI Design",
+            "make": "Audi",
+            "model": "A3 Sportback",
             "url": "https://www.autohero.com/de/audi-a-3-sportback/id/7129c7ed-b72b-4c0a-8562-c653bbc47c14",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -2155,6 +2209,8 @@
         {
             "id": "89fe93d3-5af0-44ec-96bf-27a0366fa136",
             "name": "Toyota Yaris 1.5 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/89fe93d3-5af0-44ec-96bf-27a0366fa136",
             "source": "autohero",
             "firstRegistration": 2021,
@@ -2233,6 +2289,8 @@
         {
             "id": "ffe53752-3073-4377-8912-cccbf12fba12",
             "name": "Audi A1 Sportback 1.0 TFSI Sport",
+            "make": "Audi",
+            "model": "A1 Sportback",
             "url": "https://www.autohero.com/de/audi-a-1-sportback/id/ffe53752-3073-4377-8912-cccbf12fba12",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -2311,6 +2369,8 @@
         {
             "id": "e27d14bb-aee3-4236-807a-2268cc5d68a1",
             "name": "Toyota C-HR 1.8 Hybrid Team D",
+            "make": "Toyota",
+            "model": "C-HR",
             "url": "https://www.autohero.com/de/toyota-c-hr/id/e27d14bb-aee3-4236-807a-2268cc5d68a1",
             "source": "autohero",
             "firstRegistration": 2021,
@@ -2389,6 +2449,8 @@
         {
             "id": "f86d3bd2-e2e1-45e3-9b5a-a7f988d66426",
             "name": "BMW X1 sDrive 18i Advantage",
+            "make": "BMW",
+            "model": "X1",
             "url": "https://www.autohero.com/de/bmw-x-1/id/f86d3bd2-e2e1-45e3-9b5a-a7f988d66426",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -2467,6 +2529,8 @@
         {
             "id": "d7e247aa-52e2-4923-89b2-7cbe60aacb03",
             "name": "Honda Civic 1.0 VTEC Elegance",
+            "make": "Honda",
+            "model": "Civic",
             "url": "https://www.autohero.com/de/honda-civic/id/d7e247aa-52e2-4923-89b2-7cbe60aacb03",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -2545,6 +2609,8 @@
         {
             "id": "9554f78c-7b73-4d1d-8097-4d2a15576506",
             "name": "Toyota Yaris 1.5 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/9554f78c-7b73-4d1d-8097-4d2a15576506",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -2623,6 +2689,8 @@
         {
             "id": "82dfe666-31a9-416b-8b05-12f028dc56c9",
             "name": "Toyota Yaris 1.5 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/82dfe666-31a9-416b-8b05-12f028dc56c9",
             "source": "autohero",
             "firstRegistration": 2022,
@@ -2701,6 +2769,8 @@
         {
             "id": "23354f6c-eb03-4c18-83ea-74ef72ebc67f",
             "name": "Mercedes-Benz B-Klasse B 180 Style",
+            "make": "Mercedes-Benz",
+            "model": "B-Klasse",
             "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/23354f6c-eb03-4c18-83ea-74ef72ebc67f",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -2779,6 +2849,8 @@
         {
             "id": "2ede857b-d004-4d22-ac5c-add835a86f46",
             "name": "Toyota Yaris 1.5 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/2ede857b-d004-4d22-ac5c-add835a86f46",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -2857,6 +2929,8 @@
         {
             "id": "c7350fee-cea2-41e4-b56e-495136eee221",
             "name": "Toyota Yaris 1.5 Hybrid Style Selection",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/c7350fee-cea2-41e4-b56e-495136eee221",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -2935,6 +3009,8 @@
         {
             "id": "dbec6710-38e8-463f-9b56-4f761be44844",
             "name": "Toyota Yaris 1.5 Hybrid Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/dbec6710-38e8-463f-9b56-4f761be44844",
             "source": "autohero",
             "firstRegistration": 2022,
@@ -3013,6 +3089,8 @@
         {
             "id": "c4a89c74-f55b-4ce1-907a-3a6bc515b0cd",
             "name": "Toyota Yaris 1.5 Hybrid Splash",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/c4a89c74-f55b-4ce1-907a-3a6bc515b0cd",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -3091,6 +3169,8 @@
         {
             "id": "f49dc518-0337-4972-bf67-5aeb5a417ab3",
             "name": "BMW 2er 218i Gran Tourer Advantage",
+            "make": "BMW",
+            "model": "2er",
             "url": "https://www.autohero.com/de/bmw-2-er/id/f49dc518-0337-4972-bf67-5aeb5a417ab3",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -3169,6 +3249,8 @@
         {
             "id": "0887567f-f6ab-4ebb-8e43-67dc69efac4e",
             "name": "Mercedes-Benz B-Klasse B 200 Progressive",
+            "make": "Mercedes-Benz",
+            "model": "B-Klasse",
             "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/0887567f-f6ab-4ebb-8e43-67dc69efac4e",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -3247,6 +3329,8 @@
         {
             "id": "9da3be5b-b333-4a72-b820-d7f015c3f999",
             "name": "Toyota Yaris 1.5 Hybrid Y20 Team D",
+            "make": "Toyota",
+            "model": "Yaris",
             "url": "https://www.autohero.com/de/toyota-yaris/id/9da3be5b-b333-4a72-b820-d7f015c3f999",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -3325,6 +3409,8 @@
         {
             "id": "ef452299-af4d-4192-abd9-de92c44db868",
             "name": "BMW X1 sDrive 18i M Sport",
+            "make": "BMW",
+            "model": "X1",
             "url": "https://www.autohero.com/de/bmw-x-1/id/ef452299-af4d-4192-abd9-de92c44db868",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -3403,6 +3489,8 @@
         {
             "id": "9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
             "name": "Mercedes-Benz B-Klasse B 180 Progressive",
+            "make": "Mercedes-Benz",
+            "model": "B-Klasse",
             "url": "https://www.autohero.com/de/mercedes-benz-b-klasse/id/9e3ebfd0-8df8-4d53-a073-9bbf7558c3b8",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -3481,6 +3569,8 @@
         {
             "id": "c6ed8424-cb93-4ee2-98ec-f83ceac85374",
             "name": "Audi A3 Limousine 30 TFSI",
+            "make": "Audi",
+            "model": "A3 Limousine",
             "url": "https://www.autohero.com/de/audi-a-3-limousine/id/c6ed8424-cb93-4ee2-98ec-f83ceac85374",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -3559,6 +3649,8 @@
         {
             "id": "78ab6ac0-241b-4689-885d-c6c3a0413bec",
             "name": "Audi A3 Sportback 40 e-tron",
+            "make": "Audi",
+            "model": "A3 Sportback",
             "url": "https://www.autohero.com/de/audi-a-3-sportback/id/78ab6ac0-241b-4689-885d-c6c3a0413bec",
             "source": "autohero",
             "firstRegistration": 2020,
@@ -3637,6 +3729,8 @@
         {
             "id": "ca4537ee-c58f-4763-bede-9a0cbe7c29e8",
             "name": "Hyundai Tucson 1.6 Classic blue 2WD",
+            "make": "Hyundai",
+            "model": "Tucson",
             "url": "https://www.autohero.com/de/hyundai-tucson/id/ca4537ee-c58f-4763-bede-9a0cbe7c29e8",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -3715,6 +3809,8 @@
         {
             "id": "1ca08ae6-0a89-4d1a-bda7-3a038573c5af",
             "name": "BMW X1 sDrive 20i Advantage",
+            "make": "BMW",
+            "model": "X1",
             "url": "https://www.autohero.com/de/bmw-x-1/id/1ca08ae6-0a89-4d1a-bda7-3a038573c5af",
             "source": "autohero",
             "firstRegistration": 2019,
@@ -3793,6 +3889,8 @@
         {
             "id": "5b1e824c-1009-4904-9508-8586d0fda4cc",
             "name": "BMW 5er 520i Sport Line",
+            "make": "BMW",
+            "model": "5er",
             "url": "https://www.autohero.com/de/bmw-5-er/id/5b1e824c-1009-4904-9508-8586d0fda4cc",
             "source": "autohero",
             "firstRegistration": 2018,
@@ -3871,6 +3969,8 @@
         {
             "id": "7aea2a40-a0ba-47f7-9437-ec35da4c891b",
             "name": "Hyundai i20 1.0 T-GDI Mild-Hybrid Edition 30",
+            "make": "Hyundai",
+            "model": "i20",
             "url": "https://www.autohero.com/de/hyundai-i-20/id/7aea2a40-a0ba-47f7-9437-ec35da4c891b",
             "source": "autohero",
             "firstRegistration": 2022,
