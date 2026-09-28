@@ -7,8 +7,5 @@ build/
 .idea/
 *.iml
 
-# Python venv (present in working dir, not part of the Kotlin project)
-.venv/
-
 # OS
 .DS_Store

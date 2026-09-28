@@ -25,27 +25,17 @@ val INDEPENDENT_PLUGINS = listOf(
     IndepCol("ROI", "ROI (Independent score)", 10, "plugins/roi.md")
 )
 
+/** Shared JSON codec for site data — used by both the offline batch job (this file) and the live server (Server.kt). */
+val siteJson = Json { ignoreUnknownKeys = true; isLenient = true; prettyPrint = true; encodeDefaults = true }
+
 /**
- * Usage: reads data/listings.json (array of Listing) + data/reference.json, writes site/data.json.
- * The GitHub Pages table (site/index.html) renders and sorts that JSON — it does no fetching or math.
+ * Score `listings` and build the SiteData payload, shipping the FULL eligible pool (not just top 50) —
+ * the page owns the top-50 cut so it can re-derive it after a brand/model/source filter change without
+ * a re-fetch. Shared by the offline batch job (main(), below) and the live server's /api/pool endpoint.
  */
-fun main(args: Array<String>) {
-    val listingsPath = args.getOrNull(0) ?: "data/listings.json"
-    val refPath = args.getOrNull(1) ?: "data/reference.json"
-    val outPath = args.getOrNull(2) ?: "site/data.json"
-
-    val json = Json { ignoreUnknownKeys = true; isLenient = true; prettyPrint = true; encodeDefaults = true }
-    val ref = Ref.load(refPath)
-    val listings: List<Listing> =
-        json.decodeFromString(kotlinx.serialization.builtins.ListSerializer(Listing.serializer()),
-            File(listingsPath).readText())
-
-    val active = DEFAULT_ACTIVE_COLUMNS.toSet()
-    // Ship the FULL eligible pool, not just the top 50: the page owns the top-50 cut so it can re-derive it
-    // after a brand/model/source filter change (the drawer's "Update" button) without a real re-fetch.
-    val table = buildTable(listings, ref, active, maxRows = listings.size)
-
-    val out = SiteData(
+fun buildSiteData(listings: List<Listing>, ref: Reference): SiteData {
+    val table = buildTable(listings, ref, DEFAULT_ACTIVE_COLUMNS.toSet(), maxRows = listings.size)
+    return SiteData(
         generatedAt = Instant.now().toString(),
         independentColumns = INDEPENDENT_PLUGINS,
         totalColumns = TOTAL_COLUMNS,
@@ -54,7 +44,26 @@ fun main(args: Array<String>) {
         rowCount = table.size,
         rows = table
     )
+}
+
+/**
+ * Usage: reads data/listings.json (array of Listing) + data/reference.json, writes site/data.json.
+ * This is the offline snapshot generator. The GitHub Pages table (site/index.html) renders/sorts that
+ * JSON on load — no fetching or math in the page itself. For a LIVE, on-demand re-fetch+rescore (the
+ * page's "Update" button), see Server.kt / `./gradlew runServer`.
+ */
+fun main(args: Array<String>) {
+    val listingsPath = args.getOrNull(0) ?: "data/listings.json"
+    val refPath = args.getOrNull(1) ?: "data/reference.json"
+    val outPath = args.getOrNull(2) ?: "site/data.json"
+
+    val ref = Ref.load(refPath)
+    val listings: List<Listing> =
+        siteJson.decodeFromString(kotlinx.serialization.builtins.ListSerializer(Listing.serializer()),
+            File(listingsPath).readText())
+
+    val out = buildSiteData(listings, ref)
     File(outPath).parentFile?.mkdirs()
-    File(outPath).writeText(json.encodeToString(SiteData.serializer(), out))
-    println("Wrote ${table.size} rows to $outPath (from ${listings.size} listings, ${listings.count { passesBaseFilter(it, ref) }} eligible).")
+    File(outPath).writeText(siteJson.encodeToString(SiteData.serializer(), out))
+    println("Wrote ${out.rows.size} rows to $outPath (from ${listings.size} listings, ${listings.count { passesBaseFilter(it, ref) }} eligible).")
 }

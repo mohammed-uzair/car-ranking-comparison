@@ -3,7 +3,8 @@
 This file defines HOW every number in the ranking is produced. The Kotlin code in `src/main/kotlin/ranker/` implements this exactly; the GitHub Pages table in `site/` only displays and sorts the numbers. No fetching or math happens in the page.
 
 ## Principles
-- **Source-agnostic:** a listing may come from Autohero, AutoScout24, mobile.de, or be pasted manually. Each carries a `source` tag. The algorithm never depends on the source. **Ingestion status:** Autohero and AutoScout24 are both live (`data/listings.json` combines them). mobile.de is NOT fetched — it's protected by Akamai bot-management (a hard `403`), and getting past that reliably needs solving JS/fingerprint challenges, which this project deliberately does not automate. It stays a disabled "no data yet" chip in the filter panel.
+- **Source-agnostic:** a listing may come from Autohero, AutoScout24, or be pasted manually. Each carries a `source` tag. The algorithm never depends on the source. Both Autohero and AutoScout24 are live — see `Ingest.kt`.
+- **Single language:** all business logic — ingestion, scoring, the live server — is Kotlin. There is no Python, no other language, anywhere in this repo.
 - **Deterministic:** identical car attributes → identical column scores → identical Total, every run. Reference tables are fixed inputs (`data/reference.json`).
 - **Per-column independence:** each column has its OWN algorithm and reads only the raw car factors it needs — it never reads another column's score.
 - **Car-specific:** scores reflect THIS car (its real mileage), not the generic new-car rating. A car past a known failure km is penalised even if the model is generally reliable.
@@ -29,24 +30,35 @@ Identity (no score): `index`, `name` (Make · Model · Variant), `make`, `model`
 ## Filter panel (hamburger drawer) — brand / source / model, staged behind "Update"
 A hamburger icon (☰) opens a slide-in drawer with three staged filters, applied only when **Update** is clicked (checkbox/text changes inside the drawer do nothing to the table until then):
 - **Brands:** a checkbox chip per distinct `ScoredCar.make` in the data, all checked by default, plus **Ford** and **Kia** shown as disabled "no data yet" placeholders (no fetch/reliability research exists for them — separate future task; they activate automatically once added, no page changes needed).
-- **Listing source:** a checkbox chip per distinct `ScoredCar.source` — **Autohero** and **AutoScout24** are both live — plus **mobile.de** as a disabled "no data yet" placeholder (blocked by Akamai bot-management; see Principles above).
+- **Listing source:** a checkbox chip per distinct `ScoredCar.source` — **Autohero** and **AutoScout24**, both live. No other sources are planned.
+- **Hide models:** a free-text, comma-separated field matched case-insensitively as a substring against `ScoredCar.model` (e.g. typing `Yaris` hides every Yaris variant).
+
+### mobile.de — evaluated and ruled out
+mobile.de returns a hard `403 Access Denied` from Akamai bot-management, even with realistic browser headers. This is a server-side request-inspection block (not CORS), and it applies identically no matter what's making the request — a browser, `curl`, or Kotlin's own `HttpClient` all get the same `403` (verified directly with `curl`). Getting past it reliably would mean solving Akamai's JS/fingerprint challenge, which is bot-detection evasion and out of scope for this project regardless of which client makes the request. mobile.de is not fetched and has no representation anywhere in the codebase (no placeholder chip, no priority-list entry, not in `SOURCE_PRIORITY`).
 
 ### AutoScout24 ingestion — known gaps
-AutoScout24's search-result page embeds real listing data as a Next.js `__NEXT_DATA__` JSON payload (`scripts/fetch_autoscout24.py`, source-agnostic output, same `Listing` shape as Autohero). It's a **sample** (5 pages / 100 listings per brand, ~600 total), not an exhaustive scrape of AS24's full national marketplace (tens of thousands of matching listings) — proportionate to the Autohero fetch, not an aggressive full-market crawl. Fields **not** available at the list-view level (would need per-listing detail-page scraping, same class of gap as Autohero's tire-season/trunk-size/color):
+AutoScout24's search-result page embeds real listing data as a Next.js `__NEXT_DATA__` JSON payload (`fetchAutoScout24()` in `Ingest.kt`, source-agnostic output, same `Listing` shape as Autohero). The offline batch snapshot samples 5 pages/100 listings per brand (~600 total) — proportionate to the Autohero fetch, not an exhaustive scrape of AS24's full national marketplace (tens of thousands of matching listings). The **live** server endpoint (`/api/pool`, see below) uses a smaller `AS24_PAGES_PER_BRAND_LIVE` (2 pages/brand) to keep an Update click responsive — fewer results per click, faster response; adjust the constant if you want more depth at the cost of a longer wait. Fields **not** available at the list-view level (would need per-listing detail-page scraping, same class of gap as Autohero's tire-season/trunk-size/color):
 - **`owners`** defaults to `0` (unverified — not a real "zero owners" claim).
 - **`commercial`** defaults to `false` (unverified).
 - **`consumptionUrban`** stays `null` — AS24's list view gives only one combined L/100km figure. This means every AS24 car is missing a column that's **on by default**, so it starts every ranking at a real disadvantage regardless of the car's other merits. **Untick `ConsumptionUrban` (or `Consumption`) in the filter drawer to see AS24 cars compete fairly** — verified: 0 AS24 cars in the default top 50, 17 once that column is off.
 - **`doors`** inferred from AS24's `variant` text (coupé/cabrio/roadster keywords → excluded; everything else assumed multi-door), not a real door count.
 - Hybrid vs PHEV is a text heuristic (AS24's fuel taxonomy doesn't separate them, same ambiguity Autohero had before `isPluginSystem` fixed it there — no equivalent flag exists on AS24).
-- **Hide models:** a free-text, comma-separated field matched case-insensitively as a substring against `ScoredCar.model` (e.g. typing `Yaris` hides every Yaris variant).
 
-**Why "Update" re-ranks instead of just hiding rows:** the brand/model chips used to filter the already-capped top-50 live — so unchecking a brand that held many of those 50 slots (e.g. Toyota, which dominates via hybrid urban-consumption scores) just **shrank the visible list** instead of backfilling with the next-best BMW/Audi/etc. that would have made top-50 had that brand been excluded from the start. Clicking **Update** now:
-1. Takes the **full** pool (`DATA.rows`, from the previous section).
-2. Filters by the drawer's staged brand-exclusion, source-exclusion, and hide-models selections.
-3. Sorts by `total` with the same tie-break as `buildTable` (mileage asc → price asc → id asc).
-4. Takes the first 50, re-assigns `index` 1..N — this becomes `workingSet`, the pool the rest of the page (search box, sort clicks, column toggles) operates on.
+## The local live server (`Server.kt`) — what "Update" actually runs
+Kotlin only ever ran as an offline batch job (`./gradlew run`, above) until now — it produced a static file, never a running service the page could call. `./gradlew runServer` starts one: the JDK's own `com.sun.net.httpserver.HttpServer` (no new dependency, no framework — a browser button click can only trigger local code via a network call to something already listening, so this is the smallest thing that can listen), serving the page and a live API from the same origin (`http://localhost:8081`), so no CORS question ever arises for the page↔API leg.
+- `GET /` — serves `site/index.html`.
+- `GET /api/pool` — runs `fetchAllListingsLive()` (`Ingest.kt`: `fetchAutohero()` + `fetchAutoScout24()`) through the **exact same** scoring pipeline as the offline snapshot (`buildSiteData()`, shared by both `BuildSite.kt` and `Server.kt`) and returns fresh `SiteData` JSON. This is genuinely a live re-fetch + re-score, not a cached replay — expect it to take **15–40+ seconds** (network-bound: Autohero's pagination plus AutoScout24's per-brand paged requests), which is exactly what the page's spinner is for.
 
-This is filter+sort+cap over already-computed scores — no score is invented and nothing is fetched, consistent with "the page does no math." The top search box, column-score toggles, and Avg/Total stay **live/instant** as before (they narrow what's visible within the current `workingSet` or change its scoring inclusion, not which cars are in it — no re-rank needed).
+**Why "Update" re-ranks instead of just hiding rows** (this part is unchanged from before the live server was added): the brand/model chips used to filter the already-capped top-50 live — so unchecking a brand that held many of those 50 slots (e.g. Toyota, which dominates via hybrid urban-consumption scores) just **shrank the visible list** instead of backfilling with the next-best BMW/Audi/etc. that would have made top-50 had that brand been excluded from the start. Clicking **Update** now:
+1. Shows a spinner, calls `GET /api/pool` — a genuine live re-fetch + re-score (see above). On failure (server not running), shows an inline message and falls back to re-ranking whatever was already loaded, instead of breaking.
+2. Replaces `DATA` with the fresh payload.
+3. Filters by the drawer's staged brand-exclusion, source-exclusion, and hide-models selections.
+4. Sorts by `total` with the same tie-break as `buildTable` (mileage asc → price asc → id asc).
+5. Takes the first 50, re-assigns `index` 1..N — this becomes `workingSet`, the pool the rest of the page (search box, sort clicks, column toggles) operates on.
+
+Steps 3–5 (filter+sort+cap) are pure client-side JS over already-computed scores — no score is invented in the browser. Only step 1 (the live fetch + re-score) is genuinely new work, and it happens entirely in Kotlin on the server. The top search box, column-score toggles, and Avg/Total stay **live/instant** as before — they narrow what's visible within the current `workingSet` or change its scoring inclusion, not which cars are in it, so they never need a live re-fetch.
+
+**Initial page load stays static** (loads `site/data.json`, the last-generated snapshot) — only clicking Update goes live. Matches the intent: GitHub only stores the code; the button is what actually runs it.
 
 Scored (0–100 each, independent, **toggle-able**, summed into Total):
 
@@ -134,7 +146,7 @@ if (type==automatic && model ∈ reference.dctRiskModels) score = 60   # fragile
 **11. Commercial (0–100):** `private → 100 ; commercial/fleet (VAT-deductible) → 50` (downgrade, not a reject — negotiating leverage). Detected from Autohero `vatType==1054` (VAT-reclaimable = ex-business); margin scheme (`1053`) = private. For manual listings, set `commercial` on the Listing.
 
 ## Cross-source de-duplication (`dedupeAcrossSources`)
-When the SAME car is reported by more than one source, keep only the highest-priority source's listing before scoring/ranking. `SOURCE_PRIORITY = [autohero, autoscout24, mobile.de]` (earlier = kept).
+When the SAME car is reported by more than one source, keep only the highest-priority source's listing before scoring/ranking. `SOURCE_PRIORITY = [autohero, autoscout24]` (earlier = kept).
 ```
 if distinct(listings.source).count < 2: return listings unchanged   # nothing to dedupe with one source
 key(l) = (l.color known?) ? (normalize(name), priceEur, normalize(color)) : NO_KEY   # color unknown -> never keyed
@@ -143,7 +155,7 @@ listings without a key (color unknown) always stay distinct
 ```
 Deliberately requires **both** ≥2 sources present **and** a known `color` before two listings are even considered a match — grouping purely by (name, price) with color unset would risk merging two genuinely different cars that just happen to share a name and price (plausible for same-spec batches). Runs inside `buildTable`, right after the base-filter gate and before scoring, so duplicates never skew the price-baseline stats either.
 
-**Status today:** effectively a no-op. Two sources are now live (Autohero + AutoScout24, so the ≥2-sources condition IS met), but **neither exposes a `color` field**, so `color` stays listing-level `null` for every row — the second guard (known color required) means nothing is ever merged. Verified: 0 non-null `color` values in `data/listings.json`. Ready to activate once a source with real color data exists (a future detail-page scrape, or mobile.de).
+**Status today:** effectively a no-op. Two sources are now live (Autohero + AutoScout24, so the ≥2-sources condition IS met), but **neither exposes a `color` field**, so `color` stays listing-level `null` for every row — the second guard (known color required) means nothing is ever merged. Verified: 0 non-null `color` values in `data/listings.json`. Ready to activate once a source with real color data exists (a future detail-page scrape).
 
 ## Insertion / eviction
 Add a listing → base-filter gate → dedup → score all columns → compute Total → insert in sorted order. The **page's working set** (post filter-panel Update, or on first load) stays ≤ 50 — if a new/boosted car's Total lands it in the top 50, the previous lowest-Total row drops out of `workingSet`, same eviction behavior as before. (`site/data.json` itself now ships the *full* eligible pool, uncapped — see "Full pool shipped" above — so there's nothing to evict at that layer; the cap moved to the page.)

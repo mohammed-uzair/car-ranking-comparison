@@ -162,16 +162,15 @@ fun passesBaseFilter(l: Listing, ref: Reference): Boolean {
 // ---------- cross-source de-duplication ----------
 
 /** Fixed keep-priority when the same car is reported by more than one source. Earlier = kept. */
-val SOURCE_PRIORITY = listOf("autohero", "autoscout24", "mobile.de")
+val SOURCE_PRIORITY = listOf("autohero", "autoscout24")
 
 /**
  * When the SAME car (same name + price + color) is reported by more than one source, keep only the
  * highest-priority source's listing and drop the rest.
  *
- * Effectively a no-op today: only Autohero is actually fetched (so there's never more than one source to
- * compare), and Autohero's API doesn't expose `color` at all — confirmed against the raw fetch. Ready to
- * activate once a second source (AutoScout24/mobile.de ingestion) and real color data exist; see
- * docs/algorithm.md.
+ * Effectively a no-op today: two sources (Autohero + AutoScout24) are live, but neither exposes a `color`
+ * field, so the required-known-color guard means nothing is ever considered a match. Ready to activate
+ * once a source with real color data exists; see docs/algorithm.md.
  *
  * Deliberately requires BOTH ≥2 distinct sources present AND a known `color` on a listing before it's even
  * considered for matching — grouping purely by (name, price) with color unset would risk merging two
@@ -370,8 +369,8 @@ fun scoreCar(l: Listing, ref: Reference, stats: Map<String, ModelStats>): Scored
  * Rounding matters here beyond cosmetics: with the full pool (hundreds of rows) shipped to the page,
  * totals cluster closely enough that raw floating-point noise can flip the sort order between two cars
  * that are meant to tie. Rounding to the same precision the page's own live recompute (`rowTotal()` in
- * site/index.html) and the Python oracle already use keeps the tie-break (mileage → price → id) the
- * deciding factor consistently, instead of an invisible 0.0001 of float noise.
+ * site/index.html) uses keeps the tie-break (mileage → price → id) the deciding factor consistently,
+ * instead of an invisible 0.0001 of float noise.
  */
 fun totalOf(car: ScoredCar, activeColumns: Set<String>): Double {
     val sum = car.scores.entries.filter { it.key in activeColumns && it.value.available }.sumOf { it.value.value }
