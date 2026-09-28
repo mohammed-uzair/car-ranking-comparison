@@ -66,7 +66,12 @@
   .drawer input[type="text"]{background:var(--bg);border:1px solid var(--line);color:var(--text);
     border-radius:8px;padding:7px 10px;width:100%}
   .updateBtn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 14px;
-    font-size:14px;font-weight:600;cursor:pointer;margin-top:auto}
+    font-size:14px;font-weight:600;cursor:pointer;margin-top:auto;display:flex;align-items:center;
+    justify-content:center;gap:8px}
+  .updateBtn:disabled{opacity:.6;cursor:wait}
+  .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;
+    border-radius:50%;display:inline-block;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
   .updateBtn:hover{opacity:.9}
 </style>
 </head>
@@ -98,8 +103,9 @@
       <strong class="note">Hide models</strong>
       <input type="text" id="hideModels" placeholder="Comma-separated, e.g. Yaris, i10"/>
     </div>
-    <button class="updateBtn" id="updateBtn">Update</button>
-    <span class="note">Changes here apply on Update — the top 50 re-ranks from the full eligible pool (not just what's currently shown), so excluding a brand refills with the next-best contenders instead of shrinking the list.</span>
+    <button class="updateBtn" id="updateBtn"><span id="updateBtnLabel">Update</span><span id="updateSpinner" class="spinner" hidden></span></button>
+    <p id="updateStatus" class="note" style="min-height:14px"></p>
+    <span class="note">Update does a REAL live re-fetch from Autohero + AutoScout24 (via the local server, <code>./gradlew runServer</code>), re-scores everything, then applies your brand/source/model selections and re-ranks the top 50 from the full refreshed pool — so excluding a brand refills with the next-best contenders instead of shrinking the list. Takes 15–40s; that's real network time, not a bug. If the local server isn't running, this falls back to re-ranking the last-loaded snapshot instead of breaking.</span>
   </div>
 
 <script>
@@ -148,14 +154,10 @@ function buildSourceFilters(){
   });
 }
 
-/**
- * The core fix: re-derive the top 50 from the FULL eligible pool (DATA.rows) under the drawer's current
- * (staged) brand/source/model selection, instead of filtering an already-capped list of 50. Excluding a
- * brand that held many top-50 slots now backfills with the next-best contenders rather than shrinking the
- * table. Mirrors buildTable()'s own selection rule (sort by total, tie-break mileage→price→id, cap to 50) —
- * filter+sort+cap over already-computed scores, not a re-fetch or a new algorithm run.
- */
-function applyUpdate(){
+/** Filter DATA.rows by the drawer's current (staged) brand/source/model selection, sort by the same rule
+ * buildTable() uses (total desc, mileage→price→id), cap to 50, reindex. Pure client-side — no fetch, no
+ * scoring math, just re-deriving the top 50 from whatever pool is currently in DATA.rows. */
+function rerankFromCurrentData(){
   const excludedBrands=new Set([...document.querySelectorAll("#drawerBrands .brandchip:not(.disabled) input")]
     .filter(cb=>!cb.checked).map(cb=>cb.closest(".brandchip").dataset.make));
   const excludedSources=new Set([...document.querySelectorAll("#drawerSources .brandchip:not(.disabled) input")]
@@ -175,8 +177,42 @@ function applyUpdate(){
   });
   workingSet=filtered.slice(0,MAX_ROWS);
   workingSet.forEach((r,i)=>r.index=i+1);
-  closeDrawer();
-  render();
+}
+
+function setUpdateBusy(busy){
+  document.getElementById("updateBtn").disabled=busy;
+  document.getElementById("updateSpinner").hidden=!busy;
+  document.getElementById("updateBtnLabel").textContent=busy?"Fetching live…":"Update";
+}
+
+/**
+ * REAL live re-fetch: calls the local Kotlin server's GET /api/pool, which re-fetches Autohero +
+ * AutoScout24 from scratch and re-scores everything through the exact same pipeline as the offline
+ * snapshot (see docs/algorithm.md "The local live server"). This is genuinely live network + Kotlin
+ * execution, not a client-side re-rank of already-loaded data -- expect 15-40s. Falls back to re-ranking
+ * whatever's already loaded (with a visible note) if the local server (./gradlew runServer) isn't running.
+ */
+async function applyUpdate(){
+  const statusEl=document.getElementById("updateStatus");
+  setUpdateBusy(true);
+  statusEl.textContent="Fetching live from Autohero + AutoScout24… (15–40s)";
+  try{
+    const resp=await fetch("/api/pool");
+    if(!resp.ok) throw new Error("server returned "+resp.status);
+    const fresh=await resp.json();
+    DATA=fresh;
+    document.getElementById("sub").textContent=
+      `${DATA.rowCount} eligible candidates · generated ${DATA.generatedAt?.slice(0,16).replace("T"," ")} (live) · Total = sum of active columns · Avg = mean(normalized Total, independent plugins)`;
+    rerankFromCurrentData();
+    statusEl.textContent=`Live: refreshed just now (${DATA.rowCount} eligible).`;
+  }catch(e){
+    statusEl.textContent="Local server not reachable (is `./gradlew runServer` running?) — re-ranked the last-loaded data instead.";
+    rerankFromCurrentData();
+  }finally{
+    setUpdateBusy(false);
+    closeDrawer();
+    render();
+  }
 }
 
 function openDrawer(){ document.getElementById("drawer").classList.add("open"); document.getElementById("backdrop").classList.add("open"); }
@@ -300,7 +336,8 @@ fetch("data.json").then(r=>r.json()).then(d=>{
   document.getElementById("updateBtn").onclick=applyUpdate;
   buildBrandFilters();
   buildSourceFilters();
-  applyUpdate();   // builds the initial top-50 working set (no filters staged) and renders
+  rerankFromCurrentData();   // initial top-50 from the static snapshot — no live fetch on page load, only on Update
+  render();
 }).catch(e=>{ document.getElementById("sub").textContent="Could not load data.json: "+e; });
 </script>
 </body>
