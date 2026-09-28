@@ -53,7 +53,9 @@ Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai · first reg ≥ 2018
 ./gradlew run           # regenerate the static snapshot: site/data.json (offline batch)
 ./gradlew runServer     # start the local live server (what the page's Update button calls)
 ```
-With the server running, open **http://localhost:8081** (it serves the page itself, same origin as the API — no separate static-file server needed).
+With the server running, open **http://localhost:8081** — not an IDE's built-in file-preview URL (e.g. IntelliJ's `localhost:6334x`); that only serves the static HTML and has no `/api/pool` behind it. `http://localhost:8081` serves the page itself, same origin as the API — no separate static-file server needed.
+
+**If `./gradlew` fails with a cryptic error like `What went wrong: 25.0.3`:** Gradle 8.10.2 doesn't support very new JDKs, and your shell's default `java` may not be compatible. Create a local `gradle.properties` (gitignored — this is machine-specific, don't commit it) with `org.gradle.java.home=/path/to/a/compatible/JDK` (Java 21 LTS is known to work), or export `JAVA_HOME` to that path before running `./gradlew`.
 
 ## Status
 - **Phase 1 (done):** algorithm (`docs/` + Kotlin) + page (`site/`) + independent-score plugins (`plugins/`).

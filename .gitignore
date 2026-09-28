@@ -3,6 +3,11 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
+# Local machine-specific JVM pin (org.gradle.java.home) -- a hardcoded absolute path that would break
+# the build on any other machine/OS. Each dev sets their own if the system default `java` isn't
+# Gradle-compatible; see README "Run" section.
+gradle.properties
+
 # IDE
 .idea/
 *.iml
