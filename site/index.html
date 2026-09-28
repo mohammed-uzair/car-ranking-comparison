@@ -120,7 +120,7 @@ const MAX_ROWS=50;
 // once real data exists, no page changes needed.
 const BRAND_PLACEHOLDERS=["Ford","Kia"];
 const SOURCE_PLACEHOLDERS=[{key:"autoscout24",label:"AutoScout24"},{key:"mobile.de",label:"mobile.de"}];
-const SOURCE_LABELS={autohero:"Autohero"};
+const SOURCE_LABELS={autohero:"Autohero", autoscout24:"AutoScout24"};
 
 function buildBrandFilters(){
   const real=[...new Set(DATA.rows.map(r=>r.make))].sort();
