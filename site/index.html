@@ -196,8 +196,10 @@ async function applyUpdate(){
   const statusEl=document.getElementById("updateStatus");
   setUpdateBusy(true);
   statusEl.textContent="Fetching live from Autohero + AutoScout24… (15–40s)";
+  const controller=new AbortController();
+  const timeoutId=setTimeout(()=>controller.abort(), 60000);   // never spin forever, no matter what fails
   try{
-    const resp=await fetch("/api/pool");
+    const resp=await fetch("/api/pool", {signal: controller.signal});
     if(!resp.ok) throw new Error("server returned "+resp.status);
     const fresh=await resp.json();
     DATA=fresh;
@@ -206,9 +208,11 @@ async function applyUpdate(){
     rerankFromCurrentData();
     statusEl.textContent=`Live: refreshed just now (${DATA.rowCount} eligible).`;
   }catch(e){
-    statusEl.textContent="Local server not reachable (is `./gradlew runServer` running?) — re-ranked the last-loaded data instead.";
+    const why=e.name==="AbortError" ? "timed out after 60s" : (e.message||String(e));
+    statusEl.textContent=`Live fetch failed (${why}). Is \`./gradlew runServer\` running at this exact URL? Re-ranked the last-loaded data instead.`;
     rerankFromCurrentData();
   }finally{
+    clearTimeout(timeoutId);
     setUpdateBusy(false);
     closeDrawer();
     render();
