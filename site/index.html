@@ -262,8 +262,10 @@ function render(){
   // workingSet is already the current top-50 (post brand/source/model filter + re-rank, see applyUpdate()).
   // The search box only narrows what's VISIBLE within it — a quick find-in-table, not a pool-changing filter.
   let rows=workingSet.filter(r=>!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q));
+  // sortDir=-1 means descending/highest-first (shown as ▼): x<y -> a (the smaller one) must sort AFTER b,
+  // so the comparator returns a POSITIVE number for that case when sortDir is negative, i.e. -sortDir.
   rows.sort((a,b)=>{ const x=cellVal(a,sortKey),y=cellVal(b,sortKey);
-    if(x<y)return sortDir; if(x>y)return -sortDir; return 0; });
+    if(x<y)return -sortDir; if(x>y)return sortDir; return 0; });
   rows.forEach((r,i)=>r._pos=i+1);
 
   const thead=document.querySelector("#tbl thead"); const tbody=document.querySelector("#tbl tbody");
