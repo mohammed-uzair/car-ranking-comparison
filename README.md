@@ -41,6 +41,9 @@ A hamburger icon (☰) opens a drawer with **Brands**, **Listing source**, **Onl
 ### Cross-source de-duplication
 `dedupeAcrossSources` keeps one listing per (name, price, color) when 2+ sources report the same car — see `docs/algorithm.md`. Two sources are live, but it's still a no-op: neither Autohero nor AutoScout24 exposes `color`, so nothing is ever considered a match.
 
+### Car length (Autohero only, opt-in)
+Autohero's bulk search API never reports body style or dimensions — `model`/`subType`/`subTypeExtra` are only engine size + trim badge ("Corolla" / "2.0 Hybrid" / "Team D"), identical for a hatchback and its Touring Sports estate. The individual listing's detail page does carry it, so a **Fetch lengths** button (above the table) does one extra page-fetch per row for the currently shown results and adds a **Length** column (e.g. `465cm (Kombi)`), plus a **Min length (cm)** input that hides rows below the threshold. Gated to ≤15 shown rows (narrow with "Only show" / brand filters first) since it's a per-row HTTP request, not part of the bulk pool fetch.
+
 ### Hide / exclude a column (fairness across sources)
 In the page, untick a column's header checkbox → it fades and is removed from every Total (which re-sums and re-sorts). A per-cell `X` marks a value as N/A (never counted). Use this when a field (e.g. tire season) exists on Autohero but not on AutoScout, so the comparison stays fair.
 

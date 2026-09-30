@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
 import java.io.File
 import java.net.InetSocketAddress
+import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 /**
@@ -18,6 +19,9 @@ import java.nio.charset.StandardCharsets
  *                        arises for the page<->API leg)
  *   GET /api/pool    -> live fetch (Autohero + AutoScout24, via Ingest.kt) -> the SAME scoring pipeline
  *                        (Scoring.kt/BuildSite.kt) used for the offline snapshot -> fresh SiteData JSON
+ *   GET /api/lengths -> ?urls=<comma-separated listing URLs>, Autohero only. One detail-page fetch per URL
+ *                        (body style + car length aren't in the bulk search API -- see Ingest.kt), so the
+ *                        page only calls this for an already-narrowed candidate set, never the full pool.
  *
  * Run: ./gradlew runServer   (defaults to port 8081; override with the PORT env var)
  */
@@ -37,6 +41,27 @@ fun main() {
             respondJson(exchange, 200, siteJson.encodeToString(SiteData.serializer(), out))
         } catch (e: Exception) {
             System.err.println("Live fetch failed: ${e}")
+            respondJson(exchange, 500, "{\"error\": ${jsonString(e.message ?: e.toString())}}")
+        }
+    }
+
+    server.createContext("/api/lengths") { exchange ->
+        try {
+            val query = exchange.requestURI.rawQuery ?: ""
+            val urlsParam = query.split("&")
+                .map { it.split("=", limit = 2) }
+                .firstOrNull { it[0] == "urls" }?.getOrNull(1) ?: ""
+            val urls = URLDecoder.decode(urlsParam, "UTF-8").split(",").map { it.trim() }.filter { it.isNotBlank() }
+            // Only Autohero exposes body/length on its detail page (see Ingest.kt); a non-Autohero URL just
+            // comes back absent from the result map, which the page renders as N/A.
+            val result = buildJsonObjectString(urls.mapNotNull { u ->
+                if (!u.contains("autohero.com")) return@mapNotNull null
+                val d = fetchAutoheroDetail(u) ?: return@mapNotNull null
+                u to d
+            })
+            respondJson(exchange, 200, result)
+        } catch (e: Exception) {
+            System.err.println("Length fetch failed: ${e}")
             respondJson(exchange, 500, "{\"error\": ${jsonString(e.message ?: e.toString())}}")
         }
     }
@@ -68,12 +93,20 @@ fun main() {
     println("Local server running: http://localhost:$port  (Ctrl+C to stop)")
     println("  GET /          -> the page")
     println("  GET /api/pool  -> live re-fetch + re-score (what the Update button calls)")
+    println("  GET /api/lengths?urls=... -> Autohero body/length for a narrowed candidate set")
 }
 
 private fun jsonString(s: String): String {
     val escaped = s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ")
     return "\"$escaped\""
 }
+
+private fun buildJsonObjectString(entries: List<Pair<String, AutoheroDetail>>): String =
+    entries.joinToString(",", prefix = "{", postfix = "}") { (url, d) ->
+        val bodyType = d.bodyType?.let { jsonString(it) } ?: "null"
+        val lengthMm = d.lengthMm?.toString() ?: "null"
+        "${jsonString(url)}: {\"bodyType\": $bodyType, \"lengthMm\": $lengthMm}"
+    }
 
 private fun respondJson(exchange: HttpExchange, status: Int, body: String) {
     val bytes = body.toByteArray(StandardCharsets.UTF_8)

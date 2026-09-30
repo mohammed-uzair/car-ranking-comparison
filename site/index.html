@@ -85,6 +85,11 @@
     <input id="q" placeholder="Search visible rows: name / fuel / city…"/>
     <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted. Use ☰ to filter by brand/model/source and re-rank the top 50 from the full pool.</span>
   </div>
+  <div class="controls">
+    <button id="fetchLengthsBtn">Fetch lengths</button>
+    <input id="minLength" type="number" placeholder="Min length cm, e.g. 450" style="width:140px"/>
+    <span class="note" id="lengthStatus">Autohero only — not in the bulk search data, one extra page-fetch per row, so narrow to ≤15 results first (Only show / brand filters).</span>
+  </div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
 
@@ -124,6 +129,9 @@ const IDENT = [
 let DATA=null, active=new Set(), sortKey="avg", sortDir=-1, colW={};
 let workingSet=[];   // the current top-50 (or fewer) — what render() displays/sorts/searches; rebuilt by applyUpdate()
 const MAX_ROWS=50;
+const LENGTH_FETCH_MAX=15;   // keep the extra per-row detail-page fetch fast; narrow the result set first
+let lengthCache={};   // url -> {bodyType, lengthMm}, from GET /api/lengths (Autohero only — see Server.kt)
+let minLengthCm=null;
 
 // Brands/sources with no data yet — shown as disabled chips so the panel is shaped for where this is headed;
 // checking them does nothing today (there's nothing in DATA.rows to match) and they activate automatically
@@ -186,7 +194,53 @@ function rerankFromCurrentData(){
     return a.id<b.id?-1:a.id>b.id?1:0;
   });
   workingSet=filtered.slice(0,MAX_ROWS);
-  workingSet.forEach((r,i)=>r.index=i+1);
+  workingSet.forEach((r,i)=>{ r.index=i+1; applyLengthFromCache(r); });
+}
+
+function applyLengthFromCache(r){
+  const d=lengthCache[r.url];
+  r.lengthMm = d ? d.lengthMm : undefined;
+  r.bodyType = d ? d.bodyType : undefined;
+}
+
+function updateLengthBar(){
+  const btn=document.getElementById("fetchLengthsBtn");
+  const status=document.getElementById("lengthStatus");
+  const ahCount=workingSet.filter(r=>r.source==="autohero").length;
+  if(workingSet.length>LENGTH_FETCH_MAX){
+    btn.disabled=true;
+    status.textContent=`${workingSet.length} results shown — narrow to ≤${LENGTH_FETCH_MAX} (Only show / brand filters, then Update) to fetch lengths.`;
+  }else if(ahCount===0){
+    btn.disabled=true;
+    status.textContent="No Autohero rows in the current results — length data is Autohero-only.";
+  }else{
+    btn.disabled=false;
+    status.textContent=`Ready: fetch length for ${ahCount} Autohero row(s) shown.`;
+  }
+}
+
+/** One extra HTTP GET per row (Autohero's bulk search API has no body/length field — see Ingest.kt), so this
+ * only ever runs against the already-narrowed workingSet, never the full live pool. */
+async function fetchLengths(){
+  const urls=[...new Set(workingSet.filter(r=>r.source==="autohero").map(r=>r.url))];
+  if(urls.length===0) return;
+  const btn=document.getElementById("fetchLengthsBtn");
+  const status=document.getElementById("lengthStatus");
+  btn.disabled=true;
+  status.textContent=`Fetching ${urls.length} listing page(s)…`;
+  try{
+    const resp=await fetch("/api/lengths?urls="+encodeURIComponent(urls.join(",")));
+    if(!resp.ok) throw new Error("server returned "+resp.status);
+    const fresh=await resp.json();
+    Object.assign(lengthCache, fresh);
+    workingSet.forEach(applyLengthFromCache);
+    status.textContent=`Done: got length for ${Object.keys(fresh).length}/${urls.length}.`;
+  }catch(e){
+    status.textContent=`Length fetch failed (${e.message||e}). Is the local server running?`;
+  }finally{
+    updateLengthBar();
+    render();
+  }
 }
 
 function setUpdateBusy(busy){
@@ -268,10 +322,14 @@ function cellVal(r,key){
   return r[key];
 }
 function render(){
+  updateLengthBar();
   const q=(document.getElementById("q").value||"").toLowerCase();
   // workingSet is already the current top-50 (post brand/source/model filter + re-rank, see applyUpdate()).
   // The search box only narrows what's VISIBLE within it — a quick find-in-table, not a pool-changing filter.
   let rows=workingSet.filter(r=>!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q));
+  // Min length only ever hides rows within the already-narrowed workingSet (no pool backfill) — a row with
+  // no fetched length yet (r.lengthMm undefined) is excluded once a threshold is set, not shown as a false pass.
+  if(minLengthCm!=null) rows=rows.filter(r=>r.lengthMm!=null && r.lengthMm/10>=minLengthCm);
   // sortDir=-1 means descending/highest-first (shown as ▼): x<y -> a (the smaller one) must sort AFTER b,
   // so the comparator returns a POSITIVE number for that case when sortDir is negative, i.e. -sortDir.
   rows.sort((a,b)=>{ const x=cellVal(a,sortKey),y=cellVal(b,sortKey);
@@ -288,6 +346,7 @@ function render(){
     ...indep.map(p=>({k:p.name, label:p.label, indep:true, scale:p.scale||10})),
     {k:"total", label:"TOTAL", cls:"total"},
     ...totalCols.map(c=>({k:c,label:c,scored:true})),
+    {k:"lengthMm", label:"Length", cls:"left"},
     {k:"city", label:"City", cls:"left"},
   ];
   thead.innerHTML="<tr>"+cols.map(c=>{
@@ -304,6 +363,10 @@ function render(){
     if(c.k==="index") return `<td class="left rank">${r._pos}</td>`;
     if(c.k==="name") return `<td class="left" title="${r.name}"><a href="${r.url}" target="_blank" rel="noopener noreferrer">${r.name}</a></td>`;
     if(c.k==="total") return `<td class="total">${rowTotal(r).toFixed(1)}</td>`;
+    if(c.k==="lengthMm"){
+      if(r.lengthMm==null) return `<td class="left">${r.source==="autohero"?"<em>fetch</em>":"<span class=\"x\">X</span>"}</td>`;
+      return `<td class="left">${(r.lengthMm/10).toFixed(0)}cm${r.bodyType?" ("+r.bodyType+")":""}</td>`;
+    }
     if(c.k==="avg"){ const v=avgOf(r);
       return `<td class="total" title="mean(normalized Total, available independent plugins)"><span class="score ${roiClass(v)}">${v.toFixed(1)}</span></td>`;
     }
@@ -350,6 +413,12 @@ fetch("data.json").then(r=>r.json()).then(d=>{
   document.getElementById("hamburgerBtn").onclick=openDrawer;
   document.getElementById("backdrop").onclick=closeDrawer;
   document.getElementById("updateBtn").onclick=applyUpdate;
+  document.getElementById("fetchLengthsBtn").onclick=fetchLengths;
+  document.getElementById("minLength").oninput=e=>{
+    const v=parseFloat(e.target.value);
+    minLengthCm=Number.isFinite(v)?v:null;
+    render();
+  };
   buildBrandFilters();
   buildSourceFilters();
   rerankFromCurrentData();   // initial top-50 from the static snapshot — no live fetch on page load, only on Update

@@ -15,7 +15,11 @@ import java.util.UUID
  */
 
 private val UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-private val client: HttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(20)).build()
+// followRedirects(NORMAL) matters here: Autohero's own listing URLs (carUrlTitle + id) 301-redirect to their
+// canonical form, and HttpClient's default policy (NEVER) would otherwise silently return the redirect
+// response instead of the page -- fetchAutoheroDetail() depends on this to reach the actual detail page.
+private val client: HttpClient = HttpClient.newBuilder()
+    .connectTimeout(Duration.ofSeconds(20)).followRedirects(HttpClient.Redirect.NORMAL).build()
 private val ingestJson = Json { ignoreUnknownKeys = true; isLenient = true }
 
 val ALLOWED_MAKES_LIST = listOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai")
@@ -137,6 +141,45 @@ fun fetchAutohero(): List<Listing> {
         if (data.isEmpty()) break
     }
     return out
+}
+
+/**
+ * Autohero's bulk search API (fetchAutohero above) never reports body style or dimensions -- model/subType/
+ * subTypeExtra are only engine size + trim badge, e.g. "Corolla" / "2.0 Hybrid" / "Team D", identical for the
+ * hatchback and the Touring Sports estate. The individual listing's detail PAGE does carry it, embedded as a
+ * JS-string-escaped JSON blob (`window.__APOLLO_STATE__ = "...";`) among the page's Apollo GraphQL cache
+ * entries. This does one extra HTTP GET per listing, so callers should only use it on an already-narrowed
+ * candidate set (see /api/lengths), never the full live pool.
+ */
+data class AutoheroDetail(val bodyType: String?, val lengthMm: Int?)
+
+private val BODY_TYPE_RE = Regex("\"bodyType\":\"([A-Za-z]+)\"")
+private val DIMENSIONS_RE = Regex(
+    "\"__typename\":\"CarDetailsDimensionsProjection\"[^}]*\"length\":(\\d+)"
+)
+
+fun fetchAutoheroDetail(url: String): AutoheroDetail? {
+    val req = HttpRequest.newBuilder(URI(url)).header("User-Agent", UA).timeout(Duration.ofSeconds(20)).GET().build()
+    val resp = client.send(req, HttpResponse.BodyHandlers.ofString())
+    if (resp.statusCode() !in 200..299) return null
+    val html = resp.body()
+
+    val marker = "window.__APOLLO_STATE__ = \""
+    val start = html.indexOf(marker).takeIf { it >= 0 }?.plus(marker.length) ?: return null
+    var end = start
+    while (true) {
+        end = html.indexOf('"', end)
+        if (end < 0) return null
+        if (html[end - 1] != '\\') break
+        end++
+    }
+    // The blob is a JS double-quoted string containing escaped JSON; unescape it via the JSON string grammar,
+    // which is the same escaping JS string literals use here (\", \\, \n, \uXXXX, ...).
+    val innerJson = ingestJson.parseToJsonElement("\"${html.substring(start, end)}\"").jsonPrimitive.content
+
+    val bodyType = BODY_TYPE_RE.find(innerJson)?.groupValues?.get(1)
+    val lengthMm = DIMENSIONS_RE.find(innerJson)?.groupValues?.get(1)?.toIntOrNull()
+    return AutoheroDetail(bodyType, lengthMm)
 }
 
 // ---------- AutoScout24 ----------
