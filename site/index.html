@@ -100,6 +100,10 @@
       <div id="drawerSources" class="drawer-section"></div>
     </div>
     <div class="drawer-section">
+      <strong class="note">Only show (model/trim contains, all terms must match)</strong>
+      <input type="text" id="onlyModels" placeholder="e.g. Corolla, Touring Sports"/>
+    </div>
+    <div class="drawer-section">
       <strong class="note">Hide models</strong>
       <input type="text" id="hideModels" placeholder="Comma-separated, e.g. Yaris, i10"/>
     </div>
@@ -164,11 +168,17 @@ function rerankFromCurrentData(){
     .filter(cb=>!cb.checked).map(cb=>cb.closest(".brandchip").dataset.source));
   const hideList=(document.getElementById("hideModels").value||"").toLowerCase()
     .split(",").map(s=>s.trim()).filter(Boolean);
+  // "Only show": every comma-separated term must appear somewhere in the row's full name (make+model+trim),
+  // since a variant like "Touring Sports" (the estate/combi trim) lives in subType/subTypeExtra, not r.model.
+  const onlyList=(document.getElementById("onlyModels").value||"").toLowerCase()
+    .split(",").map(s=>s.trim()).filter(Boolean);
 
-  const filtered=DATA.rows.filter(r=>
-    !excludedBrands.has(r.make) && !excludedSources.has(r.source) &&
-    !hideList.some(h=>r.model.toLowerCase().includes(h))
-  );
+  const filtered=DATA.rows.filter(r=>{
+    const name=r.name.toLowerCase();
+    return !excludedBrands.has(r.make) && !excludedSources.has(r.source) &&
+      !hideList.some(h=>r.model.toLowerCase().includes(h)) &&
+      onlyList.every(o=>name.includes(o));
+  });
   filtered.sort((a,b)=>{
     if(a.total!==b.total) return b.total-a.total;
     if(a.mileageKm!==b.mileageKm) return a.mileageKm-b.mileageKm;
