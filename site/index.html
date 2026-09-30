@@ -86,9 +86,8 @@
     <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted. Use ☰ to filter by brand/model/source and re-rank the top 50 from the full pool.</span>
   </div>
   <div class="controls">
-    <button id="fetchLengthsBtn">Fetch lengths</button>
-    <input id="minLength" type="number" placeholder="Min length cm, e.g. 450" style="width:140px"/>
-    <span class="note" id="lengthStatus">Autohero only — not in the bulk search data, one extra page-fetch per row, so narrow to ≤15 results first (Only show / brand filters).</span>
+    <button id="fetchLengthsBtn">Fetch lengths now</button>
+    <span class="note" id="lengthStatus">Autohero only — not in the bulk search data, one extra page-fetch per row, so narrow to ≤15 results first (Only show / brand filters). Set "Min length" in ☰ and Update fetches it for you automatically.</span>
   </div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
@@ -112,9 +111,13 @@
       <strong class="note">Hide models</strong>
       <input type="text" id="hideModels" placeholder="Comma-separated, e.g. Yaris, i10"/>
     </div>
+    <div class="drawer-section">
+      <strong class="note">Min length, cm (Autohero only)</strong>
+      <input type="number" id="minLength" placeholder="e.g. 450"/>
+    </div>
     <button class="updateBtn" id="updateBtn"><span id="updateBtnLabel">Update</span><span id="updateSpinner" class="spinner" hidden></span></button>
     <p id="updateStatus" class="note" style="min-height:14px"></p>
-    <span class="note">Update does a REAL live re-fetch from Autohero + AutoScout24 (via the local server, <code>./gradlew runServer</code>), re-scores everything, then applies your brand/source/model selections and re-ranks the top 50 from the full refreshed pool — so excluding a brand refills with the next-best contenders instead of shrinking the list. Takes 15–40s; that's real network time, not a bug. If the local server isn't running, this falls back to re-ranking the last-loaded snapshot instead of breaking.</span>
+    <span class="note">Update does a REAL live re-fetch from Autohero + AutoScout24 (via the local server, <code>./gradlew runServer</code>), re-scores everything, then applies your brand/source/model selections and re-ranks the top 50 from the full refreshed pool — so excluding a brand refills with the next-best contenders instead of shrinking the list. Takes 15–40s; that's real network time, not a bug. If the local server isn't running, this falls back to re-ranking the last-loaded snapshot instead of breaking. If "Min length" is set and the narrowed result is ≤15 rows, Update automatically fetches lengths too (Autohero's search API can't filter by length itself — it's only on each listing's detail page, one extra request per row, not part of the bulk search).</span>
   </div>
 
 <script>
@@ -169,7 +172,13 @@ function buildSourceFilters(){
 /** Filter DATA.rows by the drawer's current (staged) brand/source/model selection, sort by the same rule
  * buildTable() uses (total desc, mileage→price→id), cap to 50, reindex. Pure client-side — no fetch, no
  * scoring math, just re-deriving the top 50 from whatever pool is currently in DATA.rows. */
+function parseMinLength(){
+  const v=parseFloat(document.getElementById("minLength").value);
+  return Number.isFinite(v)?v:null;
+}
+
 function rerankFromCurrentData(){
+  minLengthCm=parseMinLength();
   const excludedBrands=new Set([...document.querySelectorAll("#drawerBrands .brandchip:not(.disabled) input")]
     .filter(cb=>!cb.checked).map(cb=>cb.closest(".brandchip").dataset.make));
   const excludedSources=new Set([...document.querySelectorAll("#drawerSources .brandchip:not(.disabled) input")]
@@ -243,6 +252,21 @@ async function fetchLengths(){
   }
 }
 
+/** Called from applyUpdate() so "Update" alone is enough when a min length is staged — no separate manual
+ * click needed. Autohero's search API can't filter by length itself (verified: every field name tried for it
+ * was rejected, unlike a real field such as firstRegistrationYear), so this is still a second, per-row fetch
+ * under the hood; it only runs automatically when the narrowed result is small enough (LENGTH_FETCH_MAX). */
+async function maybeAutoFetchLengths(statusEl){
+  if(minLengthCm==null) return;
+  const ahCount=workingSet.filter(r=>r.source==="autohero").length;
+  if(ahCount===0 || workingSet.length>LENGTH_FETCH_MAX){
+    statusEl.textContent+=` Min length is set but ${workingSet.length} results shown exceeds ${LENGTH_FETCH_MAX} — narrow further (Only show / brand filters) for it to auto-apply.`;
+    return;
+  }
+  statusEl.textContent+=` Fetching length for ${ahCount} Autohero row(s)…`;
+  await fetchLengths();
+}
+
 function setUpdateBusy(busy){
   document.getElementById("updateBtn").disabled=busy;
   document.getElementById("updateSpinner").hidden=!busy;
@@ -277,6 +301,7 @@ async function applyUpdate(){
     rerankFromCurrentData();
   }finally{
     clearTimeout(timeoutId);
+    await maybeAutoFetchLengths(statusEl);
     setUpdateBusy(false);
     closeDrawer();
     render();
@@ -414,11 +439,6 @@ fetch("data.json").then(r=>r.json()).then(d=>{
   document.getElementById("backdrop").onclick=closeDrawer;
   document.getElementById("updateBtn").onclick=applyUpdate;
   document.getElementById("fetchLengthsBtn").onclick=fetchLengths;
-  document.getElementById("minLength").oninput=e=>{
-    const v=parseFloat(e.target.value);
-    minLengthCm=Number.isFinite(v)?v:null;
-    render();
-  };
   buildBrandFilters();
   buildSourceFilters();
   rerankFromCurrentData();   // initial top-50 from the static snapshot — no live fetch on page load, only on Update
