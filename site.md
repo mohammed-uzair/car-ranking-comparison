@@ -54,6 +54,22 @@ to be configurable/generic for its own sake.
 - **A length/size-type filter (or any filter needing a per-row extra fetch) must never silently blank the
   table** when the extra data hasn't been fetched yet. Fail visibly (a status message), not by returning zero
   rows that look indistinguishable from "nothing matched."
+- **There is exactly one filter surface: the ☰ drawer, applied on Update.** No standalone buttons for a single
+  filter field (a "Fetch lengths now" button was removed 2026-10-01 for exactly this reason) — every staged
+  filter, including one that needs an extra per-row fetch (min length), runs automatically as part of a single
+  Update click. Don't reintroduce a second manual trigger for something the drawer already stages.
+- **Autohero's search API cannot filter by length/dimensions/body-type server-side — this is verified, not
+  assumed.** 17 candidate field names tried directly against the live GraphQL endpoint (length, carLength,
+  dimensions.length, bodyType, lengthMm, exteriorLength, vehicleDimensions.length, carLengthMm, and more,
+  across two separate verification rounds) were all rejected with the same generic error, while every real
+  field (firstRegistrationYear, manufacturer, offerPrice.amountMinorUnits, ...) works in the identical request
+  shape. Don't attempt to push length into `autoheroFilter()` in `Ingest.kt` without re-verifying first — the
+  data genuinely isn't indexed for search, only available per-listing on the detail page.
+- **A `hidden` attribute must be respected in CSS, not just assumed to work.** `.spinner{display:inline-block}`
+  silently defeated the `hidden` attribute (an author-origin class rule beats the UA's `[hidden]{display:none}`
+  at equal specificity, regardless of source order) — the Update spinner was animating non-stop from page load
+  for an unknown period before this was caught. Any element toggled via `hidden` needs an explicit
+  `.class[hidden]{display:none}` rule, not just the bare class rule plus the attribute.
 - **The full Kotlin test suite must stay green** (currently 90 tests, `./gradlew test`) after every change,
   including page-JS-only changes that don't touch Kotlin at all — run it anyway, it's cheap and it's the
   regression net for the scoring/ingestion logic the page depends on.

@@ -71,6 +71,9 @@
   .updateBtn:disabled{opacity:.6;cursor:wait}
   .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;
     border-radius:50%;display:inline-block;animation:spin .7s linear infinite}
+  .spinner[hidden]{display:none}   /* an author rule beats the UA's [hidden]{display:none} at equal
+    specificity, so .spinner{display:inline-block} alone silently defeated the hidden attribute entirely --
+    the spinner was visibly animating non-stop from page load, regardless of fetch state, until this rule */
   @keyframes spin{to{transform:rotate(360deg)}}
   .updateBtn:hover{opacity:.9}
 </style>
@@ -84,10 +87,6 @@
   <div class="controls">
     <input id="q" placeholder="Search visible rows: name / fuel / city…"/>
     <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted. Use ☰ to filter by brand/model/source and re-rank the top 50 from the full pool.</span>
-  </div>
-  <div class="controls">
-    <button id="fetchLengthsBtn">Fetch lengths now</button>
-    <span class="note" id="lengthStatus">Autohero only — not in the bulk search data, one extra page-fetch per row (fetched concurrently, so the full top 50 is fine). Set "Min length" in ☰ and Update fetches it for you automatically.</span>
   </div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
@@ -232,68 +231,39 @@ function applyLengthFromCache(r){
   r.bodyType = d ? d.bodyType : undefined;
 }
 
-/** Called both right after a fetch completes (fetchLengths()'s finally) AND at the top of every render() —
- * so it must reflect whatever's ALREADY true of workingSet, not just "ready to fetch", or it stomps the
- * "Done: got length for X/Y" message the instant render() runs right after a successful fetch (it always
- * does — that's exactly what made a working fetch look like it silently failed/never ran). */
-function updateLengthBar(){
-  const btn=document.getElementById("fetchLengthsBtn");
-  const status=document.getElementById("lengthStatus");
+/**
+ * Applies a staged "Min length" automatically as part of Update -- there is no separate manual control on
+ * the page; the filter drawer is the only filter surface, and clicking Update is what runs everything in it.
+ *
+ * This is NOT a server-side search filter. Verified directly against Autohero's live GraphQL search endpoint:
+ * every candidate field name tried for length/dimensions/body-type (length, carLength, dimensions.length,
+ * bodyType, lengthMm, exteriorLength, vehicleDimensions.length, carLengthMm, and others -- 17 total across two
+ * rounds of testing) was rejected with the same generic error, while a real filterable field like
+ * firstRegistrationYear works fine in the identical request shape. The field simply isn't indexed for search
+ * -- it only exists in each listing's individual detail page (a different data source entirely), so there is
+ * no GraphQL query that returns "only cars at/above this length" from Autohero. What Update does instead:
+ * fetch the live pool as normal, then (only when the narrowed result is small enough -- LENGTH_FETCH_MAX --
+ * to fetch quickly) fetch each Autohero row's detail page concurrently and filter client-side.
+ */
+async function maybeAutoFetchLengths(statusEl){
+  if(minLengthCm==null) return;
   const ahRows=workingSet.filter(r=>r.source==="autohero");
-  const fetchedCount=ahRows.filter(r=>r.lengthMm!=null).length;
-  if(workingSet.length>LENGTH_FETCH_MAX){
-    btn.disabled=true;
-    status.textContent=`${workingSet.length} results shown — narrow to ≤${LENGTH_FETCH_MAX} (Only show / brand filters, then Update) to fetch lengths.`;
-  }else if(ahRows.length===0){
-    btn.disabled=true;
-    status.textContent="No Autohero rows in the current results — length data is Autohero-only.";
-  }else if(fetchedCount>0){
-    btn.disabled=false;
-    status.textContent=`Length known for ${fetchedCount}/${ahRows.length} Autohero row(s) shown.`+
-      (fetchedCount<ahRows.length ? " Click to fetch the rest." : "");
-  }else{
-    btn.disabled=false;
-    status.textContent=`Ready: fetch length for ${ahRows.length} Autohero row(s) shown.`;
+  if(ahRows.length===0 || workingSet.length>LENGTH_FETCH_MAX){
+    statusEl.textContent+=` Min length is set but ${workingSet.length} results shown exceeds ${LENGTH_FETCH_MAX} (or has no Autohero rows) — narrow further (Only show / brand filters) for it to auto-apply.`;
+    return;
   }
-}
-
-/** One extra HTTP GET per row (Autohero's bulk search API has no body/length field — see Ingest.kt), so this
- * only ever runs against the already-narrowed workingSet, never the full live pool. */
-async function fetchLengths(){
-  const urls=[...new Set(workingSet.filter(r=>r.source==="autohero").map(r=>r.url))];
-  if(urls.length===0) return;
-  const btn=document.getElementById("fetchLengthsBtn");
-  const status=document.getElementById("lengthStatus");
-  btn.disabled=true;
-  status.textContent=`Fetching ${urls.length} listing page(s)…`;
+  const urls=[...new Set(ahRows.map(r=>r.url))];
+  statusEl.textContent+=` Fetching length for ${urls.length} Autohero row(s)…`;
   try{
     const resp=await fetch("/api/lengths?urls="+encodeURIComponent(urls.join(",")));
     if(!resp.ok) throw new Error("server returned "+resp.status);
     const fresh=await resp.json();
     Object.assign(lengthCache, fresh);
     workingSet.forEach(applyLengthFromCache);
-    status.textContent=`Done: got length for ${Object.keys(fresh).length}/${urls.length}.`;
+    statusEl.textContent+=` Length known for ${Object.keys(fresh).length}/${urls.length}.`;
   }catch(e){
-    status.textContent=`Length fetch failed (${e.message||e}). Is the local server running?`;
-  }finally{
-    updateLengthBar();
-    render();
+    statusEl.textContent+=` Length fetch failed (${e.message||e}).`;
   }
-}
-
-/** Called from applyUpdate() so "Update" alone is enough when a min length is staged — no separate manual
- * click needed. Autohero's search API can't filter by length itself (verified: every field name tried for it
- * was rejected, unlike a real field such as firstRegistrationYear), so this is still a second, per-row fetch
- * under the hood; it only runs automatically when the narrowed result is small enough (LENGTH_FETCH_MAX). */
-async function maybeAutoFetchLengths(statusEl){
-  if(minLengthCm==null) return;
-  const ahCount=workingSet.filter(r=>r.source==="autohero").length;
-  if(ahCount===0 || workingSet.length>LENGTH_FETCH_MAX){
-    statusEl.textContent+=` Min length is set but ${workingSet.length} results shown exceeds ${LENGTH_FETCH_MAX} — narrow further (Only show / brand filters) for it to auto-apply.`;
-    return;
-  }
-  statusEl.textContent+=` Fetching length for ${ahCount} Autohero row(s)…`;
-  await fetchLengths();
 }
 
 function setUpdateBusy(busy){
@@ -381,7 +351,6 @@ function cellVal(r,key){
   return r[key];
 }
 function render(){
-  updateLengthBar();
   const q=(document.getElementById("q").value||"").toLowerCase();
   // workingSet is already the current top-50 (post brand/source/model filter + re-rank, see applyUpdate()).
   // The search box only narrows what's VISIBLE within it — a quick find-in-table, not a pool-changing filter.
@@ -477,7 +446,6 @@ fetch("data.json").then(r=>r.json()).then(d=>{
   document.getElementById("hamburgerBtn").onclick=openDrawer;
   document.getElementById("backdrop").onclick=closeDrawer;
   document.getElementById("updateBtn").onclick=applyUpdate;
-  document.getElementById("fetchLengthsBtn").onclick=fetchLengths;
   buildBrandFilters();
   buildSourceFilters();
   rerankFromCurrentData();   // initial top-50 from the static snapshot — no live fetch on page load, only on Update
