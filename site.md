@@ -23,8 +23,10 @@ to be configurable/generic for its own sake.
    re-filter of already-loaded data is not an acceptable substitute and must never be silently swapped in for
    this without telling the user (the existing fallback-on-server-down path is the one sanctioned exception,
    and it says so in the status line).
-4. **Fetch lengths for a narrowed set (Autohero only).** One extra per-row detail-page fetch; the search API
-   cannot filter by length server-side (verified — see docs/reliability.md-adjacent note in Server.kt).
+4. **Body type (Autohero only) is a REAL server-side filter.** Checkboxes in the drawer (Combination/SUV/Van/
+   Pickup/Convertible) are sent straight into the live Autohero query itself as `{"field":"bodyType","op":"eq",
+   "value":[<codes>]}` — Autohero only returns matching cars, not a fetch-everything-then-filter. See
+   `AUTOHERO_BODY_TYPE_CODES` in `Ingest.kt`.
 5. **Sort, toggle columns, read it, click through to the real listing.** Table interactions are pure
    client-side re-derivations of `workingSet` / `DATA.rows` — no network calls.
 
@@ -65,16 +67,25 @@ to be configurable/generic for its own sake.
   future multi-request fetch (a new source, a new per-row enrichment) must follow this same pattern — retry
   transient failures, and surface incompleteness rather than hiding it.
 - **There is exactly one filter surface: the ☰ drawer, applied on Update.** No standalone buttons for a single
-  filter field (a "Fetch lengths now" button was removed 2026-10-01 for exactly this reason) — every staged
-  filter, including one that needs an extra per-row fetch (min length), runs automatically as part of a single
-  Update click. Don't reintroduce a second manual trigger for something the drawer already stages.
-- **Autohero's search API cannot filter by length/dimensions/body-type server-side — this is verified, not
-  assumed.** 17 candidate field names tried directly against the live GraphQL endpoint (length, carLength,
-  dimensions.length, bodyType, lengthMm, exteriorLength, vehicleDimensions.length, carLengthMm, and more,
-  across two separate verification rounds) were all rejected with the same generic error, while every real
-  field (firstRegistrationYear, manufacturer, offerPrice.amountMinorUnits, ...) works in the identical request
-  shape. Don't attempt to push length into `autoheroFilter()` in `Ingest.kt` without re-verifying first — the
-  data genuinely isn't indexed for search, only available per-listing on the detail page.
+  filter field (a "Fetch lengths now" button was removed 2026-10-01). Every staged filter runs automatically
+  as part of a single Update click. Don't reintroduce a second manual trigger for something the drawer stages.
+- **Autohero's `bodyType` search field IS real and does work server-side — this was wrongly reported as
+  impossible for a while, and the correction matters methodologically, not just as a fact.** A min-length
+  filter was originally built as a client-side-only workaround (fetch the pool, then fetch each Autohero
+  row's own detail page, then filter) because every guessed `{"field":"bodyType","op":"eq","value":"..."}`
+  request — tried with string values like `"StationWagon"`, `"Kombi"`, `"station_wagon"`, 17 variants total —
+  was rejected with the same generic error, which was (wrongly) taken as proof the field wasn't filterable at
+  all. The real cause was a **type mismatch, not a missing feature**: the field expects an ARRAY OF NUMERIC
+  CODES (`{"field":"bodyType","op":"eq","value":[1023]}` for "Combination"/wagon), discovered only by
+  capturing Autohero's own site's real network request (a user-provided HAR export) rather than continuing to
+  guess string values. **Lesson: a GraphQL field rejecting every guessed VALUE is not evidence the field
+  itself is unusable — a generic/uninformative error from an app-level (not GraphQL-schema-level) validation
+  can just as easily mean the TYPE is wrong, not that the FIELD is wrong.** When a field name is confirmed to
+  exist (e.g. found literally in the target site's own source, as `bodyType` was) but every value is rejected,
+  capturing a real request beats continuing to guess. This is now implemented for real — see
+  `AUTOHERO_BODY_TYPE_CODES` in `Ingest.kt` — and the old per-row-detail-page length-fetch machinery
+  (`/api/lengths`, `fetchAutoheroDetail`, the Length column) was removed as superseded, per the user's
+  explicit direction once the real filter was confirmed working.
 - **A `hidden` attribute must be respected in CSS, not just assumed to work.** `.spinner{display:inline-block}`
   silently defeated the `hidden` attribute (an author-origin class rule beats the UA's `[hidden]{display:none}`
   at equal specificity, regardless of source order) — the Update spinner was animating non-stop from page load
@@ -114,7 +125,9 @@ actually hit:
   door count) — see `docs/algorithm.md` for exact defaults/gaps.
 - Cross-source dedup (`dedupeAcrossSources`) is currently a no-op: neither live source exposes `color`, and the
   dedup guard deliberately requires a known color before merging two listings.
-- Car length/body-type data is Autohero-only, detail-page-only (not in the bulk search API, and confirmed the
-  search API cannot filter by it server-side either — every candidate field name tried was rejected).
+- Body type filtering is Autohero-only (real server-side filter, 5 codes confirmed: Combination/SUV/Van/
+  Pickup/Convertible — "limousine"/"Small cars"/"Coupé-Sport" codes weren't found). AutoScout24 has no
+  equivalent; exact car length (cm) isn't exposed anywhere anymore (the old per-row detail-page length fetch
+  was removed as superseded once body type was confirmed working).
 - Mazda's ROI is standing/ranking-based, not a precise current-generation defect-percentage calc like
   BMW/Audi/Mercedes — see `docs/reliability.md`.

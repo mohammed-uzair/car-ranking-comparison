@@ -15,9 +15,8 @@ import java.util.UUID
  */
 
 private val UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-// followRedirects(NORMAL) matters here: Autohero's own listing URLs (carUrlTitle + id) 301-redirect to their
-// canonical form, and HttpClient's default policy (NEVER) would otherwise silently return the redirect
-// response instead of the page -- fetchAutoheroDetail() depends on this to reach the actual detail page.
+// followRedirects(NORMAL): Autohero's own listing URLs (carUrlTitle + id) 301-redirect to their canonical
+// form, and HttpClient's default policy (NEVER) would otherwise silently return the redirect response.
 private val client: HttpClient = HttpClient.newBuilder()
     .connectTimeout(Duration.ofSeconds(20)).followRedirects(HttpClient.Redirect.NORMAL).build()
 private val ingestJson = Json { ignoreUnknownKeys = true; isLenient = true }
@@ -49,7 +48,25 @@ private const val AUTOHERO_ENDPOINT = "https://www.autohero.com/v1/retail-custom
 private const val AUTOHERO_QUERY =
     "query searchAdV9AdsV2(\$search: EsSearchRequestProjectionInput!, \$tradeInId: UUID) { searchAdV9AdsV2(search: \$search, tradeInId: \$tradeInId) }"
 
-private fun autoheroFilter(): JsonObject = buildJsonObject {
+/**
+ * Autohero's own body-style facet (the "Design" checkboxes on their search page: SUV, combination/Kombi,
+ * limousine, Small cars, Van/Minibus, Coupé/Sport, convertible, Pick up). Confirmed live, server-side --
+ * this is a REAL filterable field, found by capturing Autohero's own frontend's network request (a HAR
+ * export) after every guessed string value (e.g. "StationWagon", "Kombi") was rejected. The field is
+ * `bodyType`, but the value is an ARRAY OF NUMERIC CODES, not a string -- that mismatch (not a missing
+ * field) is why plain string guesses always failed with a generic, uninformative error. Only the 5 codes
+ * below are confirmed by testing (each cross-checked against real matching models); "limousine"/"Small
+ * cars"/"Coupé-Sport" codes were not found and are deliberately left out rather than guessed.
+ */
+val AUTOHERO_BODY_TYPE_CODES = linkedMapOf(
+    "Combination" to 1023,   // wagon/estate/Kombi -- confirmed: Audi A4 Avant, Opel Astra Sports Tourer, Volvo V60, Toyota Corolla/Auris Touring Sports
+    "SUV" to 1035,           // confirmed: Toyota Yaris Cross, Audi Q5, Volvo XC40
+    "Van/Minibus" to 1038,   // confirmed: Citroën Berlingo, BMW 2er Gran Tourer, Mercedes B-Klasse
+    "Pickup" to 1027,        // confirmed: Mercedes X-Klasse, Isuzu D-MAX, Ford Ranger
+    "Convertible" to 1030,   // confirmed: BMW Z4, Mercedes SLC
+)
+
+private fun autoheroFilter(bodyTypes: List<Int>): JsonObject = buildJsonObject {
     put("op", "and")
     putJsonArray("value") {
         addJsonObject { put("field", "countryCode"); put("op", "eq"); put("value", "DE") }
@@ -75,12 +92,18 @@ private fun autoheroFilter(): JsonObject = buildJsonObject {
                 }
             }
         }
+        if (bodyTypes.isNotEmpty()) {
+            addJsonObject {
+                put("field", "bodyType"); put("op", "eq")
+                putJsonArray("value") { bodyTypes.forEach { add(it) } }
+            }
+        }
     }
 }
 
-private fun autoheroBody(offset: Int, limit: Int): String {
+private fun autoheroBody(offset: Int, limit: Int, bodyTypes: List<Int>): String {
     val search = buildJsonObject {
-        put("filter", autoheroFilter())
+        put("filter", autoheroFilter(bodyTypes))
         put("limit", limit)
         put("offset", offset)
         put("sort", "most_popular")
@@ -144,11 +167,11 @@ private data class AutoheroPage(val listings: List<Listing>, val total: Int)
  * in here (bad status, unparseable body, missing fields) just means "this attempt didn't work", not "we've
  * reached the end of the results" (that's signaled by an empty [AutoheroPage.listings], a real, meaningful
  * value, never by returning null). */
-private fun fetchAutoheroPage(offset: Int, limit: Int): AutoheroPage? {
+private fun fetchAutoheroPage(offset: Int, limit: Int, bodyTypes: List<Int>): AutoheroPage? {
     val req = HttpRequest.newBuilder(URI(AUTOHERO_ENDPOINT))
         .header("Content-Type", "application/json").header("Accept", "application/json")
         .header("User-Agent", UA).header("x-country", "DE").header("x-locale", "de-DE")
-        .POST(HttpRequest.BodyPublishers.ofString(autoheroBody(offset, limit)))
+        .POST(HttpRequest.BodyPublishers.ofString(autoheroBody(offset, limit, bodyTypes)))
         .timeout(Duration.ofSeconds(20)).build()
     val resp = client.send(req, HttpResponse.BodyHandlers.ofString())
     if (resp.statusCode() != 200) return null
@@ -166,14 +189,14 @@ private fun fetchAutoheroPage(offset: Int, limit: Int): AutoheroPage? {
  * got -- never silently returned as if it were the complete result. (This silent-truncation failure mode was
  * the confirmed root cause of a real reported bug -- see site.md's "Known current gaps" / "Root cause #1".)
  */
-fun fetchAutohero(): FetchResult {
+fun fetchAutohero(bodyTypes: List<Int> = emptyList()): FetchResult {
     val out = mutableListOf<Listing>()
     var offset = 0
     val limit = 50
     var total = Int.MAX_VALUE
     var pagesFetched = 0
     while (offset < total) {
-        val page = withRetry { fetchAutoheroPage(offset, limit) }
+        val page = withRetry { fetchAutoheroPage(offset, limit, bodyTypes) }
         if (page == null) {
             return FetchResult(out, complete = false,
                 note = "Autohero: stopped after $pagesFetched page(s) (${out.size} listings so far) -- a page kept failing even after retries.")
@@ -185,45 +208,6 @@ fun fetchAutohero(): FetchResult {
         offset += limit
     }
     return FetchResult(out, complete = true)
-}
-
-/**
- * Autohero's bulk search API (fetchAutohero above) never reports body style or dimensions -- model/subType/
- * subTypeExtra are only engine size + trim badge, e.g. "Corolla" / "2.0 Hybrid" / "Team D", identical for the
- * hatchback and the Touring Sports estate. The individual listing's detail PAGE does carry it, embedded as a
- * JS-string-escaped JSON blob (`window.__APOLLO_STATE__ = "...";`) among the page's Apollo GraphQL cache
- * entries. This does one extra HTTP GET per listing, so callers should only use it on an already-narrowed
- * candidate set (see /api/lengths), never the full live pool.
- */
-data class AutoheroDetail(val bodyType: String?, val lengthMm: Int?)
-
-private val BODY_TYPE_RE = Regex("\"bodyType\":\"([A-Za-z]+)\"")
-private val DIMENSIONS_RE = Regex(
-    "\"__typename\":\"CarDetailsDimensionsProjection\"[^}]*\"length\":(\\d+)"
-)
-
-fun fetchAutoheroDetail(url: String): AutoheroDetail? {
-    val req = HttpRequest.newBuilder(URI(url)).header("User-Agent", UA).timeout(Duration.ofSeconds(20)).GET().build()
-    val resp = client.send(req, HttpResponse.BodyHandlers.ofString())
-    if (resp.statusCode() !in 200..299) return null
-    val html = resp.body()
-
-    val marker = "window.__APOLLO_STATE__ = \""
-    val start = html.indexOf(marker).takeIf { it >= 0 }?.plus(marker.length) ?: return null
-    var end = start
-    while (true) {
-        end = html.indexOf('"', end)
-        if (end < 0) return null
-        if (html[end - 1] != '\\') break
-        end++
-    }
-    // The blob is a JS double-quoted string containing escaped JSON; unescape it via the JSON string grammar,
-    // which is the same escaping JS string literals use here (\", \\, \n, \uXXXX, ...).
-    val innerJson = ingestJson.parseToJsonElement("\"${html.substring(start, end)}\"").jsonPrimitive.content
-
-    val bodyType = BODY_TYPE_RE.find(innerJson)?.groupValues?.get(1)
-    val lengthMm = DIMENSIONS_RE.find(innerJson)?.groupValues?.get(1)?.toIntOrNull()
-    return AutoheroDetail(bodyType, lengthMm)
 }
 
 // ---------- AutoScout24 ----------
@@ -360,8 +344,11 @@ fun fetchAutoScout24(): FetchResult {
 }
 
 /** Both sources, live. Used by the server's /api/pool endpoint and available for an offline re-fetch too. */
-fun fetchAllListingsLive(): FetchResult {
-    val ah = fetchAutohero()
+/** [autoheroBodyTypes] narrows the live Autohero query itself (real server-side filter -- see
+ * AUTOHERO_BODY_TYPE_CODES); AutoScout24 has no equivalent, its own filter surface is model/trim text
+ * matching in the page's "Only show" field, unaffected by this. */
+fun fetchAllListingsLive(autoheroBodyTypes: List<Int> = emptyList()): FetchResult {
+    val ah = fetchAutohero(autoheroBodyTypes)
     val as24 = fetchAutoScout24()
     val notes = listOfNotNull(ah.note, as24.note)
     return FetchResult(ah.listings + as24.listings, ah.complete && as24.complete,
