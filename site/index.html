@@ -298,7 +298,12 @@ async function applyUpdate(){
     buildBrandFilters();
     buildSourceFilters();
     rerankFromCurrentData();
-    statusEl.textContent=`Live: refreshed just now (${DATA.rowCount} eligible).`;
+    // fetchWarning is set by the server when a live paginated fetch (Autohero/AutoScout24) didn't get the
+    // complete result (a page kept failing even after retries) -- never silently treat a partial pool as
+    // complete; this is exactly what was previously happening without any indication to the user.
+    statusEl.textContent = DATA.fetchWarning
+      ? `⚠ Live refresh INCOMPLETE (${DATA.rowCount} eligible, but some results are missing): ${DATA.fetchWarning} Try Update again.`
+      : `Live: refreshed just now (${DATA.rowCount} eligible).`;
   }catch(e){
     const why=e.name==="AbortError" ? "timed out after 60s" : (e.message||String(e));
     statusEl.textContent=`Live fetch failed (${why}). Is \`./gradlew runServer\` running at this exact URL? Re-ranked the last-loaded data instead.`;
@@ -433,7 +438,15 @@ function render(){
     const up=()=>{ document.removeEventListener("mousemove",move); document.removeEventListener("mouseup",up); document.body.classList.remove("resizing"); };
     document.addEventListener("mousemove",move); document.addEventListener("mouseup",up);
   }));
-  const lenNote = minLengthCm!=null ? ` · min length ${minLengthCm}cm applied (hides rows shorter than that, and any Autohero row not yet fetched)` : "";
+  // Must mirror the SAME guard the actual row filter uses (below) -- claiming "applied" when the filter
+  // was in fact skipped (nothing fetched yet) was its own confirmed bug, read as "the filter is broken"
+  // rather than "nothing to filter by yet".
+  const lenApplied = minLengthCm!=null && workingSet.some(r=>r.lengthMm!=null);
+  const lenNote = minLengthCm!=null
+    ? (lenApplied
+        ? ` · min length ${minLengthCm}cm applied (hides rows shorter than that, and any Autohero row not yet fetched)`
+        : ` · min length ${minLengthCm}cm set but NOT yet applied (no lengths fetched for these rows)`)
+    : "";
   document.getElementById("meta").textContent=
     `${rows.length} of ${workingSet.length} in current top ${MAX_ROWS} shown (${DATA.rowCount} in full eligible pool)${lenNote} · active columns: ${[...active].join(", ")||"none"}`;
 }

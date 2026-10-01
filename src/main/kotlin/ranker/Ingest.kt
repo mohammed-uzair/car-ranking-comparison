@@ -24,6 +24,25 @@ private val ingestJson = Json { ignoreUnknownKeys = true; isLenient = true }
 
 val ALLOWED_MAKES_LIST = listOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda")
 
+/** The outcome of a (possibly multi-page) live fetch. [complete] is false when pagination gave up early
+ * because a page kept failing even after retries -- see withRetry(). A caller MUST surface [note] to the
+ * user when [complete] is false rather than silently treating [listings] as the full result; see site.md
+ * ("fetchAutohero()'s pagination loop silently truncated... 2026-10-01"). */
+data class FetchResult(val listings: List<Listing>, val complete: Boolean, val note: String? = null)
+
+/** Retries [block] up to [attempts] times (linear backoff) and returns the first non-null result, or null if
+ * every attempt fails (including attempts that throw). Used to make a single page/request in a paginated
+ * fetch resilient to one transient failure (a 5xx, a dropped connection, a momentary bad response) without
+ * that one failure silently truncating the entire fetch -- see fetchAutohero()/fetchAutoScout24Brand(). */
+internal fun <T> withRetry(attempts: Int = 3, delayMs: Long = 400, block: () -> T?): T? {
+    repeat(attempts) { i ->
+        val result = try { block() } catch (e: Exception) { null }
+        if (result != null) return result
+        if (i < attempts - 1) Thread.sleep(delayMs * (i + 1))
+    }
+    return null
+}
+
 // ---------- Autohero ----------
 
 private const val AUTOHERO_ENDPOINT = "https://www.autohero.com/v1/retail-customer-gateway/graphql"
@@ -119,28 +138,53 @@ fun autoheroCarToListing(c: JsonObject): Listing? {
     )
 }
 
-fun fetchAutohero(): List<Listing> {
+private data class AutoheroPage(val listings: List<Listing>, val total: Int)
+
+/** One page fetch+parse, as a single unit `withRetry()` can retry wholesale -- a transient failure anywhere
+ * in here (bad status, unparseable body, missing fields) just means "this attempt didn't work", not "we've
+ * reached the end of the results" (that's signaled by an empty [AutoheroPage.listings], a real, meaningful
+ * value, never by returning null). */
+private fun fetchAutoheroPage(offset: Int, limit: Int): AutoheroPage? {
+    val req = HttpRequest.newBuilder(URI(AUTOHERO_ENDPOINT))
+        .header("Content-Type", "application/json").header("Accept", "application/json")
+        .header("User-Agent", UA).header("x-country", "DE").header("x-locale", "de-DE")
+        .POST(HttpRequest.BodyPublishers.ofString(autoheroBody(offset, limit)))
+        .timeout(Duration.ofSeconds(20)).build()
+    val resp = client.send(req, HttpResponse.BodyHandlers.ofString())
+    if (resp.statusCode() != 200) return null
+    val root = ingestJson.parseToJsonElement(resp.body()).jsonObject
+    val result = root["data"]?.jsonObject?.get("searchAdV9AdsV2")?.jsonObject ?: return null
+    val total = result["total"]?.jsonPrimitive?.intOrNull ?: 0
+    val data = result["data"]?.jsonArray ?: return null
+    return AutoheroPage(data.mapNotNull { autoheroCarToListing(it.jsonObject) }, total)
+}
+
+/**
+ * Paginates Autohero's full matching result set (~700+ listings across 8 brands, 50/page = 15+ requests).
+ * Each page is retried (withRetry) on a transient failure before giving up on it; if a page still fails after
+ * every retry, pagination stops THERE and [FetchResult.complete] is false with a note explaining how far it
+ * got -- never silently returned as if it were the complete result. (This silent-truncation failure mode was
+ * the confirmed root cause of a real reported bug -- see site.md's "Known current gaps" / "Root cause #1".)
+ */
+fun fetchAutohero(): FetchResult {
     val out = mutableListOf<Listing>()
     var offset = 0
     val limit = 50
     var total = Int.MAX_VALUE
+    var pagesFetched = 0
     while (offset < total) {
-        val req = HttpRequest.newBuilder(URI(AUTOHERO_ENDPOINT))
-            .header("Content-Type", "application/json").header("Accept", "application/json")
-            .header("User-Agent", UA).header("x-country", "DE").header("x-locale", "de-DE")
-            .POST(HttpRequest.BodyPublishers.ofString(autoheroBody(offset, limit)))
-            .timeout(Duration.ofSeconds(20)).build()
-        val resp = client.send(req, HttpResponse.BodyHandlers.ofString())
-        if (resp.statusCode() != 200) break
-        val root = ingestJson.parseToJsonElement(resp.body()).jsonObject
-        val result = root["data"]?.jsonObject?.get("searchAdV9AdsV2")?.jsonObject ?: break
-        total = result["total"]?.jsonPrimitive?.intOrNull ?: 0
-        val data = result["data"]?.jsonArray ?: break
-        data.forEach { el -> autoheroCarToListing(el.jsonObject)?.let { out.add(it) } }
+        val page = withRetry { fetchAutoheroPage(offset, limit) }
+        if (page == null) {
+            return FetchResult(out, complete = false,
+                note = "Autohero: stopped after $pagesFetched page(s) (${out.size} listings so far) -- a page kept failing even after retries.")
+        }
+        total = page.total
+        if (page.listings.isEmpty()) break   // legitimately exhausted -- not a failure
+        out += page.listings
+        pagesFetched++
         offset += limit
-        if (data.isEmpty()) break
     }
-    return out
+    return FetchResult(out, complete = true)
 }
 
 /**
@@ -271,34 +315,55 @@ private fun as24Url(slug: String, page: Int) =
     "https://www.autoscout24.de/lst/$slug?atype=C&cy=D&damaged_listing=exclude&fregfrom=2018" +
         "&pricefrom=10000&priceto=20000&fuel=B,2&ustate=N,U&page=$page"
 
-fun fetchAutoScout24Brand(make: String, pagesPerBrand: Int = AS24_PAGES_PER_BRAND_LIVE): List<Listing> {
-    val slug = AS24_MAKE_SLUGS[make] ?: return emptyList()
-    val out = mutableListOf<Listing>()
-    for (page in 1..pagesPerBrand) {
-        val req = HttpRequest.newBuilder(URI(as24Url(slug, page)))
-            .header("User-Agent", UA).header("Accept-Language", "de-DE,de;q=0.9")
-            .timeout(Duration.ofSeconds(20)).GET().build()
-        val resp = try { client.send(req, HttpResponse.BodyHandlers.ofString()) } catch (e: Exception) { break }
-        if (resp.statusCode() != 200) break
-        val m = NEXT_DATA_RE.find(resp.body()) ?: break
-        val data = try { ingestJson.parseToJsonElement(m.groupValues[1]).jsonObject } catch (e: Exception) { break }
-        val listings = data["props"]?.jsonObject?.get("pageProps")?.jsonObject?.get("listings")?.jsonArray ?: break
-        if (listings.isEmpty()) break
-        listings.forEach { el -> as24ListingToListing(el.jsonObject)?.let { out.add(it) } }
-        val totalPages = data["props"]?.jsonObject?.get("pageProps")?.jsonObject?.get("numberOfPages")?.jsonPrimitive?.intOrNull ?: 1
-        if (page >= totalPages) break
-        Thread.sleep(400)   // be a polite client
-    }
-    return out
+private data class As24Page(val listings: List<Listing>, val totalPages: Int)
+
+private fun fetchAs24Page(slug: String, page: Int): As24Page? {
+    val req = HttpRequest.newBuilder(URI(as24Url(slug, page)))
+        .header("User-Agent", UA).header("Accept-Language", "de-DE,de;q=0.9")
+        .timeout(Duration.ofSeconds(20)).GET().build()
+    val resp = try { client.send(req, HttpResponse.BodyHandlers.ofString()) } catch (e: Exception) { return null }
+    if (resp.statusCode() != 200) return null
+    val m = NEXT_DATA_RE.find(resp.body()) ?: return null
+    val data = try { ingestJson.parseToJsonElement(m.groupValues[1]).jsonObject } catch (e: Exception) { return null }
+    val listings = data["props"]?.jsonObject?.get("pageProps")?.jsonObject?.get("listings")?.jsonArray ?: return null
+    val totalPages = data["props"]?.jsonObject?.get("pageProps")?.jsonObject?.get("numberOfPages")?.jsonPrimitive?.intOrNull ?: 1
+    return As24Page(listings.mapNotNull { as24ListingToListing(it.jsonObject) }, totalPages)
 }
 
-fun fetchAutoScout24(): List<Listing> {
+fun fetchAutoScout24Brand(make: String, pagesPerBrand: Int = AS24_PAGES_PER_BRAND_LIVE): FetchResult {
+    val slug = AS24_MAKE_SLUGS[make] ?: return FetchResult(emptyList(), complete = true)
     val out = mutableListOf<Listing>()
-    for (make in AS24_MAKE_SLUGS.keys) {
-        out += fetchAutoScout24Brand(make)
+    for (page in 1..pagesPerBrand) {
+        val result = withRetry { fetchAs24Page(slug, page) }
+        if (result == null) {
+            return FetchResult(out, complete = false,
+                note = "AutoScout24 $make: stopped after page ${page - 1} -- a page kept failing even after retries.")
+        }
+        out += result.listings
+        if (result.listings.isEmpty()) break   // legitimately exhausted -- not a failure
+        if (page >= result.totalPages) break
+        Thread.sleep(400)   // be a polite client
     }
-    return out
+    return FetchResult(out, complete = true)
+}
+
+fun fetchAutoScout24(): FetchResult {
+    val out = mutableListOf<Listing>()
+    val notes = mutableListOf<String>()
+    var complete = true
+    for (make in AS24_MAKE_SLUGS.keys) {
+        val r = fetchAutoScout24Brand(make)
+        out += r.listings
+        if (!r.complete) { complete = false; r.note?.let { notes += it } }
+    }
+    return FetchResult(out, complete, notes.takeIf { it.isNotEmpty() }?.joinToString("; "))
 }
 
 /** Both sources, live. Used by the server's /api/pool endpoint and available for an offline re-fetch too. */
-fun fetchAllListingsLive(): List<Listing> = fetchAutohero() + fetchAutoScout24()
+fun fetchAllListingsLive(): FetchResult {
+    val ah = fetchAutohero()
+    val as24 = fetchAutoScout24()
+    val notes = listOfNotNull(ah.note, as24.note)
+    return FetchResult(ah.listings + as24.listings, ah.complete && as24.complete,
+        notes.takeIf { it.isNotEmpty() }?.joinToString("; "))
+}

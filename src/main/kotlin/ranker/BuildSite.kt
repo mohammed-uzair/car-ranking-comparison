@@ -17,7 +17,12 @@ data class SiteData(
     val scoredColumns: List<String>,
     val activeColumns: List<String>,
     val rowCount: Int,
-    val rows: List<ScoredCar>
+    val rows: List<ScoredCar>,
+    /** Non-null when a LIVE fetch (Server.kt's /api/pool) didn't get the complete result -- see
+     * FetchResult/fetchAllListingsLive() in Ingest.kt. Always null for the offline batch snapshot, which
+     * reads from a static fixture file, not a live paginated fetch. The page must surface this to the user
+     * rather than silently presenting a partial pool as complete. */
+    val fetchWarning: String? = null
 )
 
 /** Registered independent plugins. Add a row here (+ a plugins/<name>.md) to surface a new advisory column. */
@@ -33,7 +38,7 @@ val siteJson = Json { ignoreUnknownKeys = true; isLenient = true; prettyPrint = 
  * the page owns the top-50 cut so it can re-derive it after a brand/model/source filter change without
  * a re-fetch. Shared by the offline batch job (main(), below) and the live server's /api/pool endpoint.
  */
-fun buildSiteData(listings: List<Listing>, ref: Reference): SiteData {
+fun buildSiteData(listings: List<Listing>, ref: Reference, fetchWarning: String? = null): SiteData {
     val table = buildTable(listings, ref, DEFAULT_ACTIVE_COLUMNS.toSet(), maxRows = listings.size)
     return SiteData(
         generatedAt = Instant.now().toString(),
@@ -42,7 +47,8 @@ fun buildSiteData(listings: List<Listing>, ref: Reference): SiteData {
         scoredColumns = SCORED_COLUMNS,
         activeColumns = DEFAULT_ACTIVE_COLUMNS,
         rowCount = table.size,
-        rows = table
+        rows = table,
+        fetchWarning = fetchWarning
     )
 }
 

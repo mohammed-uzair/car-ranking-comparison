@@ -54,6 +54,16 @@ to be configurable/generic for its own sake.
 - **A length/size-type filter (or any filter needing a per-row extra fetch) must never silently blank the
   table** when the extra data hasn't been fetched yet. Fail visibly (a status message), not by returning zero
   rows that look indistinguishable from "nothing matched."
+- **A paginated live fetch must never silently return a partial result as if it were complete.** Confirmed,
+  reproducible root cause of a real reported bug (2026-10-01): `fetchAutohero()`'s pagination loop `break`d on
+  any single transient non-200/parse failure anywhere in its ~15+ page sequence, with zero retry and zero
+  signal to the caller — a "145 eligible" result looked identical to a healthy "442 eligible" one, just
+  smaller, so a user had no way to know real listings (e.g. rarer trims) were simply never fetched that
+  Update. Fixed with `withRetry()` (linear-backoff retry per page/request, unit-tested in `WithRetryTest`) plus
+  `FetchResult(listings, complete, note)` threaded through `fetchAutohero()`/`fetchAutoScout24Brand()`/
+  `fetchAllListingsLive()` → `SiteData.fetchWarning` → a visible `⚠` status message in `applyUpdate()`. Any
+  future multi-request fetch (a new source, a new per-row enrichment) must follow this same pattern — retry
+  transient failures, and surface incompleteness rather than hiding it.
 - **There is exactly one filter surface: the ☰ drawer, applied on Update.** No standalone buttons for a single
   filter field (a "Fetch lengths now" button was removed 2026-10-01 for exactly this reason) — every staged
   filter, including one that needs an extra per-row fetch (min length), runs automatically as part of a single

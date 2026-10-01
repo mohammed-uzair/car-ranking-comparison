@@ -35,10 +35,11 @@ fun main() {
         try {
             println("Live fetch starting (Autohero + AutoScout24)...")
             val started = System.currentTimeMillis()
-            val listings = fetchAllListingsLive()
-            val out = buildSiteData(listings, ref)
+            val fetched = fetchAllListingsLive()
+            val out = buildSiteData(fetched.listings, ref, fetchWarning = fetched.note)
             val elapsed = (System.currentTimeMillis() - started) / 1000.0
-            println("Live fetch done in ${elapsed}s: ${listings.size} listings -> ${out.rows.size} eligible")
+            val completeness = if (fetched.complete) "complete" else "INCOMPLETE: ${fetched.note}"
+            println("Live fetch done in ${elapsed}s: ${fetched.listings.size} listings ($completeness) -> ${out.rows.size} eligible")
             respondJson(exchange, 200, siteJson.encodeToString(SiteData.serializer(), out))
         } catch (e: Exception) {
             System.err.println("Live fetch failed: ${e}")

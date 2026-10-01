@@ -138,3 +138,47 @@ class As24ListingParseTest {
         assertNull(as24ListingToListing(jsonOf(noMake)))
     }
 }
+
+/**
+ * withRetry() is the resilience mechanism added to stop a single transient HTTP failure from silently
+ * truncating an entire paginated live fetch (the confirmed root cause of a real reported bug: Autohero
+ * pagination broke early on one bad page and the UI presented the partial result as complete -- see
+ * site.md). It's the one piece of that fix that's a pure function and testable without live network; the
+ * paginated fetchAutohero()/fetchAutoScout24Brand() themselves stay integration-only, exercised manually via
+ * `./gradlew runServer` + curl, same as every other live-network function in this file.
+ */
+class WithRetryTest {
+    @Test fun succeeds_immediately_without_retrying() {
+        var calls = 0
+        val result = withRetry(attempts = 3, delayMs = 1) { calls++; "ok" }
+        assertEquals("ok", result)
+        assertEquals(1, calls)
+    }
+    @Test fun retries_after_a_null_then_succeeds() {
+        var calls = 0
+        val result = withRetry(attempts = 3, delayMs = 1) { calls++; if (calls < 2) null else "ok" }
+        assertEquals("ok", result)
+        assertEquals(2, calls)
+    }
+    @Test fun retries_after_a_thrown_exception_then_succeeds() {
+        var calls = 0
+        val result = withRetry(attempts = 3, delayMs = 1) {
+            calls++
+            if (calls < 3) throw RuntimeException("transient") else "ok"
+        }
+        assertEquals("ok", result)
+        assertEquals(3, calls)
+    }
+    @Test fun gives_up_after_exhausting_every_attempt() {
+        var calls = 0
+        val result = withRetry(attempts = 3, delayMs = 1) { calls++; null }
+        assertNull(result)
+        assertEquals(3, calls)   // tried exactly `attempts` times, not more, not fewer
+    }
+    @Test fun gives_up_when_every_attempt_throws() {
+        var calls = 0
+        val result = withRetry<String>(attempts = 3, delayMs = 1) { calls++; throw RuntimeException("down") }
+        assertNull(result)
+        assertEquals(3, calls)
+    }
+}
