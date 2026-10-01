@@ -146,11 +146,22 @@ const SOURCE_LABELS={autohero:"Autohero", autoscout24:"AutoScout24"};
 const DEFAULT_CHECKED_BRAND="Toyota";
 const DEFAULT_CHECKED_SOURCE="autohero";
 
+/** Rebuilds the drawer's checkbox list from whatever makes/sources are ACTUALLY in DATA.rows right now —
+ * must be re-called every time DATA is replaced (see applyUpdate()), not just once at page load. A live
+ * fetch can surface a make/source that wasn't in the static snapshot (e.g. a brand added after the snapshot
+ * was generated); without a rebuild, that make has no checkbox at all, so it can never be excluded by brand
+ * filtering and silently bypasses the whole "all unchecked except Toyota" default. A chip that already
+ * existed keeps the user's current checked/unchecked state across the rebuild; only a genuinely new chip
+ * gets the default. */
 function buildBrandFilters(){
+  const prior={};
+  document.querySelectorAll("#drawerBrands .brandchip:not(.disabled) input").forEach(cb=>{
+    prior[cb.closest(".brandchip").dataset.make]=cb.checked;
+  });
   const real=[...new Set(DATA.rows.map(r=>r.make))].sort();
   const box=document.getElementById("drawerBrands");
   box.innerHTML = real.map(b=>{
-    const on=b===DEFAULT_CHECKED_BRAND;
+    const on=prior.hasOwnProperty(b) ? prior[b] : (b===DEFAULT_CHECKED_BRAND);
     return `<label class="brandchip${on?"":" off"}" data-make="${b}"><input type="checkbox" ${on?"checked":""}/>${b}</label>`;
   }).join("") + BRAND_PLACEHOLDERS.map(b=>
     `<label class="brandchip disabled" title="No data yet"><input type="checkbox" checked disabled/>${b} <span class="note">(no data yet)</span></label>`
@@ -161,10 +172,14 @@ function buildBrandFilters(){
 }
 
 function buildSourceFilters(){
+  const prior={};
+  document.querySelectorAll("#drawerSources .brandchip:not(.disabled) input").forEach(cb=>{
+    prior[cb.closest(".brandchip").dataset.source]=cb.checked;
+  });
   const real=[...new Set(DATA.rows.map(r=>r.source))].sort();
   const box=document.getElementById("drawerSources");
   box.innerHTML = real.map(s=>{
-    const on=s===DEFAULT_CHECKED_SOURCE;
+    const on=prior.hasOwnProperty(s) ? prior[s] : (s===DEFAULT_CHECKED_SOURCE);
     return `<label class="brandchip${on?"":" off"}" data-source="${s}"><input type="checkbox" ${on?"checked":""}/>${SOURCE_LABELS[s]||s}</label>`;
   }).join("") + SOURCE_PLACEHOLDERS.filter(p=>!real.includes(p.key)).map(p=>
     `<label class="brandchip disabled" title="No data yet"><input type="checkbox" checked disabled/>${p.label} <span class="note">(no data yet)</span></label>`
@@ -298,6 +313,11 @@ async function applyUpdate(){
     DATA=fresh;
     document.getElementById("sub").textContent=
       `${DATA.rowCount} eligible candidates · generated ${DATA.generatedAt?.slice(0,16).replace("T"," ")} (live) · Total = sum of active columns · Avg = mean(normalized Total, independent plugins)`;
+    // Rebuild the brand/source chip lists from the FRESH data before reranking -- a live fetch can surface a
+    // make/source the static snapshot didn't have (see buildBrandFilters() doc comment); rerankFromCurrentData()
+    // reads these checkboxes, so they must exist first or the new make silently bypasses brand filtering.
+    buildBrandFilters();
+    buildSourceFilters();
     rerankFromCurrentData();
     statusEl.textContent=`Live: refreshed just now (${DATA.rowCount} eligible).`;
   }catch(e){

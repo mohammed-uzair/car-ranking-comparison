@@ -1,5 +1,8 @@
 # Car Ranking Comparison
 
+**[`site.md`](site.md) is the contract** — the invariants that must always hold and the verification checklist
+for any change here. Read it before touching `site/index.html`, the Kotlin scoring/ingestion, or reference data.
+
 A transparent, deterministic used-car ranking. **The repo is the single source of truth** for the data, the algorithm, and the display — and it's **one language, Kotlin, end to end** (ingestion, scoring, the live server). No Python, no other language anywhere in this repo.
 
 ## Architecture
