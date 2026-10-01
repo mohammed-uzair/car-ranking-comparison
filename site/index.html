@@ -232,19 +232,28 @@ function applyLengthFromCache(r){
   r.bodyType = d ? d.bodyType : undefined;
 }
 
+/** Called both right after a fetch completes (fetchLengths()'s finally) AND at the top of every render() —
+ * so it must reflect whatever's ALREADY true of workingSet, not just "ready to fetch", or it stomps the
+ * "Done: got length for X/Y" message the instant render() runs right after a successful fetch (it always
+ * does — that's exactly what made a working fetch look like it silently failed/never ran). */
 function updateLengthBar(){
   const btn=document.getElementById("fetchLengthsBtn");
   const status=document.getElementById("lengthStatus");
-  const ahCount=workingSet.filter(r=>r.source==="autohero").length;
+  const ahRows=workingSet.filter(r=>r.source==="autohero");
+  const fetchedCount=ahRows.filter(r=>r.lengthMm!=null).length;
   if(workingSet.length>LENGTH_FETCH_MAX){
     btn.disabled=true;
     status.textContent=`${workingSet.length} results shown — narrow to ≤${LENGTH_FETCH_MAX} (Only show / brand filters, then Update) to fetch lengths.`;
-  }else if(ahCount===0){
+  }else if(ahRows.length===0){
     btn.disabled=true;
     status.textContent="No Autohero rows in the current results — length data is Autohero-only.";
+  }else if(fetchedCount>0){
+    btn.disabled=false;
+    status.textContent=`Length known for ${fetchedCount}/${ahRows.length} Autohero row(s) shown.`+
+      (fetchedCount<ahRows.length ? " Click to fetch the rest." : "");
   }else{
     btn.disabled=false;
-    status.textContent=`Ready: fetch length for ${ahCount} Autohero row(s) shown.`;
+    status.textContent=`Ready: fetch length for ${ahRows.length} Autohero row(s) shown.`;
   }
 }
 
@@ -455,8 +464,9 @@ function render(){
     const up=()=>{ document.removeEventListener("mousemove",move); document.removeEventListener("mouseup",up); document.body.classList.remove("resizing"); };
     document.addEventListener("mousemove",move); document.addEventListener("mouseup",up);
   }));
+  const lenNote = minLengthCm!=null ? ` · min length ${minLengthCm}cm applied (hides rows shorter than that, and any Autohero row not yet fetched)` : "";
   document.getElementById("meta").textContent=
-    `${rows.length} of ${workingSet.length} in current top ${MAX_ROWS} shown (${DATA.rowCount} in full eligible pool) · active columns: ${[...active].join(", ")||"none"}`;
+    `${rows.length} of ${workingSet.length} in current top ${MAX_ROWS} shown (${DATA.rowCount} in full eligible pool)${lenNote} · active columns: ${[...active].join(", ")||"none"}`;
 }
 
 fetch("data.json").then(r=>r.json()).then(d=>{
