@@ -153,7 +153,7 @@ fun resolveRoi(make: String, model: String, year: Int, ref: Reference): Pair<Dou
 fun passesBaseFilter(l: Listing, ref: Reference): Boolean {
     if (l.make !in ALLOWED_MAKES) return false
     if (l.firstRegistrationYear < 2018) return false
-    if (l.priceEur < 10000 || l.priceEur > 20000) return false
+    if (l.priceEur < 10000 || l.priceEur > 22000) return false
     if (l.country != "DE") return false
     if (l.owners > 3) return false
     if (l.accidents != 0) return false

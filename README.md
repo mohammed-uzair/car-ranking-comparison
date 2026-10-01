@@ -51,7 +51,7 @@ Autohero's bulk search API never reports body style via its own field names — 
 In the page, untick a column's header checkbox → it fades and is removed from every Total (which re-sums and re-sorts). A per-cell `X` marks a value as N/A (never counted). Use this when a field (e.g. tire season) exists on Autohero but not on AutoScout, so the comparison stays fair.
 
 ## Base filters
-Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai/Mazda · first reg ≥ 2018 · €10k–20k · Germany · ≤3 owners · accident-free · ≥4 doors (no 2-door coupés) · **petrol / hybrid / plug-in hybrid only** (no diesel, no pure-electric) · **excludes reserved / sale-in-progress listings** · **trunk ≥ 360L when known** (listing's own value, else the per-model reference estimate; fully unknown is not excluded).
+Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai/Mazda · first reg ≥ 2018 · €10k–22k · Germany · ≤3 owners · accident-free · ≥4 doors (no 2-door coupés) · **petrol / hybrid / plug-in hybrid only** (no diesel, no pure-electric) · **excludes reserved / sale-in-progress listings** · **trunk ≥ 360L when known** (listing's own value, else the per-model reference estimate; fully unknown is not excluded).
 
 ## Run
 ```bash

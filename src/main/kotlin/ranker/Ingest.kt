@@ -80,7 +80,7 @@ private fun autoheroFilter(bodyTypes: List<Int>): JsonObject = buildJsonObject {
         }
         addJsonObject { put("field", "firstRegistrationYear"); put("op", "gte"); put("value", 2018) }
         addJsonObject { put("field", "offerPrice.amountMinorUnits"); put("op", "gte"); put("value", 1000000) }
-        addJsonObject { put("field", "offerPrice.amountMinorUnits"); put("op", "lte"); put("value", 2000000) }
+        addJsonObject { put("field", "offerPrice.amountMinorUnits"); put("op", "lte"); put("value", 2200000) }
         addJsonObject { put("field", "numberOfAccidents"); put("op", "eq"); put("value", 0) }
         addJsonObject { put("field", "carPreownerCount"); put("op", "lte"); put("value", 3) }
         addJsonObject { put("field", "doorCount"); put("op", "gte"); put("value", 4) }
@@ -297,7 +297,7 @@ fun as24ListingToListing(l: JsonObject): Listing? {
 
 private fun as24Url(slug: String, page: Int) =
     "https://www.autoscout24.de/lst/$slug?atype=C&cy=D&damaged_listing=exclude&fregfrom=2018" +
-        "&pricefrom=10000&priceto=20000&fuel=B,2&ustate=N,U&page=$page"
+        "&pricefrom=10000&priceto=22000&fuel=B,2&ustate=N,U&page=$page"
 
 private data class As24Page(val listings: List<Listing>, val totalPages: Int)
 

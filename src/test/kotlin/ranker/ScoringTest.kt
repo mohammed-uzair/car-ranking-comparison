@@ -26,7 +26,7 @@ class BaseFilterTest {
     @Test fun rejects_bad_brand()    = assertFalse(passesBaseFilter(L(make = "Fiat"), REF))
     @Test fun rejects_old_year()     = assertFalse(passesBaseFilter(L(year = 2017), REF))
     @Test fun rejects_low_price()    = assertFalse(passesBaseFilter(L(price = 9000), REF))
-    @Test fun rejects_high_price()   = assertFalse(passesBaseFilter(L(price = 21000), REF))
+    @Test fun rejects_high_price()   = assertFalse(passesBaseFilter(L(price = 23000), REF))
     @Test fun rejects_many_owners()  = assertFalse(passesBaseFilter(L(owners = 4), REF))
     @Test fun rejects_accident()     = assertFalse(passesBaseFilter(L(accidents = 1), REF))
     @Test fun rejects_diesel()       = assertFalse(passesBaseFilter(L(fuel = "diesel"), REF))

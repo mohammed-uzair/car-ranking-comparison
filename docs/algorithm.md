@@ -10,9 +10,9 @@ This file defines HOW every number in the ranking is produced. The Kotlin code i
 - **Car-specific:** scores reflect THIS car (its real mileage), not the generic new-car rating. A car past a known failure km is penalised even if the model is generally reliable.
 
 ## Base filters (a listing must pass ALL to enter the table)
-- `make ∈ {Audi, BMW, Mercedes-Benz, Porsche, Honda, Toyota, Hyundai}`
+- `make ∈ {Audi, BMW, Mercedes-Benz, Porsche, Honda, Toyota, Hyundai, Mazda}`
 - `firstRegistrationYear ≥ 2018`
-- `10000 ≤ priceEur ≤ 20000`
+- `10000 ≤ priceEur ≤ 22000`
 - `country == DE`
 - `owners ≤ 3`
 - `accidents == 0` (major accidents). **Minor pre-existing damage is NOT filtered** (see Minor damage column).
