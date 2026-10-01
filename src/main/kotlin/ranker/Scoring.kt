@@ -45,7 +45,7 @@ fun generation(make: String, model: String, year: Int): String {
             "citan" in m -> "Citan"
             else -> "?"
         }
-        "Toyota", "Honda", "Hyundai" -> "*"
+        "Toyota", "Honda", "Hyundai", "Mazda" -> "*"
         else -> "?"
     }
 }
@@ -96,6 +96,16 @@ fun platform(l: Listing): String {
             f == "hybrid" || f == "phev" || "hybrid" in st || "hev" in st -> "HyundaiHybrid"
             l.model.equals("i10", ignoreCase = true) -> "HyundaiNA"
             else -> "HyundaiTGDI"
+        }
+        "Mazda" -> when {
+            // Skyactiv-X (SPCCI) first, regardless of fuel label -- distinct engine family from plain Skyactiv-G.
+            "skyactiv-x" in st -> "MazdaSkyactivX"
+            // Mazda2 Hybrid is a rebadged Toyota Yaris Hybrid (different powertrain entirely), not the
+            // 24V mild-hybrid Skyactiv-G that Mazda also badges "hybrid"/"mhev" on other models -- the
+            // "mild"/"mhev" text is what actually distinguishes the two, not the fuel field (both read as
+            // Autohero fuelType 1046 / "hybrid").
+            f == "hybrid" && "mild" !in st && "mhev" !in st -> "MazdaHybrid"
+            else -> "MazdaSkyactivG"
         }
         else -> "unknown"
     }

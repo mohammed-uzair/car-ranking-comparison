@@ -1,5 +1,5 @@
 {
-  "_note": "Fixed reference tables. ROI = pure model+generation reliability (0-10), equal-blend of TÜV+ADAC+DEKRA (see docs/reliability.md). All 7 brands (Audi/BMW/Mercedes/Porsche/Honda/Toyota/Hyundai) researched; Porsche has no cars in the price band. Values are point-in-time (TÜV Report 2026, ADAC 2025, DEKRA).",
+  "_note": "Fixed reference tables. ROI = pure model+generation reliability (0-10), equal-blend of TÜV+ADAC+DEKRA (see docs/reliability.md). All 8 brands (Audi/BMW/Mercedes/Porsche/Honda/Toyota/Hyundai/Mazda) researched; Porsche has no cars in the price band. Values are point-in-time (TÜV Report 2026, ADAC 2025, DEKRA). Mazda ROI is qualitative-standing-based (TÜV/ADAC/DEKRA coverage didn't surface precise current-generation Mängelquote %, only category rankings/standings), not a direct percentage calc like the BMW/Audi/Mercedes rows; Mazda bootLitres are spec-sheet figures, not independently verified per listing.",
   "currentYear": 2026,
   "roi": {
     "BMW|1er|F20": 6.48,
@@ -48,7 +48,13 @@
     "Hyundai|Bayon|*": 7.0,
     "Hyundai|IONIQ|*": 7.0,
     "Hyundai|Ioniq|*": 7.0,
-    "Hyundai|i40|*": 5.0
+    "Hyundai|i40|*": 5.0,
+    "Mazda|2|*": 8.8,
+    "Mazda|3|*": 8.2,
+    "Mazda|CX-3|*": 7.8,
+    "Mazda|CX-30|*": 7.7,
+    "Mazda|CX-5|*": 8.0,
+    "Mazda|6|*": 7.6
   },
   "roiPending": [],
   "engineGrade": {
@@ -58,7 +64,8 @@
     "M282": 7.0, "M270": 6.0, "M260": 7.0, "OM654": 8.0, "OM608": 7.0, "M274": 7.0, "MBcompactDCT": 5.0,
     "ToyotaHybrid": 9.0, "ToyotaNA": 8.5, "ToyotaTurbo": 6.5,
     "HondaHybrid": 9.0, "Honda1.5T": 6.0, "Honda1.0T": 6.5, "HondaNA": 7.5,
-    "HyundaiHybrid": 7.5, "HyundaiTGDI": 7.0, "HyundaiNA": 6.5
+    "HyundaiHybrid": 7.5, "HyundaiTGDI": 7.0, "HyundaiNA": 6.5,
+    "MazdaHybrid": 9.0, "MazdaSkyactivG": 8.5, "MazdaSkyactivX": 7.0
   },
   "engineThresholdKm": {
     "EA888": 150000, "1.0TSI": 150000, "1.4TSI": 150000, "1.4ACT": 90000, "1.5Evo": 150000,
@@ -67,7 +74,8 @@
     "M282": 150000, "M270": 115000, "M260": 160000, "OM654": 180000, "OM608": 160000, "M274": 150000, "MBcompactDCT": 100000,
     "ToyotaHybrid": 300000, "ToyotaNA": 250000, "ToyotaTurbo": 120000,
     "HondaHybrid": 250000, "Honda1.5T": 100000, "Honda1.0T": 100000, "HondaNA": 200000,
-    "HyundaiHybrid": 200000, "HyundaiTGDI": 120000, "HyundaiNA": 180000
+    "HyundaiHybrid": 200000, "HyundaiTGDI": 120000, "HyundaiNA": 180000,
+    "MazdaHybrid": 300000, "MazdaSkyactivG": 250000, "MazdaSkyactivX": 180000
   },
   "gearTypeMap": { "1139": "automatic", "1138": "manual", "1141": "automatic" },
   "fuelTypeMap": { "1039": "petrol", "1040": "diesel", "1046": "phev", "1041": "hybrid" },
@@ -86,6 +94,7 @@
     "Toyota|C-HR": 377, "Toyota|Yaris": 286, "Toyota|Yaris Cross": 397, "Toyota|RAV4": 580, "Toyota|Prius": 502,
     "Honda|Jazz": 304, "Honda|Civic": 478, "Honda|HR-V": 319, "Honda|CR-V": 497,
     "Hyundai|i10": 252, "Hyundai|i20": 352, "Hyundai|i30": 395, "Hyundai|Kona": 374,
-    "Hyundai|Tucson": 546, "Hyundai|Bayon": 411, "Hyundai|IONIQ": 443, "Hyundai|Ioniq": 443, "Hyundai|i40": 553
+    "Hyundai|Tucson": 546, "Hyundai|Bayon": 411, "Hyundai|IONIQ": 443, "Hyundai|Ioniq": 443, "Hyundai|i40": 553,
+    "Mazda|2": 280, "Mazda|3": 358, "Mazda|CX-3": 350, "Mazda|CX-30": 430, "Mazda|CX-5": 506, "Mazda|6": 480
   }
 }
