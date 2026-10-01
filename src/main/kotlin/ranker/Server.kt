@@ -6,6 +6,7 @@ import java.io.File
 import java.net.InetSocketAddress
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import java.util.stream.Collectors
 
 /**
  * The local, on-your-own-machine Kotlin server. GitHub only stores the code; this is what actually
@@ -53,13 +54,12 @@ fun main() {
                 .firstOrNull { it[0] == "urls" }?.getOrNull(1) ?: ""
             val urls = URLDecoder.decode(urlsParam, "UTF-8").split(",").map { it.trim() }.filter { it.isNotBlank() }
             // Only Autohero exposes body/length on its detail page (see Ingest.kt); a non-Autohero URL just
-            // comes back absent from the result map, which the page renders as N/A.
-            val result = buildJsonObjectString(urls.mapNotNull { u ->
-                if (!u.contains("autohero.com")) return@mapNotNull null
-                val d = fetchAutoheroDetail(u) ?: return@mapNotNull null
-                u to d
-            })
-            respondJson(exchange, 200, result)
+            // comes back absent from the result map, which the page renders as N/A. One HTTP request per URL,
+            // so this runs them concurrently (common ForkJoinPool) rather than sequentially -- serially, a
+            // realistic-sized candidate set (e.g. 30+ Toyota/Autohero rows) would take tens of seconds.
+            val entries = urls.parallelStream().map(::fetchDetailOrNull).filter { it != null }
+                .map { it!! }.collect(Collectors.toList())
+            respondJson(exchange, 200, buildJsonObjectString(entries))
         } catch (e: Exception) {
             System.err.println("Length fetch failed: ${e}")
             respondJson(exchange, 500, "{\"error\": ${jsonString(e.message ?: e.toString())}}")
@@ -94,6 +94,12 @@ fun main() {
     println("  GET /          -> the page")
     println("  GET /api/pool  -> live re-fetch + re-score (what the Update button calls)")
     println("  GET /api/lengths?urls=... -> Autohero body/length for a narrowed candidate set")
+}
+
+private fun fetchDetailOrNull(url: String): Pair<String, AutoheroDetail>? {
+    if (!url.contains("autohero.com")) return null
+    val d = fetchAutoheroDetail(url) ?: return null
+    return url to d
 }
 
 private fun jsonString(s: String): String {

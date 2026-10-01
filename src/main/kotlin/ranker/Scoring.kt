@@ -5,7 +5,7 @@ import kotlin.math.min
 
 fun clamp(x: Double, lo: Double, hi: Double) = max(lo, min(hi, x))
 
-val ALLOWED_MAKES = setOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai")
+val ALLOWED_MAKES = setOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda")
 val COUPE_BODIES = setOf("coupe", "coupé", "cabrio", "cabriolet", "roadster")
 
 /** Per-model price statistics used by the Value column. */

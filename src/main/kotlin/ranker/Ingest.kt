@@ -22,7 +22,7 @@ private val client: HttpClient = HttpClient.newBuilder()
     .connectTimeout(Duration.ofSeconds(20)).followRedirects(HttpClient.Redirect.NORMAL).build()
 private val ingestJson = Json { ignoreUnknownKeys = true; isLenient = true }
 
-val ALLOWED_MAKES_LIST = listOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai")
+val ALLOWED_MAKES_LIST = listOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda")
 
 // ---------- Autohero ----------
 
@@ -186,7 +186,7 @@ fun fetchAutoheroDetail(url: String): AutoheroDetail? {
 
 private val AS24_MAKE_SLUGS = mapOf(
     "Audi" to "audi", "BMW" to "bmw", "Mercedes-Benz" to "mercedes-benz", "Porsche" to "porsche",
-    "Honda" to "honda", "Toyota" to "toyota", "Hyundai" to "hyundai",
+    "Honda" to "honda", "Toyota" to "toyota", "Hyundai" to "hyundai", "Mazda" to "mazda",
 )
 private val COUPE_WORDS = setOf("coupe", "coupé", "cabrio", "cabriolet", "roadster")
 private val NEXT_DATA_RE = Regex("""<script id="__NEXT_DATA__" type="application/json">(.*?)</script>""", RegexOption.DOT_MATCHES_ALL)

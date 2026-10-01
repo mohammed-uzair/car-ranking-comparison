@@ -87,7 +87,7 @@
   </div>
   <div class="controls">
     <button id="fetchLengthsBtn">Fetch lengths now</button>
-    <span class="note" id="lengthStatus">Autohero only — not in the bulk search data, one extra page-fetch per row, so narrow to ≤15 results first (Only show / brand filters). Set "Min length" in ☰ and Update fetches it for you automatically.</span>
+    <span class="note" id="lengthStatus">Autohero only — not in the bulk search data, one extra page-fetch per row (fetched concurrently, so the full top 50 is fine). Set "Min length" in ☰ and Update fetches it for you automatically.</span>
   </div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
@@ -117,7 +117,7 @@
     </div>
     <button class="updateBtn" id="updateBtn"><span id="updateBtnLabel">Update</span><span id="updateSpinner" class="spinner" hidden></span></button>
     <p id="updateStatus" class="note" style="min-height:14px"></p>
-    <span class="note">Update does a REAL live re-fetch from Autohero + AutoScout24 (via the local server, <code>./gradlew runServer</code>), re-scores everything, then applies your brand/source/model selections and re-ranks the top 50 from the full refreshed pool — so excluding a brand refills with the next-best contenders instead of shrinking the list. Takes 15–40s; that's real network time, not a bug. If the local server isn't running, this falls back to re-ranking the last-loaded snapshot instead of breaking. If "Min length" is set and the narrowed result is ≤15 rows, Update automatically fetches lengths too (Autohero's search API can't filter by length itself — it's only on each listing's detail page, one extra request per row, not part of the bulk search).</span>
+    <span class="note">Update does a REAL live re-fetch from Autohero + AutoScout24 (via the local server, <code>./gradlew runServer</code>), re-scores everything, then applies your brand/source/model selections and re-ranks the top 50 from the full refreshed pool — so excluding a brand refills with the next-best contenders instead of shrinking the list. Takes 15–40s; that's real network time, not a bug. If the local server isn't running, this falls back to re-ranking the last-loaded snapshot instead of breaking. If "Min length" is set, Update automatically fetches lengths for the shown Autohero rows too (Autohero's search API can't filter by length itself — it's only on each listing's detail page, one concurrent request per row, not part of the bulk search).</span>
   </div>
 
 <script>
@@ -132,7 +132,7 @@ const IDENT = [
 let DATA=null, active=new Set(), sortKey="avg", sortDir=-1, colW={};
 let workingSet=[];   // the current top-50 (or fewer) — what render() displays/sorts/searches; rebuilt by applyUpdate()
 const MAX_ROWS=50;
-const LENGTH_FETCH_MAX=15;   // keep the extra per-row detail-page fetch fast; narrow the result set first
+const LENGTH_FETCH_MAX=50;   // matches MAX_ROWS -- the server fetches detail pages concurrently (Server.kt), so the full top-50 is feasible, not just a hand-narrowed handful
 let lengthCache={};   // url -> {bodyType, lengthMm}, from GET /api/lengths (Autohero only — see Server.kt)
 let minLengthCm=null;
 
@@ -143,12 +143,16 @@ const BRAND_PLACEHOLDERS=["Ford","Kia"];
 const SOURCE_PLACEHOLDERS=[];   // both real sources (Autohero, AutoScout24) are live; nothing else is planned
 const SOURCE_LABELS={autohero:"Autohero", autoscout24:"AutoScout24"};
 
+const DEFAULT_CHECKED_BRAND="Toyota";
+const DEFAULT_CHECKED_SOURCE="autohero";
+
 function buildBrandFilters(){
   const real=[...new Set(DATA.rows.map(r=>r.make))].sort();
   const box=document.getElementById("drawerBrands");
-  box.innerHTML = real.map(b=>
-    `<label class="brandchip" data-make="${b}"><input type="checkbox" checked/>${b}</label>`
-  ).join("") + BRAND_PLACEHOLDERS.map(b=>
+  box.innerHTML = real.map(b=>{
+    const on=b===DEFAULT_CHECKED_BRAND;
+    return `<label class="brandchip${on?"":" off"}" data-make="${b}"><input type="checkbox" ${on?"checked":""}/>${b}</label>`;
+  }).join("") + BRAND_PLACEHOLDERS.map(b=>
     `<label class="brandchip disabled" title="No data yet"><input type="checkbox" checked disabled/>${b} <span class="note">(no data yet)</span></label>`
   ).join("");
   box.querySelectorAll(".brandchip:not(.disabled)").forEach(chip=>chip.querySelector("input").onchange=e=>{
@@ -159,9 +163,10 @@ function buildBrandFilters(){
 function buildSourceFilters(){
   const real=[...new Set(DATA.rows.map(r=>r.source))].sort();
   const box=document.getElementById("drawerSources");
-  box.innerHTML = real.map(s=>
-    `<label class="brandchip" data-source="${s}"><input type="checkbox" checked/>${SOURCE_LABELS[s]||s}</label>`
-  ).join("") + SOURCE_PLACEHOLDERS.filter(p=>!real.includes(p.key)).map(p=>
+  box.innerHTML = real.map(s=>{
+    const on=s===DEFAULT_CHECKED_SOURCE;
+    return `<label class="brandchip${on?"":" off"}" data-source="${s}"><input type="checkbox" ${on?"checked":""}/>${SOURCE_LABELS[s]||s}</label>`;
+  }).join("") + SOURCE_PLACEHOLDERS.filter(p=>!real.includes(p.key)).map(p=>
     `<label class="brandchip disabled" title="No data yet"><input type="checkbox" checked disabled/>${p.label} <span class="note">(no data yet)</span></label>`
   ).join("");
   box.querySelectorAll(".brandchip:not(.disabled)").forEach(chip=>chip.querySelector("input").onchange=e=>{
@@ -353,8 +358,12 @@ function render(){
   // The search box only narrows what's VISIBLE within it — a quick find-in-table, not a pool-changing filter.
   let rows=workingSet.filter(r=>!q || (r.name+" "+r.fuel+" "+r.city).toLowerCase().includes(q));
   // Min length only ever hides rows within the already-narrowed workingSet (no pool backfill) — a row with
-  // no fetched length yet (r.lengthMm undefined) is excluded once a threshold is set, not shown as a false pass.
-  if(minLengthCm!=null) rows=rows.filter(r=>r.lengthMm!=null && r.lengthMm/10>=minLengthCm);
+  // no fetched length yet (r.lengthMm undefined) is excluded once a threshold is set, not shown as a false
+  // pass. But if NOTHING in workingSet has a fetched length (auto-fetch hasn't run yet, or it failed — e.g.
+  // server down), don't silently blank the whole table: that reads as a bug, not as "nothing matched".
+  if(minLengthCm!=null && workingSet.some(r=>r.lengthMm!=null)){
+    rows=rows.filter(r=>r.lengthMm!=null && r.lengthMm/10>=minLengthCm);
+  }
   // sortDir=-1 means descending/highest-first (shown as ▼): x<y -> a (the smaller one) must sort AFTER b,
   // so the comparator returns a POSITIVE number for that case when sortDir is negative, i.e. -sortDir.
   rows.sort((a,b)=>{ const x=cellVal(a,sortKey),y=cellVal(b,sortKey);

@@ -48,7 +48,7 @@ Autohero's bulk search API never reports body style or dimensions — `model`/`s
 In the page, untick a column's header checkbox → it fades and is removed from every Total (which re-sums and re-sorts). A per-cell `X` marks a value as N/A (never counted). Use this when a field (e.g. tire season) exists on Autohero but not on AutoScout, so the comparison stays fair.
 
 ## Base filters
-Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai · first reg ≥ 2018 · €10k–20k · Germany · ≤3 owners · accident-free · ≥4 doors (no 2-door coupés) · **petrol / hybrid / plug-in hybrid only** (no diesel, no pure-electric) · **excludes reserved / sale-in-progress listings** · **trunk ≥ 360L when known** (listing's own value, else the per-model reference estimate; fully unknown is not excluded).
+Brands Audi/BMW/Mercedes-Benz/Porsche/Honda/Toyota/Hyundai/Mazda · first reg ≥ 2018 · €10k–20k · Germany · ≤3 owners · accident-free · ≥4 doors (no 2-door coupés) · **petrol / hybrid / plug-in hybrid only** (no diesel, no pure-electric) · **excludes reserved / sale-in-progress listings** · **trunk ≥ 360L when known** (listing's own value, else the per-model reference estimate; fully unknown is not excluded).
 
 ## Run
 ```bash
@@ -64,7 +64,7 @@ With the server running, open **http://localhost:8081** — not an IDE's built-i
 - **Phase 1 (done):** algorithm (`docs/` + Kotlin) + page (`site/`) + independent-score plugins (`plugins/`).
 - **Phase 2 (done):** JUnit suite — **60+ tests, 0 failures** (`src/test/kotlin`): base-filter gate (incl. sale-in-progress, trunk<360L), determinism, ROI independence, mileage-threshold penalty, column scores, X/toggle exclusion, default-active columns, cross-source dedup, full-pool sizing, sort, eviction, edge cases, plus ingestion-parsing fixtures.
 - **Phase 3 (done):** live server (`Server.kt`) — the Update button does a real fetch+rescore, not just a client-side re-rank of a static snapshot.
-- **Data:** all 7 brands researched (Honda & Hyundai ROI added). Two live sources: Autohero + AutoScout24 (`Ingest.kt`), both fetchable offline (`./gradlew run`) or live (`./gradlew runServer`).
+- **Data:** 7 of 8 brands researched (Honda & Hyundai ROI added); **Mazda has no ROI/Engine reference data yet** — it passes the base filter and appears in the table, but those two columns show `X` until reliability data is added. Two live sources: Autohero + AutoScout24 (`Ingest.kt`), both fetchable offline (`./gradlew run`) or live (`./gradlew runServer`).
 - **Pending work (separate, larger tasks — see `docs/algorithm.md`):** Ford & Kia reliability research + fetch; tire-season, trunk-size, color, owners, and commercial-flag ingestion from listing detail pages (currently `X`/model-lookup/default/`null`).
 - **mobile.de was evaluated and ruled out** — a hard `403` from Akamai bot-management that applies to every client type equally (verified with `curl` directly), not something this project will attempt to evade. It has no representation anywhere in the codebase.
 - **Fixed model-name matching bugs:** body-style suffixes baked into Autohero's `model` field (e.g. "Auris Touring Sports") and a Mercedes-Benz `generation()` substring collision (GLA/CLA-Klasse silently misclassifying as A-Klasse) were both silently dropping cars from the table. See `docs/algorithm.md` for the fix and the regression tests in `ScoringTest.kt`.
