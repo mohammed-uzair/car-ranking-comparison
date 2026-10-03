@@ -5,6 +5,23 @@ for any change here. Read it before touching `site/index.html`, the Kotlin scori
 
 A transparent, deterministic used-car ranking. **The repo is the single source of truth** for the data, the algorithm, and the display — and it's **one language, Kotlin, end to end** (ingestion, scoring, the live server). No Python, no other language anywhere in this repo.
 
+New here (including an AI agent setting this up for the first time)? **Read this Setup section first**, then [`site.md`](site.md) before changing anything — it's the contract this project runs on. Just want to know how to use the website itself, no technical background needed? See **[`HOW_TO_USE.md`](HOW_TO_USE.md)**.
+
+## Setup
+
+**Prerequisites:** a JDK (21 LTS known-good — see the troubleshooting note under [Run](#run) if your default `java` is newer and `./gradlew` fails), and `git`. No other tools, no Node, no Python — this is a single-language Kotlin/Gradle project.
+
+```bash
+git clone https://github.com/mohammed-uzair/car-ranking-comparison.git
+cd car-ranking-comparison
+./gradlew test          # confirms the toolchain works — should finish green, 100+ tests
+./gradlew runServer      # starts the local live server
+```
+
+Then open **http://localhost:8081** in a browser. That's the whole setup — no API keys, no accounts, no config files to fill in. The page loads a static snapshot (`site/data.json`) instantly; clicking **Update** does a real live fetch from Autohero + AutoScout24 through the local server (takes 15–40s, see [Architecture](#architecture) below for why that's a local server and not, say, a cloud function).
+
+If you only want to read/modify the scoring logic without running a live fetch, `./gradlew test` and `./gradlew run` (regenerates the static snapshot from a fixture file, no network) are enough — `runServer` is only needed for the live "Update" button.
+
 ## Architecture
 ```
 Ingest.kt (Kotlin, live)             ── fetches Autohero + AutoScout24 on demand
@@ -36,7 +53,7 @@ ROI and **OwnershipCost** are independent score plugins (never summed into Total
 **Avg** sits right before ROI and is the default sort key: `mean(Total normalized to 0–10, every available independent plugin score)` — now blends Total, ROI, and OwnershipCost together, highest first.
 
 ### Filter panel — brand / source / model, live-refreshed on Update
-A hamburger icon (☰) opens a drawer with **Brands**, **Listing source**, **Only show** (comma-separated terms, ALL must appear in the row's full name — make + model + trim, e.g. `Corolla, Touring Sports` for just the Corolla estate), and **Hide models** — all staged, applied only on **Update**. "Only show" matches against the full name rather than just the base model because a variant like the estate/combi trim (Autohero calls it "Touring Sports") lives in `subType`/`subTypeExtra`, not the `model` field itself. Clicking Update shows a spinner, calls the local server's `GET /api/pool` for a **genuine live re-fetch + re-score** (Autohero + AutoScout24, through the same scoring pipeline as the offline snapshot), then filters/sorts/caps the fresh pool to 50 under your selections — so excluding a brand backfills with the next-best contenders instead of shrinking the list. Ford/Kia show as disabled "no data yet" chips (separate future work; they activate automatically once added, no page changes needed). If the local server isn't running, Update falls back to re-ranking whatever's already loaded instead of breaking. See `docs/algorithm.md` for the full mechanism.
+A hamburger icon (☰) opens a drawer with **Brands**, **Listing source**, **Only show** (comma-separated terms, ALL must appear in the row's full name — make + model + trim, e.g. `Corolla, Touring Sports` for just the Corolla estate), and **Hide models** — all staged, applied only on **Update**. "Only show" matches against the full name rather than just the base model because a variant like the estate/combi trim (Autohero calls it "Touring Sports") lives in `subType`/`subTypeExtra`, not the `model` field itself. Clicking Update shows a spinner, calls the local server's `GET /api/pool` for a **genuine live re-fetch + re-score** (Autohero + AutoScout24, through the same scoring pipeline as the offline snapshot), then filters/sorts/caps the fresh pool to 50 under your selections — so excluding a brand backfills with the next-best contenders instead of shrinking the list. All 10 brands are live (no placeholder chips currently). If the local server isn't running, Update falls back to re-ranking whatever's already loaded instead of breaking. See `docs/algorithm.md` for the full mechanism.
 
 ### Two live listing sources
 **Autohero** and **AutoScout24**. AutoScout24's list-view API is missing several fields Autohero's has (owners, commercial flag, urban consumption, door count) — see `docs/algorithm.md` for the exact gaps and defaults. Notably, `ConsumptionUrban` is on-by-default and AS24 never reports it, so **AS24 cars don't reach the default top 50 (0/50) — untick `ConsumptionUrban` in the drawer to see them compete (verified: 17/50 once it's off)**.
@@ -67,10 +84,26 @@ With the server running, open **http://localhost:8081** — not an IDE's built-i
 - **Phase 1 (done):** algorithm (`docs/` + Kotlin) + page (`site/`) + independent-score plugins (`plugins/`).
 - **Phase 2 (done):** JUnit suite — **60+ tests, 0 failures** (`src/test/kotlin`): base-filter gate (incl. sale-in-progress, trunk<360L), determinism, ROI independence, mileage-threshold penalty, column scores, X/toggle exclusion, default-active columns, cross-source dedup, full-pool sizing, sort, eviction, edge cases, plus ingestion-parsing fixtures.
 - **Phase 3 (done):** live server (`Server.kt`) — the Update button does a real fetch+rescore, not just a client-side re-rank of a static snapshot.
-- **Data:** all 8 brands researched (Honda, Hyundai & Mazda ROI added — Mazda's is standing/ranking-based: TÜV/ADAC/DEKRA coverage didn't surface precise current-generation Mängelquote %, see `docs/reliability.md`). Two live sources: Autohero + AutoScout24 (`Ingest.kt`), both fetchable offline (`./gradlew run`) or live (`./gradlew runServer`).
-- **Pending work (separate, larger tasks — see `docs/algorithm.md`):** Ford & Kia reliability research + fetch; tire-season, trunk-size, color, owners, and commercial-flag ingestion from listing detail pages (currently `X`/model-lookup/default/`null`).
+- **Data:** all 10 brands researched (Audi/BMW/Mercedes/Porsche/Honda/Toyota/Hyundai/Mazda/Ford/Kia — Mazda/Ford/Kia ROI is standing/ranking-based: TÜV/ADAC/DEKRA coverage didn't surface precise current-generation Mängelquote % for every model, see `docs/reliability.md`). Two live sources: Autohero + AutoScout24 (`Ingest.kt`), both fetchable offline (`./gradlew run`) or live (`./gradlew runServer`).
+- **Pending work (separate, larger tasks — see `docs/algorithm.md`):** Kia Rio/Soul/XCeed reliability research (no source found yet, left out rather than guessed — see `roiPending` in `data/reference.json`); tire-season, trunk-size, color, owners, and commercial-flag ingestion from listing detail pages (currently `X`/model-lookup/default/`null`); per-model (not segment-level) resale-value and drive-comfort research for the `OwnershipCost` plugin, if ever revisited — see `site.md`'s "Known current gaps".
 - **mobile.de was evaluated and ruled out** — a hard `403` from Akamai bot-management that applies to every client type equally (verified with `curl` directly), not something this project will attempt to evade. It has no representation anywhere in the codebase.
 - **Fixed model-name matching bugs:** body-style suffixes baked into Autohero's `model` field (e.g. "Auris Touring Sports") and a Mercedes-Benz `generation()` substring collision (GLA/CLA-Klasse silently misclassifying as A-Klasse) were both silently dropping cars from the table. See `docs/algorithm.md` for the fix and the regression tests in `ScoringTest.kt`.
+
+## Contributing
+
+This repo is open for contributions. `main` is protected — pushes go through a pull request (except for the
+repo owner). To contribute:
+
+1. Fork the repo, make your change on a branch, open a PR against `main`.
+2. Before opening it, run `./gradlew test` locally — it must pass (100+ tests).
+3. If your change touches `site/index.html`, the Kotlin scoring/ingestion, or `data/reference.json`, **read
+   [`site.md`](site.md) first** — it's the enforced contract (invariants + a verification checklist), not just
+   a suggestion. A PR that violates it (e.g. a new brand with no researched reliability data, or a live fetch
+   that can silently truncate without telling the user) will likely be asked to fix that before merging.
+4. Reference data changes (brand reliability, segment estimates, etc.) should cite a real source in the PR
+   description — see `docs/reliability.md` and `data/reference.json`'s `_note`/`_segmentNote` for the standard
+   this project holds itself to (and a cautionary tale about a content-farm domain that nearly got cited as a
+   source — don't let that happen to your PR either).
 
 ## References
 - Notion — [Reliability Knowledge Base](https://app.notion.com/p/3e76f8b68bea81ea9cf0ec6e7f3d809e) · [Car Evaluation framework](https://app.notion.com/p/3e76f8b68bea8150a0a7c121d078504a) · [Final Candidate](https://app.notion.com/p/3e76f8b68bea8153b125eeb95032475c) · [Autohero AI Search (fetch recipe)](https://app.notion.com/p/3e76f8b68bea819fb075dd9506db194c)
