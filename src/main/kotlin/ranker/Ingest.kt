@@ -154,6 +154,8 @@ fun autoheroCarToListing(c: JsonObject): Listing? {
         saleInProgress = c["retailAdState"]?.jsonPrimitive?.contentOrNull == "reserved",
         consumptionCombined = cons?.get("combined")?.jsonPrimitive?.doubleOrNull,
         consumptionUrban = cons?.get("city")?.jsonPrimitive?.doubleOrNull,
+        consumptionHighway = cons?.get("highway")?.jsonPrimitive?.doubleOrNull,
+        co2 = c["co2Value"]?.jsonPrimitive?.doubleOrNull,
         tireSeason = null, doors = null, body = null,
         country = c["countryCode"]?.jsonPrimitive?.contentOrNull ?: "DE",
         city = branch?.get("city")?.jsonPrimitive?.contentOrNull ?: "",
@@ -223,6 +225,7 @@ private val DIGITS_RE = Regex("""\d+""")
 private val YEAR_RE = Regex("""(\d{4})""")
 private val KW_RE = Regex("""(\d+)\s*kW""")
 private val CONS_RE = Regex("""([\d,.]+)\s*l/100""")
+private val CO2_RE = Regex("""([\d,.]+)\s*g/km""")
 
 /** How many AS24 result pages (20 listings each) to pull per brand for a LIVE, user-waiting fetch.
  * Deliberately smaller than an offline batch sample (was 5) to keep the Update click responsive. */
@@ -244,6 +247,13 @@ private fun as24Consumption(vehicleDetails: JsonArray?): Double? =
     vehicleDetails?.firstOrNull { it.jsonObject["name"]?.jsonPrimitive?.contentOrNull == "fuelConsumptionExtended" }
         ?.jsonObject?.get("data")?.jsonPrimitive?.contentOrNull
         ?.let { CONS_RE.find(it)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull() }
+
+/** Populated on roughly half of AS24 listings (the rest are an explicit placeholder, e.g. "- (g/km)", which
+ * CO2_RE simply won't match -- correctly comes back null rather than a parsed garbage value). */
+private fun as24Co2(vehicleDetails: JsonArray?): Double? =
+    vehicleDetails?.firstOrNull { it.jsonObject["name"]?.jsonPrimitive?.contentOrNull == "co2Emission" }
+        ?.jsonObject?.get("data")?.jsonPrimitive?.contentOrNull
+        ?.let { CO2_RE.find(it)?.groupValues?.get(1)?.replace(",", ".")?.toDoubleOrNull() }
 
 fun decodeAs24Fuel(rawFuel: String, subtitleBlob: String): String {
     if (rawFuel == "Benzin") return "petrol"
@@ -289,6 +299,7 @@ fun as24ListingToListing(l: JsonObject): Listing? {
         numberOfDamages = 0, damageList = emptyList(), hasFilledServiceBook = false,
         commercial = false, saleInProgress = false,
         consumptionCombined = as24Consumption(vehicleDetails), consumptionUrban = null,
+        consumptionHighway = null, co2 = as24Co2(vehicleDetails),
         tireSeason = null, doors = null, body = decodeAs24Body(v["variant"]?.jsonPrimitive?.contentOrNull),
         country = location?.get("countryCode")?.jsonPrimitive?.contentOrNull ?: "DE",
         city = location?.get("city")?.jsonPrimitive?.contentOrNull ?: "",

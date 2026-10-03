@@ -112,5 +112,37 @@
     "Mazda|2": 280, "Mazda|3": 358, "Mazda|CX-3": 350, "Mazda|CX-30": 430, "Mazda|CX-5": 506, "Mazda|6": 480,
     "Ford|Fiesta": 292, "Ford|Focus": 375, "Ford|Puma": 456, "Ford|EcoSport": 334, "Ford|Kuga": 412,
     "Kia|Picanto": 255, "Kia|Stonic": 352, "Kia|Ceed": 395, "Kia|Sportage": 591, "Kia|Niro": 451
-  }
+  },
+  "_segmentNote": "Inputs for the 'Ownership Cost' independent plugin (plugins/ownership-cost.md) -- resale value and drive comfort are researched at SEGMENT level, not per-model, per explicit user decision (2026-10-03) after per-model research produced unreliable/spam-adjacent sources for these two specific metrics (unlike ROI's systematic TÜV/ADAC/DEKRA data). residualPct5yr is % of original price retained after 5 years/30,000km (source: German segment-level depreciation research -- Kleinwagen ~52%, Kompaktklasse ~55%, SUV ~61% -- Mittelklasse-Sedan explicitly flagged as the weakest-depreciation segment in the DAT Restwert Report; Kompakt-SUV/Van are reasoned estimates between the researched anchors, not independently sourced). cityComfort/autobahnComfort are 0-10, from qualitative pattern across segment-class reviews (small cars: nimble in town, nervous at Autobahn speed; compact class: Golf-class reputation for balanced long-distance comfort; SUVs: 'becoming better long haul travel partners', less nimble in tight streets; sedans: traditional Autobahn-cruiser reputation) -- not a numeric source, a reasoned translation of consistent qualitative findings onto a 0-10 scale.",
+  "segments": {
+    "BMW|1er": "Kleinwagen", "Audi|A1 Sportback": "Kleinwagen", "Audi|A1 citycarver": "Kleinwagen",
+    "Toyota|Yaris": "Kleinwagen", "Toyota|Aygo": "Kleinwagen", "Honda|Jazz": "Kleinwagen",
+    "Hyundai|i10": "Kleinwagen", "Hyundai|i20": "Kleinwagen", "Mazda|2": "Kleinwagen",
+    "Ford|Fiesta": "Kleinwagen", "Kia|Picanto": "Kleinwagen",
+    "BMW|2er": "Kompaktklasse", "Audi|A3 Sportback": "Kompaktklasse", "Audi|A3 Limousine": "Kompaktklasse", "Audi|A3": "Kompaktklasse",
+    "Mercedes-Benz|A-Klasse": "Kompaktklasse", "Mercedes-Benz|A-Klasse Limousine": "Kompaktklasse",
+    "Mercedes-Benz|B-Klasse": "Kompaktklasse", "Mercedes-Benz|CLA-Klasse": "Kompaktklasse",
+    "Toyota|Corolla": "Kompaktklasse", "Toyota|Corolla Touring Sports": "Kompaktklasse",
+    "Toyota|Auris": "Kompaktklasse", "Toyota|Auris Touring Sports": "Kompaktklasse", "Toyota|Prius": "Kompaktklasse",
+    "Honda|Civic": "Kompaktklasse", "Hyundai|i30": "Kompaktklasse", "Hyundai|IONIQ": "Kompaktklasse", "Hyundai|Ioniq": "Kompaktklasse",
+    "Mazda|3": "Kompaktklasse", "Ford|Focus": "Kompaktklasse", "Kia|Ceed": "Kompaktklasse",
+    "BMW|X1": "Kompakt-SUV", "BMW|X2": "Kompakt-SUV", "Audi|Q2": "Kompakt-SUV", "Audi|Q3": "Kompakt-SUV",
+    "Mercedes-Benz|GLA-Klasse": "Kompakt-SUV", "Toyota|C-HR": "Kompakt-SUV", "Honda|HR-V": "Kompakt-SUV",
+    "Hyundai|Kona": "Kompakt-SUV", "Hyundai|Bayon": "Kompakt-SUV", "Mazda|CX-3": "Kompakt-SUV", "Mazda|CX-30": "Kompakt-SUV",
+    "Ford|Puma": "Kompakt-SUV", "Ford|EcoSport": "Kompakt-SUV", "Kia|Stonic": "Kompakt-SUV", "Kia|Niro": "Kompakt-SUV",
+    "Toyota|RAV4": "Mittelklasse-SUV", "Honda|CR-V": "Mittelklasse-SUV", "Hyundai|Tucson": "Mittelklasse-SUV",
+    "Mazda|CX-5": "Mittelklasse-SUV", "Ford|Kuga": "Mittelklasse-SUV", "Kia|Sportage": "Mittelklasse-SUV",
+    "BMW|3er": "Mittelklasse-Sedan", "BMW|5er": "Mittelklasse-Sedan", "Audi|A4": "Mittelklasse-Sedan", "Audi|A4 Allroad": "Mittelklasse-Sedan",
+    "Mercedes-Benz|C-Klasse": "Mittelklasse-Sedan", "Hyundai|i40": "Mittelklasse-Sedan", "Mazda|6": "Mittelklasse-Sedan",
+    "Mercedes-Benz|Citan": "Van"
+  },
+  "segmentData": {
+    "Kleinwagen": { "residualPct5yr": 52, "cityComfort": 8.5, "autobahnComfort": 6.0 },
+    "Kompaktklasse": { "residualPct5yr": 55, "cityComfort": 7.5, "autobahnComfort": 8.0 },
+    "Kompakt-SUV": { "residualPct5yr": 58, "cityComfort": 7.5, "autobahnComfort": 7.5 },
+    "Mittelklasse-SUV": { "residualPct5yr": 61, "cityComfort": 7.0, "autobahnComfort": 8.3 },
+    "Mittelklasse-Sedan": { "residualPct5yr": 48, "cityComfort": 7.0, "autobahnComfort": 8.5 },
+    "Van": { "residualPct5yr": 55, "cityComfort": 6.5, "autobahnComfort": 7.5 }
+  },
+  "hybridResidualBonusPct": 4
 }

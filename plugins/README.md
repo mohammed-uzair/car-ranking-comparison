@@ -27,4 +27,5 @@ Independent scores never feed Total, but the page also shows an **Avg** column (
 | Name | Scale | Type | Source | File |
 |------|-------|------|--------|------|
 | **ROI** | 0–10 | local | German TÜV + ADAC + DEKRA, per model+generation | [`roi.md`](roi.md) |
+| **OwnershipCost** | 0–100 | local | User-defined rules (fuel cost, Kfz-Steuer, resale, trip cost, comfort); resale/comfort are segment-level estimates, not per-model research — see `data/reference.json`'s `_segmentNote` | [`ownership-cost.md`](ownership-cost.md) |
 | _carwow_ (example, disabled) | 0–10 | external | carwow.com rating (illustrative) | [`carwow.md`](carwow.md) |

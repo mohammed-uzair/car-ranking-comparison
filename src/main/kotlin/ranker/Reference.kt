@@ -5,6 +5,9 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 @Serializable
+data class SegmentData(val residualPct5yr: Double, val cityComfort: Double, val autobahnComfort: Double)
+
+@Serializable
 data class Reference(
     val currentYear: Int = 2026,
     val roi: Map<String, Double> = emptyMap(),
@@ -14,7 +17,10 @@ data class Reference(
     val gearTypeMap: Map<String, String> = emptyMap(),
     val fuelTypeMap: Map<String, String> = emptyMap(),
     val dctRiskModels: List<String> = emptyList(),
-    val bootLitres: Map<String, Int> = emptyMap()
+    val bootLitres: Map<String, Int> = emptyMap(),
+    val segments: Map<String, String> = emptyMap(),
+    val segmentData: Map<String, SegmentData> = emptyMap(),
+    val hybridResidualBonusPct: Double = 0.0
 )
 
 object Ref {

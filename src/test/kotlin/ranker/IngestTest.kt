@@ -32,7 +32,7 @@ class AutoheroListingParseTest {
       "offerPrice": {"amountMinorUnits": 1899000, "conversionMajor": 100, "currency": "EUR"},
       "fuelType": 1039, "isPluginSystem": false, "gearType": 1139, "kw": 100.0, "ccm": 1998,
       "carPreownerCount": 1, "numberOfAccidents": 0, "numberOfDamages": 0, "hasFilledServiceBook": true,
-      "vatType": 1053, "retailAdState": "imported-to-retail",
+      "vatType": 1053, "retailAdState": "imported-to-retail", "co2Value": 116.0,
       "fuelConsumption": {"city": 6.3, "highway": 4.3, "combined": 5.1},
       "esBranch": {"city": "Ketzin"}, "carUrlTitle": "bmw-3-er", "countryCode": "DE"
     }
@@ -50,7 +50,15 @@ class AutoheroListingParseTest {
         assertEquals(100, l.kw); assertEquals(1, l.owners)
         assertFalse(l.commercial); assertFalse(l.saleInProgress)
         assertEquals(5.1, l.consumptionCombined); assertEquals(6.3, l.consumptionUrban)
+        assertEquals(4.3, l.consumptionHighway); assertEquals(116.0, l.co2)
         assertEquals("Ketzin", l.city)
+    }
+    @Test fun missing_co2_and_highway_are_null() {
+        val f = fixture.replace("\"co2Value\": 116.0,", "")
+            .replace("\"fuelConsumption\": {\"city\": 6.3, \"highway\": 4.3, \"combined\": 5.1}",
+                      "\"fuelConsumption\": {\"city\": 6.3, \"combined\": 5.1}")
+        val l = autoheroCarToListing(jsonOf(f))!!
+        assertNull(l.co2); assertNull(l.consumptionHighway)
     }
     @Test fun commercial_from_vatType_1054() {
         val l = autoheroCarToListing(jsonOf(fixture.replace("\"vatType\": 1053", "\"vatType\": 1054")))!!
@@ -104,7 +112,8 @@ class As24ListingParseTest {
         {"data": "04/2020", "iconName": "calendar"},
         {"data": "Benzin", "iconName": "gas_pump"},
         {"data": "85 kW (116 PS)", "iconName": "speedometer"},
-        {"data": "4,9 l/100 km (komb.)", "iconName": "water_drop", "name": "fuelConsumptionExtended"}
+        {"data": "4,9 l/100 km (komb.)", "iconName": "water_drop", "name": "fuelConsumptionExtended"},
+        {"data": "111 g/km (komb.)", "iconName": "leaf", "name": "co2Emission"}
       ],
       "price": {"priceRaw": 17475},
       "location": {"countryCode": "DE", "city": "Grosskrotzenburg"}
@@ -122,8 +131,15 @@ class As24ListingParseTest {
         assertEquals("automatic", l.gearRaw); assertEquals(85, l.kw); assertEquals(999, l.ccm)
         assertEquals(0, l.owners); assertEquals(0, l.accidents)
         assertEquals(4.9, l.consumptionCombined); assertNull(l.consumptionUrban)
+        assertEquals(111.0, l.co2); assertNull(l.consumptionHighway)   // AS24 has no dedicated highway figure
         assertNull(l.body)   // "A1 Sportback" has no coupe/cabrio keyword
         assertEquals("Grosskrotzenburg", l.city)
+    }
+    @Test fun placeholder_co2_is_null() {
+        val f = fixture.replace(
+            """{"data": "111 g/km (komb.)", "iconName": "leaf", "name": "co2Emission"}""",
+            """{"data": "- (g/km)", "iconName": "leaf", "isPlaceholder": true, "name": "co2Emission"}""")
+        assertNull(as24ListingToListing(jsonOf(f))!!.co2)
     }
     @Test fun currently_damaged_maps_to_one_accident() {
         val l = as24ListingToListing(jsonOf(fixture.replace("\"isCurrentlyDamaged\": false", "\"isCurrentlyDamaged\": true")))!!

@@ -11,14 +11,16 @@ private fun L(
     gear: String = "1139", kw: Int = 100, ccm: Int = 1998, owners: Int = 1, accidents: Int = 0,
     damages: Int = 0, damageList: List<String> = emptyList(), svc: Boolean = false,
     commercial: Boolean = false, saleInProgress: Boolean = false,
-    cons: Double? = 6.0, consUrban: Double? = 6.5, tire: String? = null, doors: Int? = 5, body: String? = null,
+    cons: Double? = 6.0, consUrban: Double? = 6.5, consHighway: Double? = null, co2: Double? = null,
+    tire: String? = null, doors: Int? = 5, body: String? = null,
     source: String = "test", color: String? = null, trunkLitres: Int? = null
 ) = Listing(
     source = source, id = id, url = "http://x", make = make, model = model, subType = subType,
     firstRegistrationYear = year, mileageKm = km, priceEur = price, fuel = fuel, gearRaw = gear,
     kw = kw, ccm = ccm, owners = owners, accidents = accidents, numberOfDamages = damages,
     damageList = damageList, hasFilledServiceBook = svc, commercial = commercial, saleInProgress = saleInProgress,
-    consumptionCombined = cons, consumptionUrban = consUrban, tireSeason = tire, doors = doors, body = body,
+    consumptionCombined = cons, consumptionUrban = consUrban, consumptionHighway = consHighway, co2 = co2,
+    tireSeason = tire, doors = doors, body = body,
     color = color, trunkLitres = trunkLitres
 )
 
@@ -114,12 +116,15 @@ class RoiIndependenceTest {
         assertTrue(roi.value in 0.0..10.0, "ROI ${roi.value} not in 0..10")
     }
     @Test fun roi_not_in_total_columns() = assertFalse("ROI" in TOTAL_COLUMNS)
-    @Test fun total_excludes_roi() {
+    @Test fun ownership_cost_not_in_total_columns() = assertFalse("OwnershipCost" in TOTAL_COLUMNS)
+    @Test fun total_excludes_independent_plugins() {
         val car = scoreCar(L(), REF, emptyMap())
-        val withRoi = car.scores.filterValues { it.available }.values.sumOf { it.value }
+        val withIndependents = car.scores.filterValues { it.available }.values.sumOf { it.value }
         val total = totalOf(car, TOTAL_COLUMNS.toSet())
-        assertTrue(total < withRoi, "total should exclude the ROI cell")
-        assertEquals(total, totalOf(car, SCORED_COLUMNS.toSet()) - car.scores["ROI"]!!.value, 0.001)
+        assertTrue(total < withIndependents, "total should exclude the independent-plugin cells")
+        val independentsSum = car.scores["ROI"]!!.value + car.scores["OwnershipCost"]!!.value
+        // totalOf() rounds to 2dp; independentsSum doesn't, so allow for that rounding granularity.
+        assertEquals(total, totalOf(car, SCORED_COLUMNS.toSet()) - independentsSum, 0.01)
     }
 }
 
@@ -272,5 +277,56 @@ class DedupTest {
             L(id = "hero",  source = "autohero",    color = "white", price = 15000)
         )
         assertEquals(2, dedupeAcrossSources(listings).size)
+    }
+}
+
+class OwnershipCostTest {
+    // default L() is a BMW 3er -> "Mittelklasse-Sedan" segment, petrol, cons=6.0/consUrban=6.5
+    @Test fun available_when_all_inputs_present() {
+        val s = ownershipCostScore(L(co2 = 130.0), REF)
+        assertTrue(s.available)
+        assertTrue(s.value in 0.0..100.0, "score ${s.value} not in 0..100")
+    }
+    @Test fun unavailable_when_nothing_resolvable() {
+        // no consumption figures, no co2, and an unmapped make/model -> every sub-score skipped
+        val s = ownershipCostScore(L(cons = null, consUrban = null, consHighway = null, co2 = null,
+            make = "Fiat", model = "Panda"), REF)
+        assertFalse(s.available)
+    }
+    @Test fun lower_fuel_consumption_scores_higher() {
+        val efficient = ownershipCostScore(L(consUrban = 4.0, co2 = 110.0), REF)
+        val thirsty = ownershipCostScore(L(consUrban = 9.0, co2 = 110.0), REF)
+        assertTrue(efficient.value > thirsty.value, "efficient ${efficient.value} should beat thirsty ${thirsty.value}")
+    }
+    @Test fun higher_co2_and_displacement_scores_lower() {
+        val clean = ownershipCostScore(L(ccm = 1000, co2 = 90.0), REF)
+        val dirty = ownershipCostScore(L(ccm = 3000, co2 = 220.0), REF)
+        assertTrue(clean.value > dirty.value, "low-tax car ${clean.value} should beat high-tax car ${dirty.value}")
+    }
+    @Test fun hybrid_gets_resale_bonus_over_otherwise_identical_petrol() {
+        // isolate the resale sub-score by only giving the segment input (no consumption/co2 to blend in)
+        val petrol = ownershipCostScore(L(fuel = "petrol", cons = null, consUrban = null, co2 = null), REF)
+        val hybrid = ownershipCostScore(L(fuel = "hybrid", cons = null, consUrban = null, co2 = null), REF)
+        assertTrue(hybrid.value > petrol.value, "hybrid ${hybrid.value} should beat petrol ${petrol.value} on resale alone")
+    }
+    @Test fun segment_resolves_via_body_style_suffix_fallback() {
+        // "BMW|3er Touring" (the estate variant) isn't a literal key in `segments` -- only "BMW|3er" is --
+        // so this only passes via the same whole-word-prefix fallback resolveRoi/resolveBootLitres use.
+        val direct = resolveSegment("BMW", "3er", REF)
+        val viaFallback = resolveSegment("BMW", "3er Touring", REF)
+        assertEquals(direct, viaFallback)
+        assertEquals("Mittelklasse-Sedan", REF.segments["BMW|3er"])
+    }
+    @Test fun unmapped_model_has_no_segment() {
+        // "Yaris Cross" is deliberately NOT a good example here -- it correctly resolves via the "Yaris"
+        // prefix fallback (same mechanism the fallback test above checks), which is intended, not a bug.
+        assertNull(resolveSegment("Toyota", "Supra", REF))   // not in `segments` directly or via any prefix
+    }
+    @Test fun kfz_steuer_known_value_sanity_check() {
+        // 1998ccm -> ceil(1998/100)*2.00 = 40.00; co2=130 -> 95@0 + 20@2.00 + 15@2.20 = 40+33 = 73.00; total ~113€/yr
+        // (not asserting the exact CellScore, just that co2Surcharge-driven ordering is internally consistent)
+        val lowCo2 = ownershipCostScore(L(ccm = 1998, co2 = 100.0, cons = null, consUrban = null), REF)
+        val highCo2 = ownershipCostScore(L(ccm = 1998, co2 = 200.0, cons = null, consUrban = null), REF)
+        assertTrue(lowCo2.value > highCo2.value)
     }
 }

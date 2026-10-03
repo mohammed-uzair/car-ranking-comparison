@@ -346,6 +346,83 @@ fun resolveBootLitres(make: String, model: String, ref: Reference): Int? {
 fun resolveTrunkLitres(l: Listing, ref: Reference): Int? =
     l.trunkLitres ?: resolveBootLitres(l.make, l.model, ref)
 
+/** Same body-style-suffix fallback as resolveRoi/resolveBootLitres -- segments are keyed make|model too. */
+fun resolveSegment(make: String, model: String, ref: Reference): SegmentData? {
+    val name = ref.segments["$make|$model"] ?: run {
+        val ml = model.lowercase()
+        ref.segments.keys
+            .filter { it.startsWith("$make|") }
+            .map { it.removePrefix("$make|") }
+            .filter { ml.startsWith(it.lowercase() + " ") }
+            .maxByOrNull { it.length }
+            ?.let { ref.segments["$make|$it"] }
+    }
+    return name?.let { ref.segmentData[it] }
+}
+
+private const val FUEL_PRICE_EUR_PER_L = 1.70
+private const val ANNUAL_KM = 5000.0
+private const val TRIP_KM_ROUND_TRIP = 1312.0 + 578.0   // Berlin<->Amsterdam (656km x2) + Berlin<->Hamburg (289km x2)
+
+/** German Kfz-Steuer CO2 surcharge, 2026 bands (cumulative/tiered -- each bracket's grams above the previous
+ * threshold are taxed at that bracket's own rate, same as an income-tax bracket). */
+private fun co2Surcharge(co2: Double): Double {
+    val bands = listOf(95.0 to 0.0, 115.0 to 2.00, 135.0 to 2.20, 155.0 to 2.50, 175.0 to 2.90, 195.0 to 3.40)
+    var total = 0.0
+    var lower = 0.0
+    for ((upper, rate) in bands) {
+        if (co2 <= lower) break
+        total += (min(co2, upper) - lower) * rate
+        lower = upper
+    }
+    if (co2 > 195.0) total += (co2 - 195.0) * 4.00
+    return total
+}
+
+/**
+ * Ownership Cost (0-100, independent, advisory) -- user-defined rules, see plugins/ownership-cost.md.
+ * Equal-weight mean of 5 sub-scores; a sub-score is skipped (not imputed) when its inputs are missing,
+ * same "blend what's available" principle as ROI's TÜV/ADAC/DEKRA blend.
+ */
+fun ownershipCostScore(l: Listing, ref: Reference): CellScore {
+    val parts = mutableListOf<Double>()
+    val notes = mutableListOf<String>()
+
+    val consFuel = l.consumptionUrban ?: l.consumptionCombined
+    if (consFuel != null) {
+        val annualFuelCost = consFuel * (ANNUAL_KM / 100) * FUEL_PRICE_EUR_PER_L
+        parts += clamp(100 * (850 - annualFuelCost) / (850 - 255), 0.0, 100.0)
+        notes += "fuel ~€${annualFuelCost.toInt()}/yr"
+    }
+
+    if (l.ccm > 0 && l.co2 != null) {
+        val kfzSteuer = kotlin.math.ceil(l.ccm / 100.0) * 2.00 + co2Surcharge(l.co2)
+        parts += clamp(100 * (300 - kfzSteuer) / (300 - 50), 0.0, 100.0)
+        notes += "tax ~€${kfzSteuer.toInt()}/yr"
+    }
+
+    val seg = resolveSegment(l.make, l.model, ref)
+    if (seg != null) {
+        val bonus = if (l.fuel.lowercase() in setOf("hybrid", "phev")) ref.hybridResidualBonusPct else 0.0
+        val residualPct = seg.residualPct5yr + bonus
+        parts += clamp(residualPct, 0.0, 100.0)
+        notes += "resale ~${residualPct.toInt()}% @5yr"
+        parts += clamp((0.8 * seg.cityComfort + 0.2 * seg.autobahnComfort) * 10, 0.0, 100.0)
+        notes += "comfort"
+    }
+
+    val consTrip = l.consumptionHighway ?: l.consumptionCombined ?: l.consumptionUrban
+    if (consTrip != null) {
+        val totalTripCost = consTrip * (TRIP_KM_ROUND_TRIP / 100) * FUEL_PRICE_EUR_PER_L
+        parts += clamp(100 * (400 - totalTripCost) / (400 - 150), 0.0, 100.0)
+        notes += "AMS+HH round trips ~€${totalTripCost.toInt()}"
+    }
+
+    if (parts.isEmpty()) return CellScore(0.0, available = false, note = "n/a")
+    val score = parts.sum() / parts.size
+    return CellScore(score, note = notes.joinToString("; "))
+}
+
 fun trunkScore(l: Listing, ref: Reference): CellScore {
     val litres = resolveTrunkLitres(l, ref)
         ?: return CellScore(0.0, available = false, note = "n/a")
@@ -370,6 +447,7 @@ fun damageScore(l: Listing): CellScore {
 fun scoreCar(l: Listing, ref: Reference, stats: Map<String, ModelStats>): ScoredCar {
     val scores = linkedMapOf(
         "ROI" to roiScore(l, ref, stats["${l.make}|${l.model}"]),
+        "OwnershipCost" to ownershipCostScore(l, ref),
         "Engine" to engineScore(l, ref),
         "Mileage" to mileageScore(l, ref),
         "Value" to valueScore(l, stats["${l.make}|${l.model}"]),

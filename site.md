@@ -126,6 +126,14 @@ actually hit:
 - Several columns (Consumption-combined, Owners, TireSeason, MinorDamage, Commercial, City) are hidden from
   the table display (2026-10-03, user request) but still exist in the underlying data — Consumption still
   silently contributes to Total exactly as before, it just has no visible column or toggle anymore.
+- **OwnershipCost** (0-100, added 2026-10-03) is a second independent plugin alongside ROI — user-defined
+  rules (fuel cost, Kfz-Steuer, resale, trip cost, comfort), see `plugins/ownership-cost.md`. Two of its five
+  sub-components (resale value, drive comfort) are deliberately **segment-level estimates**
+  (`data/reference.json`'s `segments`/`segmentData`), not per-model research — per-model research for those
+  two specifically produced unreliable/spam-adjacent sources (two content-farm domains were caught and
+  excluded mid-research: `wp.redrockla.edesigninteractive.com` appeared for both an Audi A1 AND an SUV
+  comfort query, a reused spam template, not a coincidence). If asked to make resale/comfort per-model later,
+  that's a real scope increase (~45 models × real research), not a quick tweak — size it before starting.
 - AutoScout24's list API is missing several fields Autohero's has (owners, commercial flag, urban consumption,
   door count) — see `docs/algorithm.md` for exact defaults/gaps.
 - Cross-source dedup (`dedupeAcrossSources`) is currently a no-op: neither live source exposes `color`, and the

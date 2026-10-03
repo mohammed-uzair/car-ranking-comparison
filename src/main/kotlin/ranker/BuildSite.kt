@@ -27,7 +27,8 @@ data class SiteData(
 
 /** Registered independent plugins. Add a row here (+ a plugins/<name>.md) to surface a new advisory column. */
 val INDEPENDENT_PLUGINS = listOf(
-    IndepCol("ROI", "ROI (Independent score)", 10, "plugins/roi.md")
+    IndepCol("ROI", "ROI (Independent score)", 10, "plugins/roi.md"),
+    IndepCol("OwnershipCost", "Ownership Cost", 100, "plugins/ownership-cost.md")
 )
 
 /** Shared JSON codec for site data — used by both the offline batch job (this file) and the live server (Server.kt). */

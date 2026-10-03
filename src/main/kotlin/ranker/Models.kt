@@ -28,6 +28,8 @@ data class Listing(
     val saleInProgress: Boolean = false,     // reserved / sale already in progress; Autohero: retailAdState=="reserved" — excluded upstream
     val consumptionCombined: Double? = null, // L/100km combined (null → Consumption cell becomes X)
     val consumptionUrban: Double? = null,    // L/100km urban/city (null → ConsumptionUrban cell becomes X); Autohero: fuelConsumption.city
+    val consumptionHighway: Double? = null,  // L/100km highway/Autobahn; Autohero: fuelConsumption.highway. AutoScout24 has no dedicated highway figure (only a combined one) -- always null for that source.
+    val co2: Double? = null,                 // g/km CO2, for Kfz-Steuer; Autohero: co2Value (always present). AutoScout24: co2Emission in vehicleDetails (populated on ~45% of listings, rest null -- not placeholder-filled).
     val tireSeason: String? = null,          // "all-season" | "summer" | "winter" | null
     val doors: Int? = null,                  // null → derive from body/model
     val body: String? = null,                // "suv"|"sedan"|"hatch"|"estate"|"mpv"|"coupe"|"cabrio" if known
@@ -65,18 +67,19 @@ data class ScoredCar(
 )
 
 /**
- * All twelve scored columns (ROI + eleven total-columns), in display order. ROI is independent (0-10) and NOT summed into Total.
+ * All scored columns (ROI + OwnershipCost independent plugins, + eleven total-columns), in display order.
+ * ROI and OwnershipCost are independent (0-10 / 0-100) and NOT summed into Total.
  * Owners, TireSeason, MinorDamage, Commercial are placed last and are OFF by default (see DEFAULT_ACTIVE_COLUMNS) —
  * they can skew comparisons across data sources that don't all report them, or are situational rather than
  * core to the ranking; the user can tick them back on in the page.
  */
 val SCORED_COLUMNS = listOf(
-    "ROI", "Engine", "Mileage", "Value", "Transmission", "Consumption", "ConsumptionUrban", "TrunkSize",
+    "ROI", "OwnershipCost", "Engine", "Mileage", "Value", "Transmission", "Consumption", "ConsumptionUrban", "TrunkSize",
     "Owners", "TireSeason", "MinorDamage", "Commercial"
 )
 
-/** The eleven columns that feed the Total (everything except the independent ROI). */
-val TOTAL_COLUMNS = SCORED_COLUMNS.filter { it != "ROI" }
+/** The total-columns that feed Total (everything except the independent plugins ROI/OwnershipCost). */
+val TOTAL_COLUMNS = SCORED_COLUMNS.filter { it !in setOf("ROI", "OwnershipCost") }
 
 /** Which total-columns are active by default (i.e. summed into Total on first load). */
 val DEFAULT_ACTIVE_COLUMNS = listOf("Engine", "Mileage", "Value", "Transmission", "Consumption", "ConsumptionUrban", "TrunkSize")
