@@ -86,7 +86,7 @@
   <p class="sub" id="sub">Loading…</p>
   <div class="controls">
     <input id="q" placeholder="Search visible rows: name / fuel / city…"/>
-    <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Owners, TireSeason, MinorDamage, Commercial are OFF by default — tick to include. Cells marked <span class="x">X</span> are N/A and never counted. Use ☰ to filter by brand/model/source and re-rank the top 50 from the full pool.</span>
+    <span class="note">Click a header to sort (default: Avg, highest first). Tick/untick a scored column to include/exclude it from Total (it fades and Total &amp; Avg re-sum &amp; re-sort live). Cells marked <span class="x">X</span> are N/A and never counted. Use ☰ to filter by brand/model/source and re-rank the top 50 from the full pool.</span>
   </div>
   <div class="wrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   <p class="meta" id="meta"></p>
@@ -139,8 +139,9 @@ const AUTOHERO_BODY_TYPE_CODES={"Combination (wagon/estate)":1023, "SUV":1035, "
 
 // Brands/sources with no data yet — shown as disabled chips so the panel is shaped for where this is headed;
 // checking them does nothing today (there's nothing in DATA.rows to match) and they activate automatically
-// once real data exists, no page changes needed.
-const BRAND_PLACEHOLDERS=["Ford","Kia"];
+// once real data exists, no page changes needed. Ford/Kia graduated out of this list 2026-10-03 (real
+// researched ROI data added — see data/reference.json and docs/reliability.md); currently empty.
+const BRAND_PLACEHOLDERS=[];
 const SOURCE_PLACEHOLDERS=[];   // both real sources (Autohero, AutoScout24) are live; nothing else is planned
 const SOURCE_LABELS={autohero:"Autohero", autoscout24:"AutoScout24"};
 
@@ -346,13 +347,17 @@ function render(){
   // independent plugins (advisory, never summed into Total) come from data; ROI is the first one
   const indep = DATA.independentColumns || [{name:"ROI",label:"ROI (Independent score)",scale:10}];
   const totalCols = DATA.totalColumns || DATA.scoredColumns.filter(c=>c!=="ROI");
+  // HIDDEN_COLUMNS removes these from the table's DISPLAY only -- rowTotal()/activeTotalColCount() read
+  // DATA.scoredColumns/DATA.totalColumns directly (never this `cols` array), and `active` (which they filter
+  // by) still defaults to DATA.activeColumns from the server, so Consumption keeps contributing to Total
+  // exactly as before; it and the others just no longer have a visible column or on/off checkbox.
+  const HIDDEN_COLUMNS=new Set(["Consumption","Owners","TireSeason","MinorDamage","Commercial"]);
   const cols=[
     ...IDENT,
     {k:"avg", label:"Avg", cls:"total"},
     ...indep.map(p=>({k:p.name, label:p.label, indep:true, scale:p.scale||10})),
     {k:"total", label:"TOTAL", cls:"total"},
-    ...totalCols.map(c=>({k:c,label:c,scored:true})),
-    {k:"city", label:"City", cls:"left"},
+    ...totalCols.filter(c=>!HIDDEN_COLUMNS.has(c)).map(c=>({k:c,label:c,scored:true})),
   ];
   thead.innerHTML="<tr>"+cols.map(c=>{
     const off=c.scored&&!active.has(c.k)?" col-off":"";

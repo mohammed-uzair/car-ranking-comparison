@@ -1,5 +1,5 @@
 {
-  "_note": "Fixed reference tables. ROI = pure model+generation reliability (0-10), equal-blend of TÜV+ADAC+DEKRA (see docs/reliability.md). All 8 brands (Audi/BMW/Mercedes/Porsche/Honda/Toyota/Hyundai/Mazda) researched; Porsche has no cars in the price band. Values are point-in-time (TÜV Report 2026, ADAC 2025, DEKRA). Mazda ROI is qualitative-standing-based (TÜV/ADAC/DEKRA coverage didn't surface precise current-generation Mängelquote %, only category rankings/standings), not a direct percentage calc like the BMW/Audi/Mercedes rows; Mazda bootLitres are spec-sheet figures, not independently verified per listing.",
+  "_note": "Fixed reference tables. ROI = pure model+generation reliability (0-10), equal-blend of TÜV+ADAC+DEKRA (see docs/reliability.md). All 10 brands (Audi/BMW/Mercedes/Porsche/Honda/Toyota/Hyundai/Mazda/Ford/Kia) researched; Porsche has no cars in the price band. Values are point-in-time (TÜV Report 2026, ADAC 2025, DEKRA). Mazda/Ford/Kia ROI is qualitative-standing-based (TÜV/ADAC/DEKRA coverage didn't surface precise current-generation Mängelquote % for every model, only category rankings/standings or partial figures), not a uniformly direct percentage calc like the BMW/Audi/Mercedes rows; their bootLitres are spec-sheet figures, not independently verified per listing. Ford's 1.0 EcoBoost (pre-~2018 'wet belt' design) is a documented, serious engine-platform risk -- scored separately and lower than the 1.5 EcoBoost. Kia Rio/Soul/XCeed and Ford's other models have no researched ROI yet -- left out rather than guessed; see roiPending.",
   "currentYear": 2026,
   "roi": {
     "BMW|1er|F20": 6.48,
@@ -54,9 +54,19 @@
     "Mazda|CX-3|*": 7.8,
     "Mazda|CX-30|*": 7.7,
     "Mazda|CX-5|*": 8.0,
-    "Mazda|6|*": 7.6
+    "Mazda|6|*": 7.6,
+    "Ford|Fiesta|*": 8.0,
+    "Ford|Puma|*": 7.8,
+    "Ford|EcoSport|*": 7.5,
+    "Ford|Focus|*": 7.0,
+    "Ford|Kuga|*": 6.2,
+    "Kia|Picanto|*": 7.8,
+    "Kia|Stonic|*": 8.0,
+    "Kia|Ceed|*": 8.0,
+    "Kia|Sportage|*": 8.4,
+    "Kia|Niro|*": 8.8
   },
-  "roiPending": [],
+  "roiPending": ["Kia|Rio", "Kia|Soul", "Kia|XCeed"],
   "engineGrade": {
     "EA888": 8.0, "1.0TSI": 8.0, "1.4TSI": 7.0, "1.4ACT": 6.0, "1.5Evo": 7.0,
     "2.0TDI": 7.0, "3.0TDI": 5.5, "AudiPHEV": 5.0,
@@ -65,7 +75,9 @@
     "ToyotaHybrid": 9.0, "ToyotaNA": 8.5, "ToyotaTurbo": 6.5,
     "HondaHybrid": 9.0, "Honda1.5T": 6.0, "Honda1.0T": 6.5, "HondaNA": 7.5,
     "HyundaiHybrid": 7.5, "HyundaiTGDI": 7.0, "HyundaiNA": 6.5,
-    "MazdaHybrid": 9.0, "MazdaSkyactivG": 8.5, "MazdaSkyactivX": 7.0
+    "MazdaHybrid": 9.0, "MazdaSkyactivG": 8.5, "MazdaSkyactivX": 7.0,
+    "FordEcoBoost1.0": 5.5, "FordEcoBoost1.5": 6.5, "FordNA": 7.5, "FordHybrid": 7.5,
+    "KiaHybrid": 8.5, "KiaTGDI": 7.0, "KiaNA": 7.5
   },
   "engineThresholdKm": {
     "EA888": 150000, "1.0TSI": 150000, "1.4TSI": 150000, "1.4ACT": 90000, "1.5Evo": 150000,
@@ -75,7 +87,9 @@
     "ToyotaHybrid": 300000, "ToyotaNA": 250000, "ToyotaTurbo": 120000,
     "HondaHybrid": 250000, "Honda1.5T": 100000, "Honda1.0T": 100000, "HondaNA": 200000,
     "HyundaiHybrid": 200000, "HyundaiTGDI": 120000, "HyundaiNA": 180000,
-    "MazdaHybrid": 300000, "MazdaSkyactivG": 250000, "MazdaSkyactivX": 180000
+    "MazdaHybrid": 300000, "MazdaSkyactivG": 250000, "MazdaSkyactivX": 180000,
+    "FordEcoBoost1.0": 100000, "FordEcoBoost1.5": 140000, "FordNA": 180000, "FordHybrid": 170000,
+    "KiaHybrid": 220000, "KiaTGDI": 150000, "KiaNA": 170000
   },
   "gearTypeMap": { "1139": "automatic", "1138": "manual", "1141": "automatic" },
   "fuelTypeMap": { "1039": "petrol", "1040": "diesel", "1046": "phev", "1041": "hybrid" },
@@ -95,6 +109,8 @@
     "Honda|Jazz": 304, "Honda|Civic": 478, "Honda|HR-V": 319, "Honda|CR-V": 497,
     "Hyundai|i10": 252, "Hyundai|i20": 352, "Hyundai|i30": 395, "Hyundai|Kona": 374,
     "Hyundai|Tucson": 546, "Hyundai|Bayon": 411, "Hyundai|IONIQ": 443, "Hyundai|Ioniq": 443, "Hyundai|i40": 553,
-    "Mazda|2": 280, "Mazda|3": 358, "Mazda|CX-3": 350, "Mazda|CX-30": 430, "Mazda|CX-5": 506, "Mazda|6": 480
+    "Mazda|2": 280, "Mazda|3": 358, "Mazda|CX-3": 350, "Mazda|CX-30": 430, "Mazda|CX-5": 506, "Mazda|6": 480,
+    "Ford|Fiesta": 292, "Ford|Focus": 375, "Ford|Puma": 456, "Ford|EcoSport": 334, "Ford|Kuga": 412,
+    "Kia|Picanto": 255, "Kia|Stonic": 352, "Kia|Ceed": 395, "Kia|Sportage": 591, "Kia|Niro": 451
   }
 }

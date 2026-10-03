@@ -120,7 +120,12 @@ actually hit:
 
 ## Known current gaps (don't rediscover these from scratch)
 
-- Ford/Kia are UI placeholders only — no ingestion, no reference data, shown as disabled "no data yet" chips.
+- Ford/Kia are real, live brands now (added 2026-10-03, same research-backed pattern as Mazda). `BRAND_PLACEHOLDERS`
+  is currently empty — no brand is left as a disabled "no data yet" chip. Kia Rio/Soul/XCeed have no researched
+  ROI yet (`roiPending` in `data/reference.json`) and won't appear in the table until they do.
+- Several columns (Consumption-combined, Owners, TireSeason, MinorDamage, Commercial, City) are hidden from
+  the table display (2026-10-03, user request) but still exist in the underlying data — Consumption still
+  silently contributes to Total exactly as before, it just has no visible column or toggle anymore.
 - AutoScout24's list API is missing several fields Autohero's has (owners, commercial flag, urban consumption,
   door count) — see `docs/algorithm.md` for exact defaults/gaps.
 - Cross-source dedup (`dedupeAcrossSources`) is currently a no-op: neither live source exposes `color`, and the

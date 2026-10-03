@@ -21,7 +21,7 @@ private val client: HttpClient = HttpClient.newBuilder()
     .connectTimeout(Duration.ofSeconds(20)).followRedirects(HttpClient.Redirect.NORMAL).build()
 private val ingestJson = Json { ignoreUnknownKeys = true; isLenient = true }
 
-val ALLOWED_MAKES_LIST = listOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda")
+val ALLOWED_MAKES_LIST = listOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda", "Ford", "Kia")
 
 /** The outcome of a (possibly multi-page) live fetch. [complete] is false when pagination gave up early
  * because a page kept failing even after retries -- see withRetry(). A caller MUST surface [note] to the
@@ -215,6 +215,7 @@ fun fetchAutohero(bodyTypes: List<Int> = emptyList()): FetchResult {
 private val AS24_MAKE_SLUGS = mapOf(
     "Audi" to "audi", "BMW" to "bmw", "Mercedes-Benz" to "mercedes-benz", "Porsche" to "porsche",
     "Honda" to "honda", "Toyota" to "toyota", "Hyundai" to "hyundai", "Mazda" to "mazda",
+    "Ford" to "ford", "Kia" to "kia",
 )
 private val COUPE_WORDS = setOf("coupe", "coupé", "cabrio", "cabriolet", "roadster")
 private val NEXT_DATA_RE = Regex("""<script id="__NEXT_DATA__" type="application/json">(.*?)</script>""", RegexOption.DOT_MATCHES_ALL)

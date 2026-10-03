@@ -26,9 +26,9 @@ site/index.html (static page)        ── loads the snapshot on open; the "Upd
 - **A browser button can't run a local program on its own** — that's a browser sandboxing rule, not a design choice. `Server.kt` is the smallest thing that can listen locally so a click can trigger a real Kotlin fetch+rescore; see `docs/algorithm.md` for why it's needed and why it's the JDK's built-in `HttpServer` rather than a new framework dependency.
 
 ## Columns
-Identity: index · name · first registration · fuel · price · km · URL · city (last).
-Scored (0–100, toggle-able), **on by default**: Engine · Mileage · Value · Transmission · Consumption · ConsumptionUrban · TrunkSize.
-Scored, **off by default** (placed last — situational / source-dependent, tick on to include): Owners · TireSeason · MinorDamage · Commercial.
+Identity: index · name · first registration · fuel · price · km · URL.
+Scored (0–100, toggle-able), **on by default**: Engine · Mileage · Value · Transmission · ConsumptionUrban · TrunkSize.
+Consumption (combined), Owners, TireSeason, MinorDamage, Commercial, and City are **hidden from the table display** (2026-10-03, user request) but still exist in the data — Consumption still silently contributes to Total exactly as before (it just has no visible column/toggle anymore); the rest were already off-by-default and now have no UI at all.
 Full rules & pseudocode: [`docs/algorithm.md`](docs/algorithm.md). Reliability (ROI) method: [`docs/reliability.md`](docs/reliability.md).
 
 ### Independent score plugins & Avg

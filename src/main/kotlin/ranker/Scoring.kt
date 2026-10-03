@@ -5,7 +5,7 @@ import kotlin.math.min
 
 fun clamp(x: Double, lo: Double, hi: Double) = max(lo, min(hi, x))
 
-val ALLOWED_MAKES = setOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda")
+val ALLOWED_MAKES = setOf("Audi", "BMW", "Mercedes-Benz", "Porsche", "Honda", "Toyota", "Hyundai", "Mazda", "Ford", "Kia")
 val COUPE_BODIES = setOf("coupe", "coupé", "cabrio", "cabriolet", "roadster")
 
 /** Per-model price statistics used by the Value column. */
@@ -45,7 +45,7 @@ fun generation(make: String, model: String, year: Int): String {
             "citan" in m -> "Citan"
             else -> "?"
         }
-        "Toyota", "Honda", "Hyundai", "Mazda" -> "*"
+        "Toyota", "Honda", "Hyundai", "Mazda", "Ford", "Kia" -> "*"
         else -> "?"
     }
 }
@@ -106,6 +106,24 @@ fun platform(l: Listing): String {
             // Autohero fuelType 1046 / "hybrid").
             f == "hybrid" && "mild" !in st && "mhev" !in st -> "MazdaHybrid"
             else -> "MazdaSkyactivG"
+        }
+        "Ford" -> when {
+            // Mild-hybrid (48V-assisted) EcoBoost is later-generation tech, built after Ford's documented
+            // 1.0 EcoBoost "wet belt" (oil-lubricated timing belt) fix -- distinct from, and not scored as
+            // risky as, the plain 1.0 EcoBoost below. Checked via subType text too (not just fuel=="hybrid")
+            // since AS24's fuel decoder can mis-tag a mild-hybrid Ford as plain "petrol" -- see decodeAs24Fuel.
+            f == "hybrid" || "mild-hybrid" in st -> "FordHybrid"
+            "1.0" in st && "ecoboost" in st -> "FordEcoBoost1.0"
+            "1.5" in st && "ecoboost" in st -> "FordEcoBoost1.5"
+            else -> "FordNA"
+        }
+        "Kia" -> when {
+            // Same "mild" disambiguation as Mazda above: a 48V mild-hybrid T-GDI is still fundamentally a
+            // turbo engine with a bolt-on assist, not the dedicated Atkinson-cycle + DCT hybrid transmission
+            // the "well-proven hybrid drivetrain" research describes -- only the latter gets KiaHybrid.
+            f == "hybrid" && "mild" !in st -> "KiaHybrid"
+            "tgdi" in st || "t-gdi" in st -> "KiaTGDI"
+            else -> "KiaNA"
         }
         else -> "unknown"
     }
