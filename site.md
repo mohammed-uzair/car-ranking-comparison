@@ -94,9 +94,9 @@ to be configurable/generic for its own sake.
 - **The full Kotlin test suite must stay green** (currently 90 tests, `./gradlew test`) after every change,
   including page-JS-only changes that don't touch Kotlin at all — run it anyway, it's cheap and it's the
   regression net for the scoring/ingestion logic the page depends on.
-- **Pushes go to `mohammed-uzair/car-ranking-comparison`, as a private repo, via the personal GitHub account**
-  (`gh auth switch --user mohammed-uzair` → push → `gh auth switch --user mohammeduzair-oviva` back), never
-  the default Oviva account.
+- **Pushes go to `mohammed-uzair/car-ranking-comparison` (public, MIT-licensed, `main` branch-protected —
+  pull requests required from everyone except the owner).** If you use multiple GitHub accounts locally,
+  make sure you're pushing as the account that owns this repo, not a default/work account.
 
 ## Verification checklist before calling a change "done"
 

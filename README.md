@@ -106,8 +106,6 @@ repo owner). To contribute:
    source — don't let that happen to your PR either).
 
 ## References
-- Notion — [Reliability Knowledge Base](https://app.notion.com/p/3e76f8b68bea81ea9cf0ec6e7f3d809e) · [Car Evaluation framework](https://app.notion.com/p/3e76f8b68bea8150a0a7c121d078504a) · [Final Candidate](https://app.notion.com/p/3e76f8b68bea8153b125eeb95032475c) · [Autohero AI Search (fetch recipe)](https://app.notion.com/p/3e76f8b68bea819fb075dd9506db194c)
-- [Google Sheet "Car candidates"](https://docs.google.com/spreadsheets/d/1VxyCg5jhEEhZj-nIlLhTL7miNjSBUeo13BhUVbypQQ8/edit) (legacy / optional export)
 - GitHub Pages table: static snapshot only (no live server on GitHub Pages — that only runs on your own machine via `./gradlew runServer`). _Enable Pages on this repo (Settings → Pages → deploy from `main` / `site` folder) — URL will appear here._
 
 ## License
