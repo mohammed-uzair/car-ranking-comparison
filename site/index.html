@@ -145,8 +145,12 @@ const BRAND_PLACEHOLDERS=[];
 const SOURCE_PLACEHOLDERS=[];   // both real sources (Autohero, AutoScout24) are live; nothing else is planned
 const SOURCE_LABELS={autohero:"Autohero", autoscout24:"AutoScout24"};
 
-const DEFAULT_CHECKED_BRAND="Toyota";
+const DEFAULT_CHECKED_BRAND="BMW";
 const DEFAULT_CHECKED_SOURCE="autohero";
+const DEFAULT_CHECKED_BODY_TYPE="SUV";
+const DEFAULT_ONLY_SHOW="X1, 20i";   // comma-separated AND-match (see rerankFromCurrentData) -- a single
+  // "x1 20i" term would require that literal contiguous substring, which real listings never have
+  // (they read "X1 sDrive 20i"/"X1 xDrive 20i"), so this uses two separate terms instead.
 
 /** Rebuilds the drawer's checkbox list from whatever makes/sources are ACTUALLY in DATA.rows right now —
  * must be re-called every time DATA is replaced (see applyUpdate()), not just once at page load. A live
@@ -196,9 +200,10 @@ function buildSourceFilters(){
  * DATA.rows, so there's no "a live fetch surfaced a new one" case to rebuild for. */
 function buildBodyTypeFilters(){
   const box=document.getElementById("drawerBodyTypes");
-  box.innerHTML = Object.keys(AUTOHERO_BODY_TYPE_CODES).map(label=>
-    `<label class="brandchip off" data-bodytype="${label}"><input type="checkbox"/>${label}</label>`
-  ).join("");
+  box.innerHTML = Object.keys(AUTOHERO_BODY_TYPE_CODES).map(label=>{
+    const on=label===DEFAULT_CHECKED_BODY_TYPE;
+    return `<label class="brandchip${on?"":" off"}" data-bodytype="${label}"><input type="checkbox" ${on?"checked":""}/>${label}</label>`;
+  }).join("");
   box.querySelectorAll(".brandchip").forEach(chip=>chip.querySelector("input").onchange=e=>{
     chip.classList.toggle("off", !e.target.checked);
   });
@@ -422,6 +427,7 @@ fetch("data.json").then(r=>r.json()).then(d=>{
   buildBrandFilters();
   buildSourceFilters();
   buildBodyTypeFilters();
+  document.getElementById("onlyModels").value=DEFAULT_ONLY_SHOW;
   rerankFromCurrentData();   // initial top-50 from the static snapshot — no live fetch on page load, only on Update
   render();
 }).catch(e=>{ document.getElementById("sub").textContent="Could not load data.json: "+e; });
